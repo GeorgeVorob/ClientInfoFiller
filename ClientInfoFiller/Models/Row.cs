@@ -15,14 +15,16 @@ namespace ClientInfoFiller.Models
         public string Phone { get; set; } = "";
 
         public DateTimeOffset CreationDate { get; set; } = DateTimeOffset.Now;
-        public string CreationDateString => this.CreationDate.ToString("yyyy-MM-dd");
+        public string CreationDateString => this.CreationDate.ToString("dd.MM.yyyy");
         public DateTimeOffset ActualOrderDate { get; set;} = DateTimeOffset.Now;
-        public string ActualOrderDateString => this.ActualOrderDate.ToString("yyyy-MM-dd");
+        public string ActualOrderDateString => this.ActualOrderDate.ToString("dd.MM.yyyy");
         public DateTimeOffset ReturnDate { get; set; } = DateTimeOffset.Now;
-        public string ReturnDateString => this.ReturnDate.ToString("yyyy-MM-dd");
+        public string ReturnDateString => this.ReturnDate.ToString("dd.MM.yyyy");
         public int Price { get; set; } = 0;
+        public int Prepayment { get; set; } = 0;
+        public int Owe => Price - Prepayment;
 
-        // Предоплата и долг?
+
 
         public string Comment { get; set; } = "";
     }

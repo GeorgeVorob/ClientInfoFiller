@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml.Controls;
 
 namespace ClientInfoFiller.Services
 {
@@ -22,37 +23,36 @@ namespace ClientInfoFiller.Services
             IApplication application = excelEngine.Excel;
             IWorkbook workbook = await application.Workbooks.OpenAsync(_file);
             IWorksheet worksheet = workbook.Worksheets[0];
-            // worksheet.Range["A3"].Text = data;
 
             int rowID = 2;
-            int lastIdInRow = 0;
+            int lastIdInRow = 1;
             while(true)
             {
-                if (worksheet.Range[$"A{rowID}"].Text != String.Empty &&
-                    worksheet.Range[$"A{rowID}"].Text != null)
+                if (worksheet.Range[$"A{rowID}"].Value != String.Empty &&
+                    worksheet.Range[$"A{rowID}"].Value != null)
                 {
-                    lastIdInRow = Int32.Parse(worksheet.Range[$"A{rowID}"].Text);
+                    lastIdInRow = Int32.Parse(worksheet.Range[$"A{rowID}"].Value);
+                    rowID++;
                 }
                 else break;
-
-                rowID++;
             }
             lastIdInRow++;
 
-            worksheet.Range[$"A{rowID}"].Text = lastIdInRow.ToString();
+            worksheet.Range[$"A{rowID}"].Number = lastIdInRow;
             worksheet.Range[$"B{rowID}"].Text = data.CustomerName;
             worksheet.Range[$"C{rowID}"].Text = data.CostumeName;
             worksheet.Range[$"D{rowID}"].Text = data.Phone;
             worksheet.Range[$"E{rowID}"].Text = data.CreationDateString;
             worksheet.Range[$"F{rowID}"].Text = data.ActualOrderDateString;
             worksheet.Range[$"G{rowID}"].Text = data.ReturnDateString;
-            worksheet.Range[$"H{rowID}"].Text = data.Price.ToString();
-            worksheet.Range[$"I{rowID}"].Text = data.Comment;
-
+            worksheet.Range[$"H{rowID}"].Number = data.Price;
+            worksheet.Range[$"I{rowID}"].Number = data.Prepayment;
+            worksheet.Range[$"J{rowID}"].Number = data.Owe;
+            worksheet.Range[$"M{rowID}"].Text = data.Comment;
 
             workbook.Version = ExcelVersion.Xlsx;
 
-            await workbook.SaveAsAsync(_file);
+            bool result = await workbook.SaveAsAsync(_file);
             workbook.Close();
             excelEngine.Dispose();
         }

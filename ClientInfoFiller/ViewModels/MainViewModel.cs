@@ -35,6 +35,28 @@ namespace ClientInfoFiller.ViewModels
         }
 
         public Row CurrentRow { get; set; } = new Row();
+
+        public int FormPrice
+        {
+            set
+            {
+                CurrentRow.Price = value;
+                OnPropertyChanged(nameof(CurrentRow));
+            }
+
+            get => CurrentRow.Price;
+        }
+
+        public int FormPrepayment
+        {
+            set
+            {
+                CurrentRow.Prepayment = value;
+                OnPropertyChanged(nameof(CurrentRow));
+            }
+
+            get => CurrentRow.Prepayment;
+        }
         public MainViewModel()
         {
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -42,10 +64,16 @@ namespace ClientInfoFiller.ViewModels
 
             if (token != null && token != String.Empty)
             {
-                FileService fs = new FileService();
-                var fileTask = fs.GetFileForToken(token);
-                //FIXME: bad
-                OpenedFile = fileTask.Result as StorageFile;
+                try
+                {
+                    FileService fs = new FileService();
+                    var fileTask = fs.GetFileForToken(token);
+                    //FIXME: bad
+                    OpenedFile = fileTask.Result as StorageFile;
+                }
+                catch {
+                    OpenedFile= null;
+                }
             }
         }
         public async Task OnRowSaveClick()
@@ -58,7 +86,7 @@ namespace ClientInfoFiller.ViewModels
             await excel.SaveRow(this.CurrentRow);
             await word.FillAndPrint(this.CurrentRow);
             this.CurrentRow = new Row();
-            OnPropertyChanged(nameof(CurrentRow));
+            UpdateFields();
         }
 
         public async Task OnFileSelectClick()
@@ -78,6 +106,13 @@ namespace ClientInfoFiller.ViewModels
                 OpenedFile = openFile;
             }
             CanAccessFile = OpenedFile != null;
+        }
+
+        public void UpdateFields()
+        {
+            OnPropertyChanged(nameof(CurrentRow));
+            OnPropertyChanged();
+            OnPropertyChanged("");
         }
     }
 }

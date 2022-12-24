@@ -76,6 +76,14 @@ namespace ClientInfoFiller.Services
                         bookmarkNavigator.MoveToBookmark(bookmark.Name);
                         bookmarkNavigator.InsertText(data.Price.ToString());
                         break;
+                    case "Prepayment":
+                        bookmarkNavigator.MoveToBookmark(bookmark.Name);
+                        bookmarkNavigator.InsertText(data.Prepayment.ToString());
+                        break;
+                    case "Owe":
+                        bookmarkNavigator.MoveToBookmark(bookmark.Name);
+                        bookmarkNavigator.InsertText(data.Owe.ToString());
+                        break;
                 }
             }
 
