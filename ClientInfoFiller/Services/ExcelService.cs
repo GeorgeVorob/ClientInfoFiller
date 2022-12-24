@@ -48,6 +48,7 @@ namespace ClientInfoFiller.Services
             worksheet.Range[$"H{rowID}"].Number = data.Price;
             worksheet.Range[$"I{rowID}"].Number = data.Prepayment;
             worksheet.Range[$"J{rowID}"].Number = data.Owe;
+            worksheet.Range[$"K{rowID}"].Number = data.Pledge;
             worksheet.Range[$"M{rowID}"].Text = data.Comment;
 
             workbook.Version = ExcelVersion.Xlsx;

@@ -54,6 +54,10 @@
                     <TextBlock Text="{x:Bind VM.CurrentRow.Owe, Mode=OneWay}"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Width="150" Text="Предоплата:" VerticalAlignment="Center"/>
+                    <TextBox Text="{x:Bind VM.CurrentRow.Pledge, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
                     <TextBox Text="{x:Bind VM.CurrentRow.Comment, Mode=TwoWay}"></TextBox>
                 </StackPanel>

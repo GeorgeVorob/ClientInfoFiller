@@ -33,7 +33,21 @@ namespace ClientInfoFiller
 
         private async void RowSaveClick(object sender, RoutedEventArgs e)
         {
-            await VM.OnRowSaveClick();
+            try
+            {
+                await VM.OnRowSaveClick();
+            }
+            catch(Exception ex)
+            {
+                ContentDialog tableErrorDialog = new ContentDialog()
+                {
+                    Title = "Не удалось открыть таблицу",
+                    Content = ex.Message,
+                    CloseButtonText = "Ok"
+                };
+
+                await tableErrorDialog.ShowAsync();
+            }
         }
 
         private async void FileSelectClick(object sender, RoutedEventArgs e)

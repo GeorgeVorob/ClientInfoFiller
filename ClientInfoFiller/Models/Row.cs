@@ -24,7 +24,10 @@ namespace ClientInfoFiller.Models
         public int Prepayment { get; set; } = 0;
         public int Owe => Price - Prepayment;
 
-
+        /// <summary>
+        /// Залог, не имеет связи с долгом или предоплатой.
+        /// </summary>
+        public int Pledge { get; set; } = 0;
 
         public string Comment { get; set; } = "";
     }
