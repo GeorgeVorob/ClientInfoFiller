@@ -1,4 +1,5 @@
-﻿using ClientInfoFiller.ViewModels;
+﻿using ClientInfoFiller.Models;
+using ClientInfoFiller.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,6 +37,14 @@ namespace ClientInfoFiller
             try
             {
                 await VM.OnRowSaveClick();
+
+                ContentDialog tableErrorDialog = new ContentDialog()
+                {
+                    Title = "Данныe сохранены",
+                    CloseButtonText = "Ok"
+                };
+
+                await tableErrorDialog.ShowAsync();
             }
             catch(Exception ex)
             {
@@ -55,5 +64,26 @@ namespace ClientInfoFiller
             await VM.OnFileSelectClick();
         }
 
+        private async void SearchClick(object sender, RoutedEventArgs e)
+        {
+            await VM.OnSearchClick();
+        }
+
+        private void FoundOrderClicked(object sender, ItemClickEventArgs e)
+        {
+            VM.OnFoundCustomerClick(e.ClickedItem as Row);
+        }
+
+        private void RowResetClick(object sender, RoutedEventArgs e)
+        {
+            VM.ResetCurrentRow();
+        }
+
+        // Фильтрация численного ввода для текстовых полей.
+        private void TextBox_OnBeforeTextChanging(TextBox sender,
+                                          TextBoxBeforeTextChangingEventArgs args)
+        {
+            args.Cancel = args.NewText.Any(c => !char.IsDigit(c));
+        }
     }
 }

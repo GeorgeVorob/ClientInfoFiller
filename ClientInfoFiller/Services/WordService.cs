@@ -21,6 +21,24 @@ namespace ClientInfoFiller.Services
 {
     public class WordService
     {
+        /// <summary>
+        /// Ключи для закладок:
+        /// 
+        /// ID
+        /// CustomerName
+        /// CostumeName
+        /// Phone
+        /// CreationDate
+        /// ActualOrderDate
+        /// ReturnDate
+        /// Price
+        /// Prepayment
+        /// Owe
+        /// Pledge
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public async Task FillAndPrint(Row data)
         {
             StorageFile file = await StorageFile.
@@ -42,6 +60,10 @@ namespace ClientInfoFiller.Services
                     string.Concat(bookmark.Name.TakeWhile(c => c < '0' || c > '9'));
                 switch (BookmarkTemplateName)
                 {
+                    case "ID":
+                        bookmarkNavigator.MoveToBookmark(bookmark.Name);
+                        bookmarkNavigator.InsertText(data.Id.ToString());
+                        break;
                     case "CustomerName":
                         bookmarkNavigator.MoveToBookmark(bookmark.Name);
                         bookmarkNavigator.InsertText(data.CustomerName);
@@ -83,6 +105,15 @@ namespace ClientInfoFiller.Services
                     case "Owe":
                         bookmarkNavigator.MoveToBookmark(bookmark.Name);
                         bookmarkNavigator.InsertText(data.Owe.ToString());
+                        break;
+                    case "Pledge":
+                        bookmarkNavigator.MoveToBookmark(bookmark.Name);
+                        bookmarkNavigator.InsertText(data.Pledge.ToString());
+                        break;
+
+                    case "Comment":
+                        bookmarkNavigator.MoveToBookmark(bookmark.Name);
+                        bookmarkNavigator.InsertText(data.Comment);
                         break;
                 }
             }
