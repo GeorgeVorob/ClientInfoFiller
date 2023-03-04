@@ -43,7 +43,7 @@
                         <DatePicker Date="{x:Bind VM.CurrentRow.CreationDate, Mode=TwoWay}"></DatePicker>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Дата заказа:" VerticalAlignment="Center"/>
+                        <TextBlock Width="150" Text="Дата выдачи:" VerticalAlignment="Center"/>
                         <DatePicker Date="{x:Bind VM.CurrentRow.ActualOrderDate, Mode=TwoWay}"></DatePicker>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="10">
@@ -134,7 +134,7 @@
                                             <Run Text="{Binding CreationDateString}"/>
                                             </TextBlock>
                                             <TextBlock FontSize="13">
-                                            <Run Text="Дата заказа -"/>
+                                            <Run Text="Дата выдачи -"/>
                                             <Run Text="{Binding ActualOrderDateString}"/>
                                             </TextBlock>
                                         </StackPanel>
