@@ -150,7 +150,7 @@ namespace ClientInfoFiller.Services
             retval.Prepayment = tmpFlag ? tmpInt : 0;
 
             tmpFlag = int.TryParse(worksheet.Cells[rowPos, 11].Text, out tmpInt);
-            retval.Pledge = tmpFlag ? tmpInt : 0;
+            retval.PledgeCash = tmpFlag ? tmpInt : 0;
 
 
             retval.Comment = worksheet.Cells[rowPos, 12].Text;
@@ -174,7 +174,7 @@ namespace ClientInfoFiller.Services
             worksheet.Cells[rowPos, 8].Value = data.Price;
             worksheet.Cells[rowPos, 9].Value = data.Prepayment;
             worksheet.Cells[rowPos, 10].Value = data.Owe;
-            worksheet.Cells[rowPos, 11].Value = data.Pledge;
+            worksheet.Cells[rowPos, 11].Value = data.PledgeCash;
             worksheet.Cells[rowPos, 12].Value = data.Comment;
         }
     }

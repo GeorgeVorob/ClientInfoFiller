@@ -9,6 +9,8 @@ namespace ClientInfoFIllerFinal.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private const string FilepathFileStorageName = @"FilepathStorage.txt";
+
         private string _currentFilePath = "";
         public string CurrentFilePath
         {
@@ -17,6 +19,11 @@ namespace ClientInfoFIllerFinal.ViewModels
             {
                 this.RaiseAndSetIfChanged(ref _currentFilePath, value);
                 CanAccessFile = !String.IsNullOrEmpty(CurrentFilePath);
+
+                if (CanAccessFile)
+                {
+                    File.WriteAllText(FilepathFileStorageName, value);
+                }
             }
         }
 
@@ -80,14 +87,14 @@ namespace ClientInfoFIllerFinal.ViewModels
             set
             {
                 int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
-                CurrentRow.Pledge = safeVal;
+                CurrentRow.PledgeCash = safeVal;
                 UpdateFields();
             }
 
             get
             {
-                if (CurrentRow.Pledge == 0) return "";
-                return CurrentRow.Pledge.ToString();
+                if (CurrentRow.PledgeCash == 0) return "";
+                return CurrentRow.PledgeCash.ToString();
             }
         }
 
@@ -121,6 +128,11 @@ namespace ClientInfoFIllerFinal.ViewModels
             searchModesComboBoxData.Add("По костюму");
             _selectedSearchMode = searchModesComboBoxData[0];
 
+
+            if (File.Exists(FilepathFileStorageName))
+            {
+                this.CurrentFilePath = File.ReadAllText(FilepathFileStorageName);
+            }
 
             UpdateFields();
         }
