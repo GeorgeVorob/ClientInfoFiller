@@ -16,18 +16,27 @@ namespace ClientInfoFiller.Services
         }
         public void SaveRow(Row data)
         {
-            ExcelPackage excelPackage = new ExcelPackage(_file);
-            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
-
-            if (data.RowPos == -1)
+            try
             {
-                int lastRowID = -1;
-                data.RowPos = FindLastEmptyRow(worksheet, out lastRowID);
-                data.Id = lastRowID;
-            }
-            WriteRow(worksheet, data);
 
-            excelPackage.Save();
+                ExcelPackage excelPackage = new ExcelPackage(_file);
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+
+                if (data.RowPos == -1)
+                {
+                    int lastRowID = -1;
+                    data.RowPos = FindLastEmptyRow(worksheet, out lastRowID);
+                    data.Id = lastRowID;
+                }
+                WriteRow(worksheet, data);
+
+                excelPackage.Save();
+            }
+            catch
+            {
+                data.RowPos = -1;
+                throw;
+            }
         }
 
         public List<Row> SearchRow(SearchModes searchMode, string searchValue, int amount = 1)
@@ -140,11 +149,11 @@ namespace ClientInfoFiller.Services
             tmpFlag = int.TryParse(worksheet.Cells[rowPos, 9].Text, out tmpInt);
             retval.Prepayment = tmpFlag ? tmpInt : 0;
 
-            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 10].Text, out tmpInt);
+            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 11].Text, out tmpInt);
             retval.Pledge = tmpFlag ? tmpInt : 0;
 
 
-            retval.Comment = worksheet.Cells[rowPos, 11].Text;
+            retval.Comment = worksheet.Cells[rowPos, 12].Text;
 
             return retval;
         }
