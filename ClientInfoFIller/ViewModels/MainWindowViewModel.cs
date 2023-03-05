@@ -33,7 +33,7 @@ namespace ClientInfoFIllerFinal.ViewModels
             get => _currentRow;
             set
             {
-                if(value == null)
+                if (value == null)
                 {
                     // dude why
                     return;
@@ -52,7 +52,11 @@ namespace ClientInfoFIllerFinal.ViewModels
                 UpdateFields();
             }
 
-            get => CurrentRow.Price.ToString();
+            get
+            {
+                if (CurrentRow.Price == 0) return "";
+                return CurrentRow.Price.ToString();
+            }
         }
 
         public string FormPrepayment
@@ -64,7 +68,11 @@ namespace ClientInfoFIllerFinal.ViewModels
                 UpdateFields();
             }
 
-            get => CurrentRow.Prepayment.ToString();
+            get
+            {
+                if (CurrentRow.Prepayment == 0) return "";
+                return CurrentRow.Prepayment.ToString();
+            }
         }
 
         public string FormPledge
@@ -76,7 +84,11 @@ namespace ClientInfoFIllerFinal.ViewModels
                 UpdateFields();
             }
 
-            get => CurrentRow.Pledge.ToString();
+            get
+            {
+                if (CurrentRow.Pledge == 0) return "";
+                return CurrentRow.Pledge.ToString();
+            }
         }
 
         public int FormOwe => CurrentRow.Owe;
