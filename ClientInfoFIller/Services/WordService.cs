@@ -28,7 +28,7 @@ namespace ClientInfoFiller.Services
         /// Prepayment
         /// Owe
         /// Pledge
-        /// PrintDate
+        /// PrintDateTime
         /// 
         /// </summary>
         /// <param name="data"></param>
@@ -114,7 +114,7 @@ namespace ClientInfoFiller.Services
                             break;               
 
                         case "PrintDateTime":
-                            bookMark.SetText(DateTime.Now.ToString("MM/dd/yyyy H:mm"));
+                            bookMark.SetText(DateTime.Now.ToString("dd/MM/yyyy H:mm"));
                             break;
                     }
                 }
