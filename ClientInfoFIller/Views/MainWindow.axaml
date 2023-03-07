@@ -59,18 +59,28 @@
                     </StackPanel>
                   
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Предоплата:" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PrepaymentInput" Text="{Binding FormPrepayment, Mode=TwoWay}"></TextBox>
+                        <TextBlock Width="150" Text="Предоплата (нал):" VerticalAlignment="Center"/>
+                        <TextBox x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
                     </StackPanel>
                   
+                   <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Width="150" Text="Предоплата (безнал):" VerticalAlignment="Center"/>
+                        <TextBox x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
+                    </StackPanel>
+                    
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <TextBlock Width="150" Text="Долг" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding FormOwe, Mode=OneWay}"></TextBlock>
                     </StackPanel>
                   
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Залог:" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PledgeInput" Text="{Binding FormPledge, Mode=TwoWay}"></TextBox>
+                        <TextBlock Width="150" Text="Залог (нал):" VerticalAlignment="Center"/>
+                        <TextBox x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
+                    </StackPanel>
+                  
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Width="150" Text="Залог (безнал):" VerticalAlignment="Center"/>
+                        <TextBox x:Name="PledgeInputDigital" Text="{Binding FormPledgeDigital, Mode=TwoWay}"></TextBox>
                     </StackPanel>
                   
                     <StackPanel Orientation="Horizontal" Spacing="10">

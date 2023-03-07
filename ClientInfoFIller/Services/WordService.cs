@@ -27,7 +27,7 @@ namespace ClientInfoFiller.Services
         /// Price
         /// Prepayment
         /// Owe
-        /// PledgeCash
+        /// Pledge
         /// PrintDateTime
         /// 
         /// </summary>
@@ -98,7 +98,7 @@ namespace ClientInfoFiller.Services
                             break;
 
                         case "Prepayment":
-                            bookMark.SetText(data.Prepayment.ToString());
+                            bookMark.SetText((data.PrepaymentCash + data.PrepaymentDigital).ToString());
                             break;
 
                         case "Owe":
@@ -106,7 +106,7 @@ namespace ClientInfoFiller.Services
                             break;
 
                         case "Pledge":
-                            bookMark.SetText(data.PledgeCash.ToString());
+                            bookMark.SetText((data.PledgeCash + data.PledgeDigital).ToString());
                             break;
 
                         case "Comment":

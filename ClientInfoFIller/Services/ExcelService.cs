@@ -14,6 +14,11 @@ namespace ClientInfoFiller.Services
         {
             _file = file;
         }
+
+        /// <summary>
+        /// Подбирает id и позицию для новой строки перед вставкой
+        /// </summary>
+        /// <param name="data"></param>
         public void SaveRow(Row data)
         {
             try
@@ -45,36 +50,36 @@ namespace ClientInfoFiller.Services
 
             ExcelPackage excelPackage = new ExcelPackage(_file);
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
-            ExcelRange cells = worksheet.Cells;
 
             List<Row> result = new List<Row>();
-            int lastRowID = -1;
-            int rowPos = FindLastEmptyRow(worksheet, out lastRowID);
+
+            int rowPos = FindLastEmptyRow(worksheet, out _);
             rowPos--;
 
             while (amount - result.Count > 0 && rowPos >= 2)
             {
+                Row rowToCheck = ReadRow(worksheet, rowPos);
                 bool flag = false;
 
                 switch (searchMode)
                 {
                     case SearchModes.ByID:
-                        if (cells[rowPos, 1].Text == searchValue) flag = true;
+                        if (rowToCheck.Id.ToString() == searchValue) flag = true;
                         break;
                     case SearchModes.ByCustomerName:
-                        if (cells[rowPos, 2].Text.Contains(searchValue)) flag = true;
+                        if (rowToCheck.CustomerName.Contains(searchValue)) flag = true;
                         break;
                     case SearchModes.ByCostumeName:
-                        if (cells[rowPos, 3].Text.Contains(searchValue)) flag = true;
+                        if (rowToCheck.CostumeName.Contains(searchValue)) flag = true;
                         break;
                     case SearchModes.ByProhe:
-                        if (cells[rowPos, 4].Text.Contains(searchValue)) flag = true;
+                        if (rowToCheck.Phone.Contains(searchValue)) flag = true;
                         break;
 
                 }
 
                 if (flag)
-                    result.Add(ReadRow(worksheet, rowPos));
+                    result.Add(rowToCheck);
 
                 rowPos--;
             }
@@ -93,7 +98,7 @@ namespace ClientInfoFiller.Services
         private static int FindLastEmptyRow(ExcelWorksheet worksheet, out int lastRowID)
         {
             int rowPos = 2;
-            lastRowID = 1;
+            lastRowID = 0;
             while (true)
             {
                 if (worksheet.Cells[rowPos, 1].Text != String.Empty &&
@@ -108,6 +113,20 @@ namespace ClientInfoFiller.Services
             return rowPos;
         }
 
+        /// A 1
+        /// B 2
+        /// C 3
+        /// D 4
+        /// E 5
+        /// F 6
+        /// G 7
+        /// H 8
+        /// I 9
+        /// J 10
+        /// K 11
+        /// L 12
+        /// M 13
+        /// N 14
         private Row ReadRow(ExcelWorksheet worksheet, int rowPos)
         {
             DateTimeOffset tmpDate = DateTimeOffset.Now;
@@ -147,13 +166,21 @@ namespace ClientInfoFiller.Services
             retval.Price = tmpFlag ? tmpInt : 0;
 
             tmpFlag = int.TryParse(worksheet.Cells[rowPos, 9].Text, out tmpInt);
-            retval.Prepayment = tmpFlag ? tmpInt : 0;
+            retval.PrepaymentDigital = tmpFlag ? tmpInt : 0;
 
-            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 11].Text, out tmpInt);
+            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 10].Text, out tmpInt);
+            retval.PrepaymentCash = tmpFlag ? tmpInt : 0;
+
+            // K - 11 пропущен т.к. это долг и его вычисляем
+
+            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 12].Text, out tmpInt);
             retval.PledgeCash = tmpFlag ? tmpInt : 0;
 
+            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 13].Text, out tmpInt);
+            retval.PledgeDigital = tmpFlag ? tmpInt : 0;
 
-            retval.Comment = worksheet.Cells[rowPos, 12].Text;
+
+            retval.Comment = worksheet.Cells[rowPos, 14].Text;
 
             return retval;
         }
@@ -172,10 +199,12 @@ namespace ClientInfoFiller.Services
             worksheet.Cells[rowPos, 6].Value = data.ActualOrderDateString;
             worksheet.Cells[rowPos, 7].Value = data.ReturnDateString;
             worksheet.Cells[rowPos, 8].Value = data.Price;
-            worksheet.Cells[rowPos, 9].Value = data.Prepayment;
-            worksheet.Cells[rowPos, 10].Value = data.Owe;
-            worksheet.Cells[rowPos, 11].Value = data.PledgeCash;
-            worksheet.Cells[rowPos, 12].Value = data.Comment;
+            worksheet.Cells[rowPos, 9].Value = data.PrepaymentDigital;
+            worksheet.Cells[rowPos, 10].Value = data.PrepaymentCash;
+            worksheet.Cells[rowPos, 11].Value = data.Owe;
+            worksheet.Cells[rowPos, 12].Value = data.PledgeCash;
+            worksheet.Cells[rowPos, 13].Value = data.PledgeDigital;
+            worksheet.Cells[rowPos, 14].Value = data.Comment;
         }
     }
 }

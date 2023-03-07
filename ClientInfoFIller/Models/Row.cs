@@ -23,8 +23,9 @@ namespace ClientInfoFiller.Models
         public DateTimeOffset ReturnDate { get; set; } = DateTimeOffset.Now;
         public string ReturnDateString => this.ReturnDate.ToString(DateFormatString);
         public int Price { get; set; } = 0;
-        public int Prepayment { get; set; } = 0;
-        public int Owe => Price - Prepayment;
+        public int PrepaymentCash { get; set; } = 0;
+        public int PrepaymentDigital { get; set; } = 0;
+        public int Owe => Price - PrepaymentCash - PrepaymentDigital;
 
         /// <summary>
         /// Залог, не имеет связи с долгом или предоплатой.
