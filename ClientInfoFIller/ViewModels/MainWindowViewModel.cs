@@ -161,10 +161,14 @@ namespace ClientInfoFIllerFinal.ViewModels
             searchModesComboBoxData.Add("По костюму");
             _selectedSearchMode = searchModesComboBoxData[0];
 
-
             if (File.Exists(FilepathFileStorageName))
             {
-                this.CurrentFilePath = File.ReadAllText(FilepathFileStorageName);
+                string storedFilepath = File.ReadAllText(FilepathFileStorageName);
+
+                if (File.Exists(storedFilepath))
+                {
+                    this.CurrentFilePath = storedFilepath;
+                }
             }
 
             UpdateFields();
