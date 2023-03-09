@@ -4,11 +4,14 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.IO;
 using System;
+using System.Linq;
 
 namespace ClientInfoFIllerFinal.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private const string FilepathFileStorageName = @"FilepathStorage.txt";
+
         private string _currentFilePath = "";
         public string CurrentFilePath
         {
@@ -17,6 +20,11 @@ namespace ClientInfoFIllerFinal.ViewModels
             {
                 this.RaiseAndSetIfChanged(ref _currentFilePath, value);
                 CanAccessFile = !String.IsNullOrEmpty(CurrentFilePath);
+
+                if (CanAccessFile)
+                {
+                    File.WriteAllText(FilepathFileStorageName, value);
+                }
             }
         }
 
@@ -59,35 +67,67 @@ namespace ClientInfoFIllerFinal.ViewModels
             }
         }
 
-        public string FormPrepayment
+        public string FormPrepaymentCash
         {
             set
             {
                 int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
-                CurrentRow.Prepayment = safeVal;
+                CurrentRow.PrepaymentCash = safeVal;
                 UpdateFields();
             }
 
             get
             {
-                if (CurrentRow.Prepayment == 0) return "";
-                return CurrentRow.Prepayment.ToString();
+                if (CurrentRow.PrepaymentCash == 0) return "";
+                return CurrentRow.PrepaymentCash.ToString();
             }
         }
 
-        public string FormPledge
+
+        public string FormPrepaymentDigital
         {
             set
             {
                 int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
-                CurrentRow.Pledge = safeVal;
+                CurrentRow.PrepaymentDigital = safeVal;
                 UpdateFields();
             }
 
             get
             {
-                if (CurrentRow.Pledge == 0) return "";
-                return CurrentRow.Pledge.ToString();
+                if (CurrentRow.PrepaymentDigital == 0) return "";
+                return CurrentRow.PrepaymentDigital.ToString();
+            }
+        }
+
+        public string FormPledgeCash
+        {
+            set
+            {
+                int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+                CurrentRow.PledgeCash = safeVal;
+                UpdateFields();
+            }
+
+            get
+            {
+                if (CurrentRow.PledgeCash == 0) return "";
+                return CurrentRow.PledgeCash.ToString();
+            }
+        }
+        public string FormPledgeDigital
+        {
+            set
+            {
+                int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+                CurrentRow.PledgeDigital = safeVal;
+                UpdateFields();
+            }
+
+            get
+            {
+                if (CurrentRow.PledgeDigital == 0) return "";
+                return CurrentRow.PledgeDigital.ToString();
             }
         }
 
@@ -121,6 +161,15 @@ namespace ClientInfoFIllerFinal.ViewModels
             searchModesComboBoxData.Add("По костюму");
             _selectedSearchMode = searchModesComboBoxData[0];
 
+            if (File.Exists(FilepathFileStorageName))
+            {
+                string storedFilepath = File.ReadAllText(FilepathFileStorageName);
+
+                if (File.Exists(storedFilepath))
+                {
+                    this.CurrentFilePath = storedFilepath;
+                }
+            }
 
             UpdateFields();
         }
