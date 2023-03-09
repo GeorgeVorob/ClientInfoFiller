@@ -51,6 +51,17 @@ namespace ClientInfoFiller.Services
             FileStream? tempFile = null;
 
             if (!Directory.Exists(@"Tempfiles/")) Directory.CreateDirectory(@"Tempfiles/");
+            DirectoryInfo dirWithTemps = new DirectoryInfo(@"Tempfiles/");
+
+            // Удаляем все не занятые файлы
+            foreach (FileInfo file in dirWithTemps.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch (IOException){}
+            }
 
             while (tempFileNumber < int.MaxValue)
             {
@@ -59,19 +70,7 @@ namespace ClientInfoFiller.Services
                     tempFile = File.Create($@"Tempfiles/temp-{tempFileNumber}.docx");
                     break;
                 }
-                else
-                {
-                    try
-                    {
-                        File.Delete($@"Tempfiles/temp-{tempFileNumber}.docx");
-                        tempFile = File.Create($@"Tempfiles/temp-{tempFileNumber}.docx");
-                        break;
-                    }
-                    catch(IOException)
-                    {
-                        tempFileNumber++;
-                    }
-                }
+                tempFileNumber++;
             }
             if (tempFile == null) throw new Exception("Не удалось создать временный файл для печати");
 
