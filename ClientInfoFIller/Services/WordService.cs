@@ -1,6 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Platform;
 using ClientInfoFiller.Models;
 using System;
@@ -49,7 +47,34 @@ namespace ClientInfoFiller.Services
             if (assetWordFile == null)
                 throw new Exception("FileStream broken");
 
-            FileStream tempFile = File.Create(@"temp.docx");
+            int tempFileNumber = 0;
+            FileStream? tempFile = null;
+
+            if (!Directory.Exists(@"Tempfiles/")) Directory.CreateDirectory(@"Tempfiles/");
+
+            while (tempFileNumber < int.MaxValue)
+            {
+                if(!File.Exists($@"Tempfiles/temp-{tempFileNumber}.docx"))
+                {
+                    tempFile = File.Create($@"Tempfiles/temp-{tempFileNumber}.docx");
+                    break;
+                }
+                else
+                {
+                    try
+                    {
+                        File.Delete($@"Tempfiles/temp-{tempFileNumber}.docx");
+                        tempFile = File.Create($@"Tempfiles/temp-{tempFileNumber}.docx");
+                        break;
+                    }
+                    catch(IOException)
+                    {
+                        tempFileNumber++;
+                    }
+                }
+            }
+            if (tempFile == null) throw new Exception("Не удалось создать временный файл для печати");
+
             assetWordFile.CopyTo(tempFile);
             tempFile.Close();
 
@@ -57,6 +82,10 @@ namespace ClientInfoFiller.Services
             using (var doc = DocX.Load(tempFile.Name))
             {
                 var bookmarks = doc.GetBookmarks();
+
+                Xceed.Document.NET.Formatting bookmarkTextFormat = new ();
+                bookmarkTextFormat.Bold= true;
+                bookmarkTextFormat.FontFamily = new Xceed.Document.NET.Font("Times New Roman");
 
                 foreach (var bookMark in bookmarks)
                 {
@@ -66,55 +95,56 @@ namespace ClientInfoFiller.Services
                     switch (BookmarkTemplateName)
                     {
                         case "ID":
-                            bookMark.SetText(data.Id.ToString());
+                            bookMark.SetText(data.Id.ToString(), bookmarkTextFormat);
                             break;
 
                         case "CustomerName":
                             bookMark.SetText(data.CustomerName);
+                            bookMark.SetText("2", bookmarkTextFormat);
                             break;
 
                         case "CostumeName":
-                            bookMark.SetText(data.CostumeName);
+                            bookMark.SetText(data.CostumeName, bookmarkTextFormat);
                             break;
 
                         case "Phone":
-                            bookMark.SetText(data.Phone);
+                            bookMark.SetText(data.Phone, bookmarkTextFormat);
                             break;
 
                         case "CreationDate":
-                            bookMark.SetText(data.CreationDateString);
+                            bookMark.SetText(data.CreationDateString, bookmarkTextFormat);
                             break;
 
                         case "ActualOrderDate":
-                            bookMark.SetText(data.ActualOrderDateString);
+                            bookMark.SetText(data.ActualOrderDateString, bookmarkTextFormat);
                             break;
 
                         case "ReturnDate":
-                            bookMark.SetText(data.ReturnDateString);
+                            bookMark.SetText(data.ReturnDateString, bookmarkTextFormat);
                             break;
 
                         case "Price":
-                            bookMark.SetText(data.Price.ToString());
+                            bookMark.SetText(data.Price.ToString(), bookmarkTextFormat);
                             break;
 
                         case "Prepayment":
-                            bookMark.SetText(data.Prepayment.ToString());
+                            bookMark.SetText((data.PrepaymentCash + data.PrepaymentDigital).ToString(), bookmarkTextFormat);
                             break;
 
                         case "Owe":
-                            bookMark.SetText(data.Owe.ToString());
+                            bookMark.SetText(data.Owe.ToString(), bookmarkTextFormat);
                             break;
 
                         case "Pledge":
-                            bookMark.SetText(data.Pledge.ToString());
+                            bookMark.SetText((data.PledgeCash + data.PledgeDigital).ToString(), bookmarkTextFormat);
                             break;
 
                         case "Comment":
-                            bookMark.SetText(data.Comment);
+                            bookMark.SetText(data.Comment, bookmarkTextFormat);
                             break;               
 
                         case "PrintDateTime":
-                            bookMark.SetText(DateTime.Now.ToString("dd/MM/yyyy H:mm"));
+                            bookMark.SetText(DateTime.Now.ToString("dd/MM/yyyy H:mm"), bookmarkTextFormat);
                             break;
                     }
                 }
