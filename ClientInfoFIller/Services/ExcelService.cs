@@ -101,10 +101,11 @@ namespace ClientInfoFiller.Services
             lastRowID = 0;
             while (true)
             {
+                // Если начало текущей строки не пустое
                 if (worksheet.Cells[rowPos, 1].Text != String.Empty &&
                     worksheet.Cells[rowPos, 1].Text != null)
                 {
-                    lastRowID = Int32.Parse(worksheet.Cells[rowPos, 1].Text);
+                    Int32.TryParse(worksheet.Cells[rowPos, 1].Text, out lastRowID);
                     rowPos++;
                 }
                 else break;

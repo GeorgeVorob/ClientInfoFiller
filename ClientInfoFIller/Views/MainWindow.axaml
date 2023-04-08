@@ -49,7 +49,7 @@
                         <DatePicker SelectedDate="{Binding  CurrentRow.ActualOrderDate, Mode=TwoWay}"></DatePicker>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Дата Возврата:" VerticalAlignment="Center"/>
+                        <TextBlock Width="150" Text="Дата возврата:" VerticalAlignment="Center"/>
                         <DatePicker SelectedDate="{Binding  CurrentRow.ReturnDate, Mode=TwoWay}"></DatePicker>
                     </StackPanel>
                   
@@ -88,10 +88,10 @@
                         <TextBox TextWrapping="Wrap" Width="400" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
                     </StackPanel>
                 </StackPanel>
-                <Button VerticalAlignment="Top" Content="Добавить строку" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"></Button>
+                <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"></Button>
 
                 <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding  !IsNewRow, Mode=OneWay}">
-                    <Button VerticalAlignment="Top" Content="Обновить строку" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+                    <Button VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
 
                     <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
                 </StackPanel>

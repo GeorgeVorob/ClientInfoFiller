@@ -40,7 +40,7 @@ namespace ClientInfoFIllerFinal.Views
             catch (Exception ex)
             {
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message);
+                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message + "- \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
         }
@@ -68,7 +68,7 @@ namespace ClientInfoFIllerFinal.Views
             catch (Exception ex)
             {
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message);
+                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message + "- \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
         }
@@ -82,7 +82,7 @@ namespace ClientInfoFIllerFinal.Views
             catch (Exception ex)
             {
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message);
+                    .GetMessageBoxStandardWindow("Îøèáêà", ex.Message + "- \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
         }
@@ -92,7 +92,7 @@ namespace ClientInfoFIllerFinal.Views
         {
             TextInputEventArgs Args = args as TextInputEventArgs;
 
-            Args.Handled = 
+            Args.Handled =
                 Args.Text.Any(c => !char.IsDigit(c))
                 ||
                 (sender.Text.Length > 8);

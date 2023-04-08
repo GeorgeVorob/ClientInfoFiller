@@ -98,8 +98,7 @@ namespace ClientInfoFiller.Services
                             break;
 
                         case "CustomerName":
-                            bookMark.SetText(data.CustomerName);
-                            bookMark.SetText("2", bookmarkTextFormat);
+                            bookMark.SetText(data.CustomerName, bookmarkTextFormat);
                             break;
 
                         case "CostumeName":
