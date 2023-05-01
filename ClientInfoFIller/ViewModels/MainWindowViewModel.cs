@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using AvaloniaEdit.Utils;
 
 namespace ClientInfoFiller.ViewModels
 {
@@ -236,7 +237,8 @@ namespace ClientInfoFiller.ViewModels
                 row.ActualOrderDate = DateTimeOffset.Now;
                 row.ReturnDate = DateTimeOffset.Now;
             });
-            AutoCompleteData = new ObservableCollection<Row>(lastRows);
+            AutoCompleteData.Clear();
+            AutoCompleteData.AddRange(lastRows);
         }
 
         public void UpdateFields()
