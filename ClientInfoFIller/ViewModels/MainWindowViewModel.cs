@@ -228,7 +228,13 @@ namespace ClientInfoFiller.ViewModels
         {
             var excel = new ExcelService(new FileInfo(CurrentFilePath));
             var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 200);
-            lastRows.ForEach(row => { row.RowPos = -1; row.Id = -1; });
+            lastRows.ForEach(row => {
+                row.RowPos = -1;
+                row.Id = -1;
+                row.CreationDate = DateTimeOffset.Now;
+                row.ActualOrderDate = DateTimeOffset.Now;
+                row.ReturnDate = DateTimeOffset.Now;
+            });
             AutoCompleteData = new ObservableCollection<Row>(lastRows);
         }
 

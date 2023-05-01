@@ -37,13 +37,10 @@ namespace ClientInfoFiller.Views
             nameAutocompControl.Items = VM.AutoCompleteData;
             nameAutocompControl.ItemFilter = this.NameAutocomplete;
 
-            var myBinding = new Binding
-            {
-                Source = VM.CurrentRow.CustomerName,
-                Mode = BindingMode.TwoWay,
-            };
+            var phoneAutocompControl = this.Find<AutoCompleteBox>("PhoneAutocompleteControl");
+            phoneAutocompControl.Items = VM.AutoCompleteData;
+            phoneAutocompControl.ItemFilter = this.PhoneAutocomplete;
 
-            //nameAutocompControl.Bind(AutoCompleteBox.TextProperty, VM.CurrentRow.CustomerName);
             Trace.TraceInformation("MY: VM инициализирована");
         }
 
@@ -173,10 +170,38 @@ namespace ClientInfoFiller.Views
             }
         }
 
+        /// <summary>
+        /// Сравнивает имена в строках таблицы с вводимым именем, служебный метод для AutoCompleteBox
+        /// </summary>
+        /// <param name="search">Уже введенная строка</param>
+        /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
+        /// <returns></returns>
         bool NameAutocomplete(string search, object value)
         {
             Row row = value as Row;
-            return row?.CustomerName.ToLower().StartsWith(search.ToLower()) ?? false;
+            if (row == null) return false;
+
+            return (
+                !string.IsNullOrEmpty(row.CustomerName)
+                && row.CustomerName.ToLower().Contains(search.ToLower())
+            );
+        }
+
+        /// <summary>
+        /// Сравнивает телефоны в строках таблицы с вводимым номером, служебный метод для AutoCompleteBox
+        /// </summary>
+        /// <param name="search">Уже введенная строка</param>
+        /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
+        /// <returns></returns>
+        bool PhoneAutocomplete(string search, object value)
+        {
+            Row row = value as Row;
+            if (row == null) return false;
+
+            return (
+                !string.IsNullOrEmpty(row.Phone)
+                && row.Phone.ToLower().StartsWith(search.ToLower())
+            );
         }
     }
 }
