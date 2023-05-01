@@ -227,7 +227,8 @@ namespace ClientInfoFiller.ViewModels
         private void UpdateAutocompleteData()
         {
             var excel = new ExcelService(new FileInfo(CurrentFilePath));
-            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 200);
+            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 400);
+            lastRows = lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First()).ToList();
             lastRows.ForEach(row => {
                 row.RowPos = -1;
                 row.Id = -1;
