@@ -6,7 +6,7 @@ using OfficeOpenXml;
 using System;
 using System.Diagnostics;
 
-namespace ClientInfoFIllerFinal
+namespace ClientInfoFiller
 {
     internal class Program
     {

@@ -5,8 +5,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System;
 using System.Linq;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
-namespace ClientInfoFIllerFinal.ViewModels
+namespace ClientInfoFiller.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
@@ -24,6 +26,8 @@ namespace ClientInfoFIllerFinal.ViewModels
                 if (CanAccessFile)
                 {
                     File.WriteAllText(FilepathFileStorageName, value);
+                    UpdateAutocompleteData();
+                    UpdateFields();
                 }
             }
         }
@@ -131,6 +135,8 @@ namespace ClientInfoFIllerFinal.ViewModels
             }
         }
 
+        public ObservableCollection<Row> AutoCompleteData = new();
+
         public int FormOwe => CurrentRow.Owe;
         public ObservableCollection<string> searchModesComboBoxData { get; } = new();
 
@@ -182,6 +188,7 @@ namespace ClientInfoFIllerFinal.ViewModels
 
             bool isRowNew = CurrentRow.RowPos == -1;
             excel.SaveRow(this.CurrentRow);
+            UpdateAutocompleteData();
             if (isRowNew)
             {
                 word.FillAndPrint(this.CurrentRow);
@@ -216,6 +223,14 @@ namespace ClientInfoFIllerFinal.ViewModels
         }
 
         public void ResetCurrentRow() => CurrentRow = new Row();
+
+        private void UpdateAutocompleteData()
+        {
+            var excel = new ExcelService(new FileInfo(CurrentFilePath));
+            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 200);
+            lastRows.ForEach(row => { row.RowPos = -1; row.Id = -1; });
+            AutoCompleteData = new ObservableCollection<Row>(lastRows);
+        }
 
         public void UpdateFields()
         {

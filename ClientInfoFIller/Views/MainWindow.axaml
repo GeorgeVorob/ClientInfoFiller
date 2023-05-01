@@ -1,151 +1,166 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:ClientInfoFIllerFinal.ViewModels"
+        xmlns:vm="using:ClientInfoFiller.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:ClientInfoFiller"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="ClientInfoFIllerFinal.Views.MainWindow"
+        x:Class="ClientInfoFiller.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ClientInfoFIllerFinal">
+        Title="ClientInfoFiller">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
 
-    <ScrollViewer>
-        <Grid Margin="30">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition ></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <StackPanel Spacing="50">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button IsTabStop="False" Content="Открыть файл" Click="FileSelectClick"></Button>
-                    <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding CurrentFilePath, Mode=OneWay}"></TextBlock>
-                    </Border>
+  <ScrollViewer>
+    <Grid Margin="30">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"></ColumnDefinition>
+        <ColumnDefinition ></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+      <StackPanel Spacing="50">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <Button IsTabStop="False" Content="Открыть файл" Click="FileSelectClick"></Button>
+          <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
+            <TextBlock VerticalAlignment="Center" Text="{Binding CurrentFilePath, Mode=OneWay}"></TextBlock>
+          </Border>
+        </StackPanel>
+        <StackPanel Spacing="6">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="ФИО клиента:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"></TextBox>
+            <AutoCompleteBox
+              
+              Name="NameAutocompleteControl" 
+              MinimumPopulateDelay="0.5"
+              MinimumPrefixLength="0"
+              ValueMemberBinding="{Binding CustomerName}"
+              Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"
+              SelectedItem="{Binding CurrentRow, Mode=TwoWay}">
+              <AutoCompleteBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding CustomerName}"></TextBlock>
+                </DataTemplate>
+              </AutoCompleteBox.ItemTemplate>
+            </AutoCompleteBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Название костюма:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Телефон:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding  CurrentRow.Phone, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Дата оформления:" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding CurrentRow.CreationDate, Mode=TwoWay}"></DatePicker>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Дата выдачи:" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding  CurrentRow.ActualOrderDate, Mode=TwoWay}"></DatePicker>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Дата возврата:" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding  CurrentRow.ReturnDate, Mode=TwoWay}"></DatePicker>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Стоимость:" VerticalAlignment="Center"/>
+            <TextBox x:Name="PriceInput" Text="{Binding FormPrice, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Предоплата (нал):" VerticalAlignment="Center"/>
+            <TextBox x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Предоплата (безнал):" VerticalAlignment="Center"/>
+            <TextBox x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Долг" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding FormOwe, Mode=OneWay}"></TextBlock>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Залог (нал):" VerticalAlignment="Center"/>
+            <TextBox x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Залог (безнал):" VerticalAlignment="Center"/>
+            <TextBox x:Name="PledgeInputDigital" Text="{Binding FormPledgeDigital, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
+            <TextBox TextWrapping="Wrap" Width="400" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+        </StackPanel>
+        <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"></Button>
+
+        <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding  !IsNewRow, Mode=OneWay}">
+          <Button VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+
+          <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel Grid.Column="1" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="7">
+          <ComboBox x:Name="searchComboBox" Width="200" SelectedItem="{Binding SelectedSearchMode, Mode=TwoWay}" Items="{Binding searchModesComboBoxData, Mode=OneWay}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <TextBox Width="200" Text="{Binding  SearchValue, Mode=TwoWay}"></TextBox>
+          <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+        </StackPanel>
+
+        <ScrollViewer Height="530">
+          <ListBox x:Name="foundItemsControl" Items="{Binding FoundRows, Mode=OneWay}" SelectionMode="Single" SelectedItem="{Binding CurrentRow, Mode=TwoWay}" Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <StackPanel Margin="5" MinWidth="250">
+                    <TextBlock Text="Клиент -"/>
+                    <TextBlock Text="{Binding CustomerName}"/>
+
+                    <TextBlock Text="Костюм -"/>
+                    <TextBlock Text="{Binding CostumeName}"/>
+
+                    <TextBlock Text="Долг -"/>
+                    <TextBlock Text="{Binding Owe}"/>
+
+                  </StackPanel>
+                  <StackPanel Margin="5">
+
+                    <TextBlock Text="Телефон -"/>
+                    <TextBlock Text="{Binding Phone}"/>
+
+
+                    <TextBlock Text="Дата оформления -"/>
+                    <TextBlock Text="{Binding CreationDateString}"/>
+
+
+                    <TextBlock Text="Дата выдачи -"/>
+                    <TextBlock Text="{Binding ActualOrderDateString}"/>
+
+                  </StackPanel>
                 </StackPanel>
-                <StackPanel Spacing="6">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="ФИО клиента:" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding  CurrentRow.CustomerName, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Название костюма:" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Телефон:" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding  CurrentRow.Phone, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Дата оформления:" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding CurrentRow.CreationDate, Mode=TwoWay}"></DatePicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Дата выдачи:" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding  CurrentRow.ActualOrderDate, Mode=TwoWay}"></DatePicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Дата возврата:" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding  CurrentRow.ReturnDate, Mode=TwoWay}"></DatePicker>
-                    </StackPanel>
-                  
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Стоимость:" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PriceInput" Text="{Binding FormPrice, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                  
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Предоплата (нал):" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                  
-                   <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Предоплата (безнал):" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Долг" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding FormOwe, Mode=OneWay}"></TextBlock>
-                    </StackPanel>
-                  
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Залог (нал):" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                  
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Залог (безнал):" VerticalAlignment="Center"/>
-                        <TextBox x:Name="PledgeInputDigital" Text="{Binding FormPledgeDigital, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                  
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
-                        <TextBox TextWrapping="Wrap" Width="400" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
-                    </StackPanel>
-                </StackPanel>
-                <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"></Button>
-
-                <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding  !IsNewRow, Mode=OneWay}">
-                    <Button VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
-
-                    <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Spacing="10">
-                <StackPanel Orientation="Horizontal" Spacing="7">
-                    <ComboBox x:Name="searchComboBox" Width="200" SelectedItem="{Binding SelectedSearchMode, Mode=TwoWay}" Items="{Binding searchModesComboBoxData, Mode=OneWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <TextBox Width="200" Text="{Binding  SearchValue, Mode=TwoWay}"></TextBox>
-                    <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
-                </StackPanel>
-                
-                <ScrollViewer Height="530">
-                    <ListBox x:Name="foundItemsControl" Items="{Binding FoundRows, Mode=OneWay}" SelectionMode="Single" SelectedItem="{Binding CurrentRow, Mode=TwoWay}" Background="Transparent">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                            <StackPanel Margin="5" MinWidth="250">
-                                                <TextBlock Text="Клиент -"/>
-                                                <TextBlock Text="{Binding CustomerName}"/>
-
-                                                <TextBlock Text="Костюм -"/>
-                                                <TextBlock Text="{Binding CostumeName}"/>
-
-                                                <TextBlock Text="Долг -"/>
-                                                <TextBlock Text="{Binding Owe}"/>
-
-                                            </StackPanel>
-                                        <StackPanel Margin="5">
-
-                                            <TextBlock Text="Телефон -"/>
-                                            <TextBlock Text="{Binding Phone}"/>
-
-
-                                            <TextBlock Text="Дата оформления -"/>
-                                            <TextBlock Text="{Binding CreationDateString}"/>
-
-
-                                            <TextBlock Text="Дата выдачи -"/>
-                                            <TextBlock Text="{Binding ActualOrderDateString}"/>
-
-                                        </StackPanel>
-                                    </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
-            </StackPanel>
-        </Grid>
-    </ScrollViewer>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </ScrollViewer>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
 </Window>

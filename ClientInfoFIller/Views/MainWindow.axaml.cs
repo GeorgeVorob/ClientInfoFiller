@@ -1,23 +1,27 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using ClientInfoFIllerFinal.ViewModels;
+using ClientInfoFiller.Models;
+using ClientInfoFiller.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 
-namespace ClientInfoFIllerFinal.Views
+namespace ClientInfoFiller.Views
 {
     public partial class MainWindow : Window
     {
-        MainWindowViewModel VM => this.DataContext as MainWindowViewModel;
+        MainWindowViewModel VM = new MainWindowViewModel();
         public MainWindow()
         {
             Trace.TraceInformation("MY: инициализация VM...");
             InitializeComponent();
-
-            // VM = this.DataContext as MainWindowViewModel;
-            // if (VM == null) throw new Exception("VM not found");
+            this.DataContext = VM;
+            // var VM = this.DataContext as MainWindowViewModel;
+            if (VM == null) throw new Exception("VM not found");
 
             this.Find<TextBox>("PriceInput").AddHandler(TextBox.TextInputEvent, OnNumericTextInput, RoutingStrategies.Tunnel);
 
@@ -28,6 +32,18 @@ namespace ClientInfoFIllerFinal.Views
             this.Find<TextBox>("PledgeInputDigital").AddHandler(TextBox.TextInputEvent, OnNumericTextInput, RoutingStrategies.Tunnel);
             // searchComboBox.Items = VM.searchModesComboBoxData;
             // searchComboBox.SelectedIndex = 0;
+
+            var nameAutocompControl = this.Find<AutoCompleteBox>("NameAutocompleteControl");
+            nameAutocompControl.Items = VM.AutoCompleteData;
+            nameAutocompControl.ItemFilter = this.NameAutocomplete;
+
+            var myBinding = new Binding
+            {
+                Source = VM.CurrentRow.CustomerName,
+                Mode = BindingMode.TwoWay,
+            };
+
+            //nameAutocompControl.Bind(AutoCompleteBox.TextProperty, VM.CurrentRow.CustomerName);
             Trace.TraceInformation("MY: VM инициализирована");
         }
 
@@ -155,6 +171,12 @@ namespace ClientInfoFIllerFinal.Views
                 Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
             }
+        }
+
+        bool NameAutocomplete(string search, object value)
+        {
+            Row row = value as Row;
+            return row?.CustomerName.ToLower().StartsWith(search.ToLower()) ?? false;
         }
     }
 }

@@ -1,7 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ClientInfoFIllerFinal"
-             x:Class="ClientInfoFIllerFinal.App">
+             xmlns:local="using:ClientInfoFiller"
+             x:Class="ClientInfoFiller.App">
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>

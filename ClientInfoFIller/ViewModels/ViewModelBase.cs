@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace ClientInfoFIllerFinal.ViewModels
+namespace ClientInfoFiller.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {

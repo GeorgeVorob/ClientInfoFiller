@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using ClientInfoFIllerFinal.ViewModels;
-using ClientInfoFIllerFinal.Views;
+using ClientInfoFiller.ViewModels;
+using ClientInfoFiller.Views;
 
-namespace ClientInfoFIllerFinal
+namespace ClientInfoFiller
 {
     public partial class App : Application
     {
@@ -17,10 +17,7 @@ namespace ClientInfoFIllerFinal
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(),
-                };
+                desktop.MainWindow = new MainWindow();
             }
 
             base.OnFrameworkInitializationCompleted();
