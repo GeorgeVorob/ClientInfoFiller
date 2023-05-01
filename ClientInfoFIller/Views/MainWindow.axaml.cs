@@ -36,12 +36,32 @@ namespace ClientInfoFiller.Views
             var nameAutocompControl = this.Find<AutoCompleteBox>("NameAutocompleteControl");
             nameAutocompControl.Items = VM.AutoCompleteData;
             nameAutocompControl.ItemFilter = this.NameAutocomplete;
+            nameAutocompControl.SelectionChanged += this.SelectFromAutocomplete;
 
             var phoneAutocompControl = this.Find<AutoCompleteBox>("PhoneAutocompleteControl");
             phoneAutocompControl.Items = VM.AutoCompleteData;
             phoneAutocompControl.ItemFilter = this.PhoneAutocomplete;
+            phoneAutocompControl.SelectionChanged += this.SelectFromAutocomplete;
+
 
             Trace.TraceInformation("MY: VM инициализирована");
+        }
+
+        private void SelectFromAutocomplete(object? sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0 || e.AddedItems[0] is not Row selectedRow) return;
+
+            if(e.RemovedItems.Count > 0 && e.RemovedItems[0] is Row deletedRow
+                    &&(
+                        deletedRow.Id != -1
+                        || deletedRow.RowPos != -1
+                    )
+                )
+            {
+                return;
+            }
+
+            VM.CurrentRow = selectedRow;
         }
 
         private async void RowSaveClick(object sender, RoutedEventArgs e)

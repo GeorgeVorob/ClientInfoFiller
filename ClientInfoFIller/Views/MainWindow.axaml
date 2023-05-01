@@ -32,13 +32,13 @@
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="ФИО клиента:" VerticalAlignment="Center"/>
             <AutoCompleteBox
-              Width="200"
+              MinWidth="200"
               Name="NameAutocompleteControl"
               MinimumPopulateDelay="0.1"
               MinimumPrefixLength="0"
               ValueMemberBinding="{Binding CustomerName}"
               Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"
-              SelectedItem="{Binding CurrentRow, Mode=TwoWay}">
+              SelectedItem="{Binding CurrentRow, Mode=OneWay}">
               <AutoCompleteBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding CustomerName}"></TextBlock>
@@ -48,18 +48,18 @@
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Название костюма:" VerticalAlignment="Center"/>
-            <TextBox Width="200" Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="200" Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Телефон:" VerticalAlignment="Center"/>
             <AutoCompleteBox
-              Width="200"
+              MinWidth="150"
               Name="PhoneAutocompleteControl"
               MinimumPopulateDelay="0.1"
               MinimumPrefixLength="0"
               ValueMemberBinding="{Binding Phone}"
               Text="{Binding CurrentRow.Phone, Mode=TwoWay}"
-              SelectedItem="{Binding CurrentRow, Mode=TwoWay}">
+              SelectedItem="{Binding CurrentRow, Mode=OneWay}">
               <AutoCompleteBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding Phone}"></TextBlock>
@@ -82,37 +82,37 @@
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Стоимость:" VerticalAlignment="Center"/>
-            <TextBox Width="200" x:Name="PriceInput" Text="{Binding FormPrice, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="150" x:Name="PriceInput" Text="{Binding FormPrice, Mode=TwoWay}"></TextBox>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Предоплата (нал):" VerticalAlignment="Center"/>
-            <TextBox Width="200" x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="150" x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Предоплата (безнал):" VerticalAlignment="Center"/>
-            <TextBox Width="200" x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="150" x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Долг" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding FormOwe, Mode=OneWay}"></TextBlock>
+            <TextBlock MinWidth="200" Text="{Binding FormOwe, Mode=OneWay}"></TextBlock>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Залог (нал):" VerticalAlignment="Center"/>
-            <TextBox Width="200" x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="150" x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Залог (безнал):" VerticalAlignment="Center"/>
-            <TextBox Width="200" x:Name="PledgeInputDigital" Text="{Binding FormPledgeDigital, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="150" x:Name="PledgeInputDigital" Text="{Binding FormPledgeDigital, Mode=TwoWay}"></TextBox>
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
-            <TextBox TextWrapping="Wrap" Width="400" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
+            <TextBox TextWrapping="Wrap" MinWidth="350" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="10">
