@@ -54,7 +54,7 @@ namespace ClientInfoFiller
         {
             if(!File.Exists(TraceEnableConfigFilename))
             {
-                File.WriteAllText(TraceEnableConfigFilename, "false");
+                File.WriteAllText(TraceEnableConfigFilename, "true"); // default value
             }
 
             return bool.Parse(File.ReadAllText(TraceEnableConfigFilename));
