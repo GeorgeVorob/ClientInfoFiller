@@ -41,11 +41,19 @@ namespace ClientInfoFiller.Services
             if (assets == null)
                 throw new Exception("Assets broken");
 
-            var uri = new Uri($"avares://{Assembly.GetExecutingAssembly().GetName().Name}/Assets/wordTemplate.docx");
+            // var uri = new Uri($"avares://{Assembly.GetExecutingAssembly().GetName().Name}/Assets/wordTemplate.docx");
 
-            Stream assetWordFile = assets.Open(uri);
-            if (assetWordFile == null)
+            Stream assetWordFile;
+            try
+            {
+                assetWordFile = File.Open(@"Assets/wordTemplate.docx", FileMode.Open);
+                if (assetWordFile == null)
+                    throw new Exception("FileStream broken");
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("FileStream broken");
+            }
 
             int tempFileNumber = 0;
             FileStream? tempFile = null;

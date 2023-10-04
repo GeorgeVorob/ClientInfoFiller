@@ -1,0 +1,1 @@
+﻿https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x86-installer?cid=getdotnetcore
