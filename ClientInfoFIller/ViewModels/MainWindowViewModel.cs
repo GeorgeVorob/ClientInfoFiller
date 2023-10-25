@@ -236,6 +236,13 @@ namespace ClientInfoFiller.ViewModels
                 row.CreationDate = DateTimeOffset.Now;
                 row.ActualOrderDate = DateTimeOffset.Now;
                 row.ReturnDate = DateTimeOffset.Now;
+                row.Price = 0;
+                row.PledgeCash = 0;
+                row.PledgeDigital = 0;
+                row.PrepaymentCash = 0;
+                row.PrepaymentDigital = 0;
+                row.Comment = string.Empty;
+                row.CostumeName = string.Empty;
             });
             AutoCompleteData.Clear();
             AutoCompleteData.AddRange(lastRows);
