@@ -79,7 +79,7 @@ namespace ClientInfoFiller.Views
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "- \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
@@ -112,7 +112,7 @@ namespace ClientInfoFiller.Views
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "- \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
@@ -136,7 +136,7 @@ namespace ClientInfoFiller.Views
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "- \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
@@ -160,7 +160,7 @@ namespace ClientInfoFiller.Views
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "- \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally

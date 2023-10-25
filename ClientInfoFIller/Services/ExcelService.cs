@@ -40,7 +40,7 @@ namespace ClientInfoFiller.Services
             catch
             {
                 data.RowPos = -1;
-                throw;
+                throw new IOException("Не удалось обновить табилцу. Убедитесь, что она закрыта.");
             }
         }
 
