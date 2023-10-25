@@ -67,10 +67,10 @@ namespace ClientInfoFiller.Services
                         if (rowToCheck.Id.ToString() == searchValue) flag = true;
                         break;
                     case SearchModes.ByCustomerName:
-                        if (rowToCheck.CustomerName.Contains(searchValue)) flag = true;
+                        if (rowToCheck.CustomerName.ToLower().Contains(searchValue.ToLower())) flag = true;
                         break;
                     case SearchModes.ByCostumeName:
-                        if (rowToCheck.CostumeName.Contains(searchValue)) flag = true;
+                        if (rowToCheck.CostumeName.ToLower().Contains(searchValue.ToLower())) flag = true;
                         break;
                     case SearchModes.ByProhe:
                         if (rowToCheck.Phone.Contains(searchValue)) flag = true;
