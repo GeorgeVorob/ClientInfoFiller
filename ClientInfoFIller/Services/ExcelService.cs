@@ -196,9 +196,16 @@ namespace ClientInfoFiller.Services
             worksheet.Cells[rowPos, 2].Value = data.CustomerName;
             worksheet.Cells[rowPos, 3].Value = data.CostumeName;
             worksheet.Cells[rowPos, 4].Value = data.Phone;
-            worksheet.Cells[rowPos, 5].Value = data.CreationDateString;
-            worksheet.Cells[rowPos, 6].Value = data.ActualOrderDateString;
-            worksheet.Cells[rowPos, 7].Value = data.ReturnDateString;
+
+            worksheet.Cells[rowPos, 5].Style.Numberformat.Format = DateTimeFormatInfo.CurrentInfo.ShortDatePattern;
+            worksheet.Cells[rowPos, 5].Value = data.CreationDate.Date;
+
+            worksheet.Cells[rowPos, 6].Style.Numberformat.Format = DateTimeFormatInfo.CurrentInfo.ShortDatePattern;
+            worksheet.Cells[rowPos, 6].Value = data.ActualOrderDate.Date;
+
+            worksheet.Cells[rowPos, 7].Style.Numberformat.Format = DateTimeFormatInfo.CurrentInfo.ShortDatePattern;
+            worksheet.Cells[rowPos, 7].Value = data.ReturnDate.Date;
+
             worksheet.Cells[rowPos, 8].Value = data.Price;
             worksheet.Cells[rowPos, 9].Value = data.PrepaymentDigital;
             worksheet.Cells[rowPos, 10].Value = data.PrepaymentCash;
