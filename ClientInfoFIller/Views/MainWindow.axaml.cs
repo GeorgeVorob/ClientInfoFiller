@@ -64,12 +64,36 @@ namespace ClientInfoFiller.Views
             VM.CurrentRow = selectedRow;
         }
 
-        private async void RowSaveClick(object sender, RoutedEventArgs e)
+        private async void RowSaveOrUpdateClick(object sender, RoutedEventArgs e)
         {
             try
             {
                 Trace.TraceInformation("MY: старт RowSaveClick");
                 VM.OnRowSaveClick();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("MY: Исключение в RowSaveClick!");
+                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+
+                var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
+                await messageBoxStandardWindow.Show();
+            }
+            finally
+            {
+                Trace.TraceInformation("MY: конец обработки RowSaveClick");
+            }
+        }
+
+        private async void RowUpdateAndPrintClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Trace.TraceInformation("MY: старт RowUpdateAndPrintClick");
+                VM.OnRowSaveClick(true);
             }
             catch (Exception ex)
             {
@@ -101,7 +125,7 @@ namespace ClientInfoFiller.Views
 
                 if (result != null)
                 {
-                    VM.CurrentFilePath = result[0];
+                    VM.MainExcelFilePath = result[0];
                 }
             }
             catch (Exception ex)

@@ -13,20 +13,20 @@ namespace ClientInfoFiller.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private const string FilepathFileStorageName = @"FilepathStorage.txt";
+        private const string MainExcelStorageName = @"FilepathStorage.txt";
 
-        private string _currentFilePath = "";
-        public string CurrentFilePath
+        private string _mainExcelFilePath = "";
+        public string MainExcelFilePath
         {
-            get => _currentFilePath;
+            get => _mainExcelFilePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref _currentFilePath, value);
-                CanAccessFile = !String.IsNullOrEmpty(CurrentFilePath);
+                this.RaiseAndSetIfChanged(ref _mainExcelFilePath, value);
+                CanAccessFile = !String.IsNullOrEmpty(MainExcelFilePath);
 
                 if (CanAccessFile)
                 {
-                    File.WriteAllText(FilepathFileStorageName, value);
+                    File.WriteAllText(MainExcelStorageName, value);
                     UpdateAutocompleteData();
                     UpdateFields();
                 }
@@ -168,32 +168,34 @@ namespace ClientInfoFiller.ViewModels
             searchModesComboBoxData.Add("По костюму");
             _selectedSearchMode = searchModesComboBoxData[0];
 
-            if (File.Exists(FilepathFileStorageName))
+            if (File.Exists(MainExcelStorageName))
             {
-                string storedFilepath = File.ReadAllText(FilepathFileStorageName);
+                string storedFilepath = File.ReadAllText(MainExcelStorageName);
 
                 if (File.Exists(storedFilepath))
                 {
-                    this.CurrentFilePath = storedFilepath;
+                    this.MainExcelFilePath = storedFilepath;
                 }
             }
 
             UpdateFields();
         }
-        public void OnRowSaveClick()
+        public void OnRowSaveClick(bool printUpdated = false)
         {
-            if (CurrentFilePath == null) throw new Exception("Пожалуйста, укажите путь к файлу таблицы.");
+            if (MainExcelFilePath == null) throw new Exception("Пожалуйста, укажите путь к файлу таблицы.");
 
-            ExcelService excel = new ExcelService(new FileInfo(CurrentFilePath));
+            ExcelService excel = new ExcelService(new FileInfo(MainExcelFilePath));
             WordService word = new WordService();
 
             bool isRowNew = CurrentRow.RowPos == -1;
             excel.SaveRow(this.CurrentRow);
             UpdateAutocompleteData();
-            if (isRowNew)
+            if (isRowNew || printUpdated)
             {
                 word.FillAndPrint(this.CurrentRow);
-                this.CurrentRow = new Row();
+
+                if(IsNewRow)
+                    this.CurrentRow = new Row();
             }
 
             UpdateFields();
@@ -201,10 +203,10 @@ namespace ClientInfoFiller.ViewModels
 
         public void OnSearchClick()
         {
-            if (CurrentFilePath == null) throw new Exception("Пожалуйста, укажите путь к файлу таблицы.");
+            if (MainExcelFilePath == null) throw new Exception("Пожалуйста, укажите путь к файлу таблицы.");
 
 
-            ExcelService excel = new ExcelService(new FileInfo(CurrentFilePath));
+            ExcelService excel = new ExcelService(new FileInfo(MainExcelFilePath));
             FoundRows.Clear();
             SearchModes searchMode = SearchModes.ByID;
 
@@ -227,7 +229,7 @@ namespace ClientInfoFiller.ViewModels
 
         private void UpdateAutocompleteData()
         {
-            var excel = new ExcelService(new FileInfo(CurrentFilePath));
+            var excel = new ExcelService(new FileInfo(MainExcelFilePath));
             var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", int.MaxValue);
             lastRows = lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First()).ToList();
             lastRows.ForEach(row => {

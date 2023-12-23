@@ -25,7 +25,7 @@
         <StackPanel Orientation="Horizontal" Spacing="10">
           <Button IsTabStop="False" Content="Открыть файл" Click="FileSelectClick"></Button>
           <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
-            <TextBlock VerticalAlignment="Center" Text="{Binding CurrentFilePath, Mode=OneWay}"></TextBlock>
+            <TextBlock VerticalAlignment="Center" Text="{Binding MainExcelFilePath, Mode=OneWay}"></TextBlock>
           </Border>
         </StackPanel>
         <StackPanel Spacing="6">
@@ -116,9 +116,11 @@
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="10">
-          <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
+          <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
 
-          <Button VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
+          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
+          
+          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить и распечатать" Click="RowUpdateAndPrintClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
 
           <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
         </StackPanel>
