@@ -19,11 +19,13 @@
     <Grid Margin="30">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="auto"></ColumnDefinition>
-        <ColumnDefinition ></ColumnDefinition>
+        <ColumnDefinition></ColumnDefinition>
+        <ColumnDefinition></ColumnDefinition>
       </Grid.ColumnDefinitions>
+      <!--Основная форма, кнопки под ней-->
       <StackPanel Spacing="50">
         <StackPanel Orientation="Horizontal" Spacing="10">
-          <Button IsTabStop="False" Content="Открыть файл" Click="FileSelectClick"></Button>
+          <Button IsTabStop="False" Content="Открыть файл" Click="MainExcelFileSelectClick"></Button>
           <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
             <TextBlock VerticalAlignment="Center" Text="{Binding MainExcelFilePath, Mode=OneWay}"></TextBlock>
           </Border>
@@ -118,17 +120,18 @@
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="10">
-          <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
+          <Button VerticalAlignment="Top" Content="Добавить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
 
-          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
+          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить запись" Click="RowSaveOrUpdateClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
           
-          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить и распечатать" Click="RowUpdateAndPrintClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
+          <Button Background="LightSkyBlue" VerticalAlignment="Top" Content="Обновить и распечатать" Click="RowUpdateAndPrintClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}" IsVisible="{Binding  !IsNewRow, Mode=OneWay}"/>
 
-          <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+          <Button VerticalAlignment="Top" Content="Очистить" Click="RowResetClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}"/>
         </StackPanel>
       </StackPanel>
 
-      <StackPanel Grid.Column="1" Spacing="10">
+      <!--Поиск-->
+      <StackPanel Grid.Column="1" Background="AliceBlue" MinWidth="480">
         <StackPanel Orientation="Horizontal" Spacing="7">
           <ComboBox x:Name="searchComboBox" Width="200" SelectedItem="{Binding SelectedSearchMode, Mode=TwoWay}" Items="{Binding searchModesComboBoxData, Mode=OneWay}">
             <ComboBox.ItemTemplate>
@@ -138,7 +141,7 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
           <TextBox Width="200" Text="{Binding  SearchValue, Mode=TwoWay}"></TextBox>
-          <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessFile, Mode=OneWay}"/>
+          <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}"/>
         </StackPanel>
 
         <ScrollViewer Height="530">
@@ -177,6 +180,17 @@
           </ListBox>
         </ScrollViewer>
       </StackPanel>
+
+      <!--Продажа товара-->
+      <StackPanel Orientation="Vertical" Grid.Column="2" Margin="10 0 10 0">
+        <StackPanel Orientation="Horizontal">
+          <Button IsTabStop="False" Content="Указать таблицу для продажи" Click="ExcelSelledFileSelectCliek"></Button>
+          <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
+              <TextBlock VerticalAlignment="Center" Text="{Binding ExcelSelledFilepath, Mode=OneWay}"></TextBlock>
+          </Border>
+        </StackPanel>
+        <Button VerticalAlignment="Top" Margin="0 20 0 0" Background="GreenYellow" Content="Продать" Click="SellClick" IsEnabled="{Binding CanAccessExcellSelledFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
+    </StackPanel>
     </Grid>
   </ScrollViewer>
 </Window>
