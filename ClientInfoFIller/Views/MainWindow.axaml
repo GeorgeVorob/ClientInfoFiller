@@ -112,7 +112,9 @@
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
-            <TextBox TextWrapping="Wrap" MinWidth="350" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
+            <Label>
+              <TextBox TextWrapping="Wrap" Width="370" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
+            </Label>
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="10">
