@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="using:ClientInfoFiller"
+        xmlns:views="using:ClientInfoFiller.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ClientInfoFiller.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -16,10 +17,11 @@
   </Design.DataContext>
 
   <ScrollViewer>
-    <Grid Margin="30">
+    <TabControl>
+      <TabItem Header="Оформление">
+        <Grid Margin="30">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="auto"></ColumnDefinition>
-        <ColumnDefinition></ColumnDefinition>
         <ColumnDefinition></ColumnDefinition>
       </Grid.ColumnDefinitions>
       <!--Основная форма, кнопки под ней-->
@@ -180,17 +182,11 @@
           </ListBox>
         </ScrollViewer>
       </StackPanel>
-
-      <!--Продажа товара-->
-      <StackPanel Orientation="Vertical" Grid.Column="2" Margin="10 0 10 0">
-        <StackPanel Orientation="Horizontal">
-          <Button IsTabStop="False" Content="Указать таблицу для продажи" Click="ExcelSelledFileSelectCliek"></Button>
-          <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
-              <TextBlock VerticalAlignment="Center" Text="{Binding ExcelSelledFilepath, Mode=OneWay}"></TextBlock>
-          </Border>
-        </StackPanel>
-        <Button VerticalAlignment="Top" Margin="0 20 0 0" Background="GreenYellow" Content="Продать" Click="SellClick" IsEnabled="{Binding CanAccessExcellSelledFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
-    </StackPanel>
     </Grid>
+      </TabItem>
+      <TabItem Header="Продажа">
+        <views:Sell_ItemTab/>
+      </TabItem>
+    </TabControl>
   </ScrollViewer>
 </Window>

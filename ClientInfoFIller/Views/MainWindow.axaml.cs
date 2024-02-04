@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 using ClientInfoFiller.Models;
 using ClientInfoFiller.ViewModels;
 using System;
@@ -14,6 +15,11 @@ namespace ClientInfoFiller.Views
 {
     public partial class MainWindow : Window
     {
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+
         MainWindowViewModel VM = new MainWindowViewModel();
         public MainWindow()
         {
@@ -87,30 +93,6 @@ namespace ClientInfoFiller.Views
                 Trace.TraceInformation("MY: конец обработки RowSaveClick");
             }
         }   
-        
-        private async void SellClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Trace.TraceInformation("MY: старт SellClick");
-                VM.OnSellClick();
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("MY: Исключение в RowSaveClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
-
-                var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
-                await messageBoxStandardWindow.Show();
-            }
-            finally
-            {
-                Trace.TraceInformation("MY: конец обработки RowSaveClick");
-            }
-        }
 
         private async void RowUpdateAndPrintClick(object sender, RoutedEventArgs e)
         {
@@ -168,39 +150,6 @@ namespace ClientInfoFiller.Views
                 Trace.TraceInformation("MY: конец обработки MainExcelFileSelectClick");
             }
         }    
-        
-        private async void ExcelSelledFileSelectCliek(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Trace.TraceInformation("MY: старт ExcelSelledFileSelectCliek");
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.AllowMultiple = false;
-                dialog.Filters.Add(new FileDialogFilter() { Name = "Файл excel", Extensions = { "xlsx", "xls" } });
-
-                string[] result = await dialog.ShowAsync(this);
-
-                if (result != null)
-                {
-                    VM.ExcelSelledFilepath = result[0];
-                }
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError("MY: Исключение в MainExcelFileSelectClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
-
-                var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
-                await messageBoxStandardWindow.Show();
-            }
-            finally
-            {
-                Trace.TraceInformation("MY: конец обработки MainExcelFileSelectClick");
-            }
-        }
 
         private async void SearchClick(object sender, RoutedEventArgs e)
         {

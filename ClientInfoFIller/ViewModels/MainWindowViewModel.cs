@@ -37,37 +37,12 @@ namespace ClientInfoFiller.ViewModels
             }
         }
 
-        public bool CanAccessExcellSelledFile => ExcelSelledFilepath != null;
-        public string ExcelSelledFilepath
-        {
-            // TODO: проклято-ли это?
-            get => ConfigInfo.Instance.ExcelToStoreSelledFilepath;
-            set
-            {
-                ConfigInfo.Instance.ExcelToStoreSelledFilepath = value;
-
-                CanAccessMainExcelFile = !String.IsNullOrEmpty(MainExcelFilePath);
-
-                if (CanAccessMainExcelFile)
-                {
-                    UpdateFields();
-                }
-            }
-        }
-
         private bool _canAccesMainExcelFile;
         public bool CanAccessMainExcelFile
         {
             get => _canAccesMainExcelFile;
             set => this.RaiseAndSetIfChanged(ref _canAccesMainExcelFile, value);
         }   
-        
-        private bool _canAccesSellExcelFile;
-        public bool CanAccessSellExcelFile
-        {
-            get => _canAccesSellExcelFile;
-            set => this.RaiseAndSetIfChanged(ref _canAccesSellExcelFile, value);
-        }
 
         private Row _currentRow;
         public Row CurrentRow
@@ -229,19 +204,6 @@ namespace ClientInfoFiller.ViewModels
 
             UpdateFields();
         }   
-        
-        public void OnSellClick()
-        {
-            if (ExcelSelledFilepath == null) throw new Exception("Пожалуйста, укажите путь к файлу таблицы.");
-
-            ExcelService excel = new ExcelService(new FileInfo(ExcelSelledFilepath));
-
-            excel.SaveRow(this.CurrentRow);
-
-            UpdateAutocompleteData();
-            this.CurrentRow = new Row();
-            UpdateFields();
-        }
 
         public void OnSearchClick()
         {
@@ -302,8 +264,6 @@ namespace ClientInfoFiller.ViewModels
             this.RaisePropertyChanged(nameof(SelectedSearchMode));
             this.RaisePropertyChanged(nameof(FoundRows));
             this.RaisePropertyChanged(nameof(FormOwe));
-            this.RaisePropertyChanged(nameof(ExcelSelledFilepath));
-            this.RaisePropertyChanged(nameof(CanAccessExcellSelledFile));
         }
     }
 }

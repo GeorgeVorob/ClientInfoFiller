@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Xceed.Words.NET;
 
 namespace ClientInfoFiller.Services
@@ -33,7 +32,7 @@ namespace ClientInfoFiller.Services
         /// <returns></returns>
         public void FillAndPrint(Row data)
         {
-            string systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string systemPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string folderToSavePath = Path.Combine(systemPath, "ClientFillerFiles");
             Directory.CreateDirectory(folderToSavePath);
 
