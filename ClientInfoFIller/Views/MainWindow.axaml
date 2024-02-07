@@ -18,7 +18,7 @@
 
   <ScrollViewer>
     <TabControl>
-      <TabItem Header="Оформление">
+      <TabItem Header="Аренда">
         <Grid Margin="30">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -116,9 +116,7 @@
 
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
-            <Label>
               <TextBox TextWrapping="Wrap" Width="370" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
-            </Label>
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="10">
@@ -133,55 +131,56 @@
       </StackPanel>
 
       <!--Поиск-->
-      <StackPanel Grid.Column="1" Background="AliceBlue" MinWidth="480">
-        <StackPanel Orientation="Horizontal" Spacing="7">
-          <ComboBox x:Name="searchComboBox" Width="200" SelectedItem="{Binding SelectedSearchMode, Mode=TwoWay}" Items="{Binding searchModesComboBoxData, Mode=OneWay}">
-            <ComboBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding}" />
-              </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
-          <TextBox Width="200" Text="{Binding  SearchValue, Mode=TwoWay}"></TextBox>
-          <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}"/>
+      <Border Grid.Column="1" Background="AliceBlue" Padding="10">
+        <StackPanel MinWidth="480">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <ComboBox x:Name="searchComboBox" Width="200" SelectedItem="{Binding SelectedSearchMode, Mode=TwoWay}" Items="{Binding searchModesComboBoxData, Mode=OneWay}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBox Width="200" Text="{Binding  SearchValue, Mode=TwoWay}"></TextBox>
+            <Button Content="Поиск" Click="SearchClick" IsEnabled="{Binding  CanAccessMainExcelFile, Mode=OneWay}"/>
+          </StackPanel>
+          <ScrollViewer Height="530">
+            <ListBox x:Name="foundItemsControl" Items="{Binding FoundRows, Mode=OneWay}" SelectionMode="Single" SelectedItem="{Binding CurrentRow, Mode=TwoWay}" Background="Transparent">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="5" MinWidth="250">
+                      <TextBlock Text="Клиент -"/>
+                      <TextBlock Text="{Binding CustomerName}"/>
+
+                      <TextBlock Text="Костюм -"/>
+                      <TextBlock Text="{Binding CostumeName}"/>
+
+                      <TextBlock Text="Долг -"/>
+                      <TextBlock Text="{Binding Owe}"/>
+
+                    </StackPanel>
+                    <StackPanel Margin="5">
+
+                      <TextBlock Text="Телефон -"/>
+                      <TextBlock Text="{Binding Phone}"/>
+
+
+                      <TextBlock Text="Дата оформления -"/>
+                      <TextBlock Text="{Binding CreationDateString}"/>
+
+
+                      <TextBlock Text="Дата выдачи -"/>
+                      <TextBlock Text="{Binding ActualOrderDateString}"/>
+
+                    </StackPanel>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </ScrollViewer>
         </StackPanel>
-
-        <ScrollViewer Height="530">
-          <ListBox x:Name="foundItemsControl" Items="{Binding FoundRows, Mode=OneWay}" SelectionMode="Single" SelectedItem="{Binding CurrentRow, Mode=TwoWay}" Background="Transparent">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                  <StackPanel Margin="5" MinWidth="250">
-                    <TextBlock Text="Клиент -"/>
-                    <TextBlock Text="{Binding CustomerName}"/>
-
-                    <TextBlock Text="Костюм -"/>
-                    <TextBlock Text="{Binding CostumeName}"/>
-
-                    <TextBlock Text="Долг -"/>
-                    <TextBlock Text="{Binding Owe}"/>
-
-                  </StackPanel>
-                  <StackPanel Margin="5">
-
-                    <TextBlock Text="Телефон -"/>
-                    <TextBlock Text="{Binding Phone}"/>
-
-
-                    <TextBlock Text="Дата оформления -"/>
-                    <TextBlock Text="{Binding CreationDateString}"/>
-
-
-                    <TextBlock Text="Дата выдачи -"/>
-                    <TextBlock Text="{Binding ActualOrderDateString}"/>
-
-                  </StackPanel>
-                </StackPanel>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </ScrollViewer>
-      </StackPanel>
+      </Border>
     </Grid>
       </TabItem>
       <TabItem Header="Продажа">

@@ -5,6 +5,8 @@ using Avalonia.Interactivity;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using ClientInfoFiller.ViewModels;
+using Avalonia.Input;
+using System.Linq;
 
 namespace ClientInfoFiller.Views
 {
@@ -13,6 +15,10 @@ namespace ClientInfoFiller.Views
         public Sell_ItemTab()
         {
             InitializeComponent();
+            this.DataContext = VM;
+
+            this.Find<TextBox>("PrepaymentInputCash").AddHandler(TextBox.TextInputEvent, OnNumericTextInput, RoutingStrategies.Tunnel);
+            this.Find<TextBox>("PrepaymentInputDigital").AddHandler(TextBox.TextInputEvent, OnNumericTextInput, RoutingStrategies.Tunnel);
         }
 
         Sell_ItemTabViewModel VM = new Sell_ItemTabViewModel();
@@ -42,7 +48,7 @@ namespace ClientInfoFiller.Views
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в MainExcelFileSelectClick!");
+                Trace.TraceError("MY: Исключение в ExcelSelledFileSelectCliek!");
                 Trace.TraceError("MY: Текст исключения:" + ex.ToString());
                 Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
                 Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
@@ -53,7 +59,7 @@ namespace ClientInfoFiller.Views
             }
             finally
             {
-                Trace.TraceInformation("MY: конец обработки MainExcelFileSelectClick");
+                Trace.TraceInformation("MY: конец обработки ExcelSelledFileSelectCliek");
             }
         }
 
@@ -78,6 +84,27 @@ namespace ClientInfoFiller.Views
             finally
             {
                 Trace.TraceInformation("MY: конец обработки RowSaveClick");
+            }
+        }
+
+        // Фильтрация численного ввода для текстовых полей.
+        private void OnNumericTextInput(TextBox sender, RoutedEventArgs args)
+        {
+            try
+            {
+                TextInputEventArgs Args = args as TextInputEventArgs;
+
+                Args.Handled =
+                    Args.Text.Any(c => !char.IsDigit(c))
+                    ||
+                    (sender.Text.Length > 8);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("MY: Исключение в OnNumericTextInput!");
+                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
             }
         }
     }

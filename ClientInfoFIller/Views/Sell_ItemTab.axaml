@@ -10,16 +10,49 @@
             x:Class="ClientInfoFiller.Views.Sell_ItemTab">
   <Design.DataContext>
     <vm:Sell_ItemTabViewModel/>
-  </Design.DataContext>  
-  
-  <!--Продажа товара-->
-  <StackPanel Orientation="Vertical" Grid.Column="2" Margin="10 0 10 0">
-    <StackPanel Orientation="Horizontal">
-      <Button IsTabStop="False" Content="Указать таблицу для продажи" Click="ExcelSelledFileSelectCliek"></Button>
-      <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
-        <TextBlock VerticalAlignment="Center" Text="{Binding ExcelSelledFilepath, Mode=OneWay}"></TextBlock>
-      </Border>
+  </Design.DataContext>
+
+  <!--Основной контейнер-->
+    <StackPanel Orientation="Vertical" Margin="30" Spacing="10">
+      <StackPanel Orientation="Horizontal">
+        <Button IsTabStop="False" Content="Указать таблицу для продажи" Click="ExcelSelledFileSelectCliek"></Button>
+        <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
+          <TextBlock VerticalAlignment="Center" Text="{Binding ExcelSelledFilepath, Mode=OneWay}"></TextBlock>
+        </Border>
+      </StackPanel>
+    
+      <!--Поля для заполнения-->
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="ФИО клиента:" VerticalAlignment="Center"/>
+        <TextBox TextWrapping="Wrap" MinWidth="370" MaxWidth="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.CustomerName, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="Название костюма:" VerticalAlignment="Center"/>
+        <TextBox MinWidth="200" Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="Телефон:" VerticalAlignment="Center"/>
+        <TextBox TextWrapping="Wrap" MinWidth="370" MaxWidth="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Phone, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+      
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="Предоплата (нал):" VerticalAlignment="Center"/>
+        <TextBox MinWidth="150" x:Name="PrepaymentInputCash" Text="{Binding FormPrepaymentCash, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+      
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="Предоплата (безнал):" VerticalAlignment="Center"/>
+        <TextBox MinWidth="150" x:Name="PrepaymentInputDigital" Text="{Binding FormPrepaymentDigital, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+      
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Width="150" Text="Комментарий:" VerticalAlignment="Center"/>
+          <TextBox TextWrapping="Wrap" MinWidth="370" MaxWidth="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding  CurrentRow.Comment, Mode=TwoWay}"></TextBox>
+      </StackPanel>
+    
+      
+      <Button VerticalAlignment="Top" Margin="0 20 0 0" Background="LightGreen" Content="Продать" Click="SellClick" IsEnabled="{Binding CanAccessExcellSelledFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
     </StackPanel>
-    <Button VerticalAlignment="Top" Margin="0 20 0 0" Background="GreenYellow" Content="Продать" Click="SellClick" IsEnabled="{Binding CanAccessExcellSelledFile, Mode=OneWay}" IsVisible="{Binding  IsNewRow, Mode=OneWay}"/>
-  </StackPanel>
 </UserControl>

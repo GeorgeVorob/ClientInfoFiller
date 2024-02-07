@@ -44,6 +44,30 @@ namespace ClientInfoFiller.Services
             }
         }
 
+        public void SaveSellRow(Row data)
+        {
+            try
+            {
+
+                ExcelPackage excelPackage = new ExcelPackage(_file);
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+
+
+                int lastRowID = -1;
+                data.RowPos = FindLastEmptyRow(worksheet, out lastRowID);
+                data.Id = lastRowID;
+
+                WriteSellRow(worksheet, data);
+
+                excelPackage.Save();
+            }
+            catch
+            {
+                data.RowPos = -1;
+                throw new IOException("Не удалось обновить табилцу. Убедитесь, что она закрыта.");
+            }
+        }
+
         public List<Row> SearchRow(SearchModes searchMode, string searchValue, int amount = 1)
         {
             if (searchValue == null) searchValue = "";
@@ -213,6 +237,27 @@ namespace ClientInfoFiller.Services
             worksheet.Cells[rowPos, 12].Value = data.PledgeCash;
             worksheet.Cells[rowPos, 13].Value = data.PledgeDigital;
             worksheet.Cells[rowPos, 14].Value = data.Comment;
+        }
+
+        /// <summary>
+        /// Пишет тольно номер, костюм, ФИО человека, номер человека, оплату нал\безнал (из полей предоплаты) и комментарий
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="data"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private void WriteSellRow(ExcelWorksheet worksheet, Row data)
+        {
+            if (data.RowPos == null || data.RowPos < 2) throw new ArgumentException("Некорректная позиция строки при сохранении.");
+
+            int rowPos = data.RowPos;
+
+            worksheet.Cells[rowPos, 1].Value = data.Id;
+            worksheet.Cells[rowPos, 2].Value = data.CustomerName;
+            worksheet.Cells[rowPos, 3].Value = data.CostumeName;
+            worksheet.Cells[rowPos, 4].Value = data.Phone;
+            worksheet.Cells[rowPos, 5].Value = data.PrepaymentCash;
+            worksheet.Cells[rowPos, 6].Value = data.PrepaymentDigital;
+            worksheet.Cells[rowPos, 7].Value = data.Comment;
         }
     }
 }

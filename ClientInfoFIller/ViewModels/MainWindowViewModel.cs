@@ -166,10 +166,10 @@ namespace ClientInfoFiller.ViewModels
         public MainWindowViewModel()
         {
             _currentRow = new Row();
-            searchModesComboBoxData.Add("По номеру записи");
             searchModesComboBoxData.Add("По ФИО");
             searchModesComboBoxData.Add("По номеру телефона");
             searchModesComboBoxData.Add("По костюму");
+            searchModesComboBoxData.Add("По номеру записи");
             _selectedSearchMode = searchModesComboBoxData[0];
 
             if (File.Exists(MainExcelStorageName))
@@ -234,7 +234,7 @@ namespace ClientInfoFiller.ViewModels
         private void UpdateAutocompleteData()
         {
             var excel = new ExcelService(new FileInfo(MainExcelFilePath));
-            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", int.MaxValue);
+            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 2000);
             lastRows = lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First()).ToList();
             lastRows.ForEach(row => {
                 row.RowPos = -1;

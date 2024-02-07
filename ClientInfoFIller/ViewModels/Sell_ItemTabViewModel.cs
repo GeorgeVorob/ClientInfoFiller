@@ -50,6 +50,38 @@ namespace ClientInfoFiller.ViewModels
                 UpdateFields();
             }
         }
+
+        public string FormPrepaymentCash
+        {
+            set
+            {
+                int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+                CurrentRow.PrepaymentCash = safeVal;
+                UpdateFields();
+            }
+
+            get
+            {
+                if (CurrentRow.PrepaymentCash == 0) return "";
+                return CurrentRow.PrepaymentCash.ToString();
+            }
+        }
+
+        public string FormPrepaymentDigital
+        {
+            set
+            {
+                int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+                CurrentRow.PrepaymentDigital = safeVal;
+                UpdateFields();
+            }
+
+            get
+            {
+                if (CurrentRow.PrepaymentDigital == 0) return "";
+                return CurrentRow.PrepaymentDigital.ToString();
+            }
+        }
         #endregion
 
         #region Methods
@@ -59,7 +91,7 @@ namespace ClientInfoFiller.ViewModels
 
             ExcelService excel = new ExcelService(new FileInfo(ExcelSelledFilepath));
 
-            excel.SaveRow(this.CurrentRow);
+            excel.SaveSellRow(this.CurrentRow);
 
             this.CurrentRow = new Row();
             UpdateFields();
