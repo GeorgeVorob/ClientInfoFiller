@@ -133,7 +133,11 @@ namespace ClientInfoFiller.Services
                             break;
 
                         case "Prepayment":
-                            bookMark.SetText((data.PrepaymentCash + data.PrepaymentDigital).ToString(), bookmarkTextFormat);
+                            string cashText = data.PrepaymentCash != 0 ? $"{data.PrepaymentCash}(н)" : "";
+                            string digitalText = data.PrepaymentDigital != 0 ? $"{data.PrepaymentDigital}(бн)" : "";
+                            string resultText = $"{cashText} {digitalText}".Trim();
+
+                            bookMark.SetText(resultText, bookmarkTextFormat);
                             break;
 
                         case "Owe":
@@ -141,7 +145,11 @@ namespace ClientInfoFiller.Services
                             break;
 
                         case "Pledge":
-                            bookMark.SetText((data.PledgeCash + data.PledgeDigital).ToString(), bookmarkTextFormat);
+                            string cashPledgeText = data.PledgeCash != 0 ? $"{data.PledgeCash}(н)" : "";
+                            string digitalPledgeText = data.PledgeDigital != 0 ? $"{data.PledgeDigital}(бн)" : "";
+                            string pledgeResultText = $"{cashPledgeText} {digitalPledgeText}".Trim();
+
+                            bookMark.SetText(pledgeResultText, bookmarkTextFormat);
                             break;
 
                         case "Comment":
