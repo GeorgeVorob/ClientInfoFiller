@@ -42,32 +42,50 @@ namespace ClientInfoFiller.Views
             var nameAutocompControl = this.Find<AutoCompleteBox>("NameAutocompleteControl");
             nameAutocompControl.Items = VM.AutoCompleteData;
             nameAutocompControl.ItemFilter = this.NameAutocomplete;
-            nameAutocompControl.SelectionChanged += this.SelectFromAutocomplete;
+            nameAutocompControl.SelectionChanged += this.SelectFromAutocompleteName;
 
             var phoneAutocompControl = this.Find<AutoCompleteBox>("PhoneAutocompleteControl");
             phoneAutocompControl.Items = VM.AutoCompleteData;
             phoneAutocompControl.ItemFilter = this.PhoneAutocomplete;
-            phoneAutocompControl.SelectionChanged += this.SelectFromAutocomplete;
+            phoneAutocompControl.SelectionChanged += this.SelectFromAutocompletePhone;
 
 
             Trace.TraceInformation("MY: VM инициализирована");
         }
 
-        private void SelectFromAutocomplete(object? sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count <= 0 || e.AddedItems[0] is not Row selectedRow) return;
 
-            if(e.RemovedItems.Count > 0 && e.RemovedItems[0] is Row deletedRow
-                    &&(
+        private bool ValidateRowAutocomplete(object? sender, SelectionChangedEventArgs e, out Row? selectedRow)
+        {
+            selectedRow = null;
+
+            if (e.AddedItems.Count <= 0 || e.AddedItems[0] is not Row _selectedRow) return false;
+
+            if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is Row deletedRow
+                    && (
                         deletedRow.Id != -1
                         || deletedRow.RowPos != -1
                     )
                 )
             {
-                return;
+                return false;
             }
 
-            VM.CurrentRow = selectedRow;
+            selectedRow = _selectedRow;
+            return true;
+        }
+
+        private void SelectFromAutocompletePhone(object? sender, SelectionChangedEventArgs e)
+        {
+            if(!ValidateRowAutocomplete(sender, e, out Row? selectedRow)) return;
+
+            VM.CurrentRow.Phone = selectedRow.Phone;
+        }
+
+        private void SelectFromAutocompleteName(object? sender, SelectionChangedEventArgs e)
+        {
+            if (!ValidateRowAutocomplete(sender, e, out Row? selectedRow)) return;
+
+            VM.CurrentRow.CustomerName = selectedRow.CustomerName;
         }
 
         private async void RowSaveOrUpdateClick(object sender, RoutedEventArgs e)
