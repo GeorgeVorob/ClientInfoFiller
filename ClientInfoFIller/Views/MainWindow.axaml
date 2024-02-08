@@ -38,7 +38,7 @@
               MinimumPrefixLength="0"
               ValueMemberBinding="{Binding CustomerName}"
               Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"
-              SelectedItem="{Binding CurrentRow, Mode=OneWay}">
+              SelectedItem="{Binding CurrentRow.CustomerName, Mode=OneWay}">
               <AutoCompleteBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding CustomerName}"></TextBlock>
@@ -59,7 +59,7 @@
               MinimumPrefixLength="0"
               ValueMemberBinding="{Binding Phone}"
               Text="{Binding CurrentRow.Phone, Mode=TwoWay}"
-              SelectedItem="{Binding CurrentRow, Mode=OneWay}">
+              SelectedItem="{Binding CurrentRow.Phone, Mode=OneWay}">
               <AutoCompleteBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding Phone}"></TextBlock>
