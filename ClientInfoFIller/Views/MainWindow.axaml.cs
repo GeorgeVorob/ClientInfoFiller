@@ -34,52 +34,41 @@ namespace ClientInfoFiller.Views
             // searchComboBox.SelectedIndex = 0;
 
             var nameAutocompControl = this.Find<AutoCompleteBox>("NameAutocompleteControl");
-            nameAutocompControl.Items = VM.AutoCompleteData;
-            nameAutocompControl.ItemFilter = this.NameAutocomplete;
-            nameAutocompControl.SelectionChanged += this.SelectFromAutocompleteName;
+            nameAutocompControl.Items = VM.CustomerNameAutoCompleteData;
+            nameAutocompControl.ItemFilter = this.AutocompleteStringFilter;
+            nameAutocompControl.SelectionChanged += this.SelectCustomerNameFromAutocomplete;
 
             var phoneAutocompControl = this.Find<AutoCompleteBox>("PhoneAutocompleteControl");
-            phoneAutocompControl.Items = VM.AutoCompleteData;
-            phoneAutocompControl.ItemFilter = this.PhoneAutocomplete;
-            phoneAutocompControl.SelectionChanged += this.SelectFromAutocompletePhone;
+            phoneAutocompControl.Items = VM.PhoneAutoCompleteData;
+            phoneAutocompControl.ItemFilter = this.AutocompleteStringFilter;
+            phoneAutocompControl.SelectionChanged += this.SelectPhoneFromAutocomplete;
 
 
             Trace.TraceInformation("MY: VM инициализирована");
         }
 
-
-        private bool ValidateRowAutocomplete(object? sender, SelectionChangedEventArgs e, out Row? selectedRow)
+        private bool ValidateRowAutocomplete(object? sender, SelectionChangedEventArgs e, out string? selectedString)
         {
-            selectedRow = null;
+            selectedString = null;
 
-            if (e.AddedItems.Count <= 0 || e.AddedItems[0] is not Row _selectedRow) return false;
+            if (e.AddedItems.Count <= 0 || e.AddedItems[0] is not string _selectedString) return false;
 
-            if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is Row deletedRow
-                    && (
-                        deletedRow.Id != -1
-                        || deletedRow.RowPos != -1
-                    )
-                )
-            {
-                return false;
-            }
-
-            selectedRow = _selectedRow;
+            selectedString = _selectedString;
             return true;
         }
 
-        private void SelectFromAutocompletePhone(object? sender, SelectionChangedEventArgs e)
+        private void SelectCustomerNameFromAutocomplete(object? sender, SelectionChangedEventArgs e)
         {
-            if(!ValidateRowAutocomplete(sender, e, out Row? selectedRow)) return;
+            if (!ValidateRowAutocomplete(sender, e, out string? selectedName)) return;
 
-            VM.CurrentRow.Phone = selectedRow.Phone;
-        }
-
-        private void SelectFromAutocompleteName(object? sender, SelectionChangedEventArgs e)
+            VM.CurrentRow.CustomerName = selectedName;
+        }    
+        
+        private void SelectPhoneFromAutocomplete(object? sender, SelectionChangedEventArgs e)
         {
-            if (!ValidateRowAutocomplete(sender, e, out Row? selectedRow)) return;
+            if (!ValidateRowAutocomplete(sender, e, out string? selectedPhone)) return;
 
-            VM.CurrentRow.CustomerName = selectedRow.CustomerName;
+            VM.CurrentRow.Phone = selectedPhone;
         }
 
         private async void RowSaveClick(object sender, RoutedEventArgs e)
@@ -214,31 +203,14 @@ namespace ClientInfoFiller.Views
         /// <param name="search">Уже введенная строка</param>
         /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
         /// <returns></returns>
-        bool NameAutocomplete(string search, object value)
+        bool AutocompleteStringFilter(string search, object value)
         {
-            Row row = value as Row;
-            if (row == null) return false;
+            string stringToCompare = value as string;
+            if (stringToCompare == null) return false;
 
             return (
-                !string.IsNullOrEmpty(row.CustomerName)
-                && row.CustomerName.ToLower().Contains(search.ToLower())
-            );
-        }
-
-        /// <summary>
-        /// Сравнивает телефоны в строках таблицы с вводимым номером, служебный метод для AutoCompleteBox
-        /// </summary>
-        /// <param name="search">Уже введенная строка</param>
-        /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
-        /// <returns></returns>
-        bool PhoneAutocomplete(string search, object value)
-        {
-            Row row = value as Row;
-            if (row == null) return false;
-
-            return (
-                !string.IsNullOrEmpty(row.Phone)
-                && row.Phone.ToLower().StartsWith(search.ToLower())
+                !string.IsNullOrEmpty(stringToCompare)
+                && stringToCompare.ToLower().Contains(search.ToLower())
             );
         }
     }
