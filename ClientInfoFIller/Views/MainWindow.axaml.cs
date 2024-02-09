@@ -17,7 +17,7 @@ namespace ClientInfoFiller.Views
         MainWindowViewModel VM = new MainWindowViewModel();
         public MainWindow()
         {
-            Trace.TraceInformation("MY: инициализация VM...");
+            Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ VM...");
             InitializeComponent();
             this.DataContext = VM;
             // var VM = this.DataContext as MainWindowViewModel;
@@ -44,7 +44,7 @@ namespace ClientInfoFiller.Views
             phoneAutocompControl.SelectionChanged += this.SelectPhoneFromAutocomplete;
 
 
-            Trace.TraceInformation("MY: VM инициализирована");
+            Trace.TraceInformation("MY: VM пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         }
 
         private bool ValidateRowAutocomplete(object? sender, SelectionChangedEventArgs e, out string? selectedString)
@@ -75,23 +75,23 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: старт RowSaveClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ RowSaveClick");
                 VM.OnRowSaveClick();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в RowSaveClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ RowSaveClick!");
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.ToString());
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.Message);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: конец обработки RowSaveClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ RowSaveClick");
             }
         }
 
@@ -99,10 +99,10 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: старт FileSelectClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ FileSelectClick");
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.AllowMultiple = false;
-                dialog.Filters.Add(new FileDialogFilter() { Name = "Файлы excel", Extensions = { "xlsx", "xls" } });
+                dialog.Filters.Add(new FileDialogFilter() { Name = "пїЅпїЅпїЅпїЅпїЅ excel", Extensions = { "xlsx", "xls" } });
 
                 string[] result = await dialog.ShowAsync(this);
 
@@ -113,18 +113,18 @@ namespace ClientInfoFiller.Views
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в FileSelectClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ FileSelectClick!");
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.ToString());
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.Message);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: конец обработки FileSelectClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ FileSelectClick");
             }
         }
 
@@ -132,23 +132,23 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: старт SearchClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ SearchClick");
                 VM.OnSearchClick();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в SearchClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ SearchClick!");
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.ToString());
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.Message);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: конец обработки SearchClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SearchClick");
             }
         }
 
@@ -156,27 +156,27 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: старт RowResetClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ RowResetClick");
                 VM.ResetCurrentRow();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в RowResetClick!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ RowResetClick!");
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.ToString());
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.Message);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: конец обработки RowResetClick");
+                Trace.TraceInformation("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ RowResetClick");
             }
         }
 
-        // Фильтрация численного ввода для текстовых полей.
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
         private void OnNumericTextInput(TextBox sender, RoutedEventArgs args)
         {
             try
@@ -190,18 +190,18 @@ namespace ClientInfoFiller.Views
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: Исключение в OnNumericTextInput!");
-                Trace.TraceError("MY: Текст исключения:" + ex.ToString());
-                Trace.TraceError("MY: Сообщение исключения:" + ex.Message);
-                Trace.TraceError("MY: Трассировка:" + ex.StackTrace);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ OnNumericTextInput!");
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.ToString());
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.Message);
+                Trace.TraceError("MY: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" + ex.StackTrace);
             }
         }
 
         /// <summary>
-        /// Сравнивает имена в строках таблицы с вводимым именем, служебный метод для AutoCompleteBox
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ AutoCompleteBox
         /// </summary>
-        /// <param name="search">Уже введенная строка</param>
-        /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
+        /// <param name="search">пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+        /// <param name="value">пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</param>
         /// <returns></returns>
         bool AutocompleteStringFilter(string search, object value)
         {
