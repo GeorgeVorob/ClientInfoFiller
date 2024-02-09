@@ -140,7 +140,8 @@ namespace ClientInfoFiller.ViewModels
             }
         }
 
-        public ObservableCollection<Row> AutoCompleteData = new();
+        public ObservableCollection<string> PhoneAutoCompleteData = new();
+        public ObservableCollection<string> CustomerNameAutoCompleteData = new();
 
         public int FormOwe => CurrentRow.Owe;
         public ObservableCollection<string> searchModesComboBoxData { get; } = new();
@@ -222,7 +223,7 @@ namespace ClientInfoFiller.ViewModels
                 case "По костюму": searchMode = SearchModes.ByCostumeName; break;
             }
 
-            foreach (Row row in excel.SearchRow(searchMode, SearchValue, 10))
+            foreach (Row row in excel.SearchRow(searchMode, SearchValue, 20))
             {
                 FoundRows.Add(row);
             }
@@ -234,7 +235,7 @@ namespace ClientInfoFiller.ViewModels
         private void UpdateAutocompleteData()
         {
             var excel = new ExcelService(new FileInfo(MainExcelFilePath));
-            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", 2000);
+            var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", int.MaxValue);
             lastRows = lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First()).ToList();
             lastRows.ForEach(row => {
                 row.RowPos = -1;
@@ -250,8 +251,11 @@ namespace ClientInfoFiller.ViewModels
                 row.Comment = string.Empty;
                 row.CostumeName = string.Empty;
             });
-            AutoCompleteData.Clear();
-            AutoCompleteData.AddRange(lastRows);
+            CustomerNameAutoCompleteData.Clear();
+            CustomerNameAutoCompleteData.AddRange(lastRows.Select(row => row.CustomerName).Distinct().ToList());
+
+            PhoneAutoCompleteData.Clear();
+            PhoneAutoCompleteData.AddRange(lastRows.Select(row => row.Phone).Distinct().ToList());
         }
 
         public void UpdateFields()

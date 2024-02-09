@@ -40,7 +40,7 @@
               Name="NameAutocompleteControl"
               MinimumPopulateDelay="0.1"
               MinimumPrefixLength="0"
-              ValueMemberBinding="{Binding CustomerName}"
+              ValueMemberBinding="{Binding CurrentRow.CustomerName}"
               Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"
               SelectedItem="{Binding CurrentRow.CustomerName, Mode=OneWay}">
               <AutoCompleteBox.ItemTemplate>
