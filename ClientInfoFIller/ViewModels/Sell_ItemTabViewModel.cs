@@ -17,12 +17,17 @@ namespace ClientInfoFiller.ViewModels
         {
             _currentRow = new Row();
 
+            if (!File.Exists(ExcelSelledFilepath))
+            {
+                ExcelSelledFilepath = "";
+            }
+
             UpdateFields();
         }
         #endregion
 
         #region Properties
-        public bool CanAccessExcellSelledFile => ExcelSelledFilepath != null;
+        public bool CanAccessExcellSelledFile => File.Exists(ExcelSelledFilepath);
         public string ExcelSelledFilepath
         {
             // TODO: проклято-ли это?

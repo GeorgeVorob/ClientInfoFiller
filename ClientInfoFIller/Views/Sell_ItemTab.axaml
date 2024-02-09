@@ -15,7 +15,7 @@
   <!--Основной контейнер-->
     <StackPanel Orientation="Vertical" Margin="30" Spacing="10">
       <StackPanel Orientation="Horizontal">
-        <Button IsTabStop="False" Content="Указать таблицу для продажи" Click="ExcelSelledFileSelectCliek"></Button>
+        <Button IsTabStop="False" Content="Указать таблицу для продаж" Click="ExcelSelledFileSelectCliek"></Button>
         <Border BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" Margin="3">
           <TextBlock VerticalAlignment="Center" Text="{Binding ExcelSelledFilepath, Mode=OneWay}"></TextBlock>
         </Border>
