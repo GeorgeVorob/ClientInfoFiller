@@ -17,7 +17,7 @@ namespace ClientInfoFiller.Views
         MainWindowViewModel VM = new MainWindowViewModel();
         public MainWindow()
         {
-            Trace.TraceInformation("MY: ������������� VM...");
+            Trace.TraceInformation("MY: инициализация VM...");
             InitializeComponent();
             this.DataContext = VM;
             // var VM = this.DataContext as MainWindowViewModel;
@@ -44,7 +44,7 @@ namespace ClientInfoFiller.Views
             phoneAutocompControl.SelectionChanged += this.SelectPhoneFromAutocomplete;
 
 
-            Trace.TraceInformation("MY: VM ����������������");
+            Trace.TraceInformation("MY: VM инициализирована");
         }
 
         private bool ValidateRowAutocomplete(object? sender, SelectionChangedEventArgs e, out string? selectedString)
@@ -75,23 +75,23 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: ����� RowSaveClick");
+                Trace.TraceInformation("MY: старт RowSaveClick");
                 VM.OnRowSaveClick();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: ���������� � RowSaveClick!");
-                Trace.TraceError("MY: ����� ����������:" + ex.ToString());
-                Trace.TraceError("MY: ��������� ����������:" + ex.Message);
-                Trace.TraceError("MY: �����������:" + ex.StackTrace);
+                Trace.TraceError("MY: исключение в RowSaveClick!");
+                Trace.TraceError("MY: текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("������", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: ����� ��������� RowSaveClick");
+                Trace.TraceInformation("MY: конец работы RowSaveClick");
             }
         }
 
@@ -99,10 +99,10 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: ����� FileSelectClick");
+                Trace.TraceInformation("MY: старт FileSelectClick");
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.AllowMultiple = false;
-                dialog.Filters.Add(new FileDialogFilter() { Name = "����� excel", Extensions = { "xlsx", "xls" } });
+                dialog.Filters.Add(new FileDialogFilter() { Name = "файл excel", Extensions = { "xlsx", "xls" } });
 
                 string[] result = await dialog.ShowAsync(this);
 
@@ -113,18 +113,18 @@ namespace ClientInfoFiller.Views
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: ���������� � FileSelectClick!");
-                Trace.TraceError("MY: ����� ����������:" + ex.ToString());
-                Trace.TraceError("MY: ��������� ����������:" + ex.Message);
-                Trace.TraceError("MY: �����������:" + ex.StackTrace);
+                Trace.TraceError("MY: исключение в FileSelectClick!");
+                Trace.TraceError("MY: текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("������", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: ����� ��������� FileSelectClick");
+                Trace.TraceInformation("MY: конец работы FileSelectClick");
             }
         }
 
@@ -132,23 +132,23 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: ����� SearchClick");
+                Trace.TraceInformation("MY: старт SearchClick");
                 VM.OnSearchClick();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: ���������� � SearchClick!");
-                Trace.TraceError("MY: ����� ����������:" + ex.ToString());
-                Trace.TraceError("MY: ��������� ����������:" + ex.Message);
-                Trace.TraceError("MY: �����������:" + ex.StackTrace);
+                Trace.TraceError("MY: исключение в SearchClick!");
+                Trace.TraceError("MY: текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("������", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: ����� ��������� SearchClick");
+                Trace.TraceInformation("MY: конец работы SearchClick");
             }
         }
 
@@ -156,27 +156,26 @@ namespace ClientInfoFiller.Views
         {
             try
             {
-                Trace.TraceInformation("MY: ����� RowResetClick");
+                Trace.TraceInformation("MY: старт RowResetClick");
                 VM.ResetCurrentRow();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: ���������� � RowResetClick!");
-                Trace.TraceError("MY: ����� ����������:" + ex.ToString());
-                Trace.TraceError("MY: ��������� ����������:" + ex.Message);
-                Trace.TraceError("MY: �����������:" + ex.StackTrace);
+                Trace.TraceError("MY: исключение в RowResetClick!");
+                Trace.TraceError("MY: текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: трассировка:" + ex.StackTrace);
 
                 var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("������", ex.Message + "\n \n \n" + ex.StackTrace);
+                    .GetMessageBoxStandardWindow("ошибка", ex.Message + "\n \n \n" + ex.StackTrace);
                 await messageBoxStandardWindow.Show();
             }
             finally
             {
-                Trace.TraceInformation("MY: ����� ��������� RowResetClick");
+                Trace.TraceInformation("MY: конец работы RowResetClick");
             }
         }
 
-        // ���������� ���������� ����� ��� ��������� �����.
         private void OnNumericTextInput(TextBox sender, RoutedEventArgs args)
         {
             try
@@ -190,18 +189,18 @@ namespace ClientInfoFiller.Views
             }
             catch (Exception ex)
             {
-                Trace.TraceError("MY: ���������� � OnNumericTextInput!");
-                Trace.TraceError("MY: ����� ����������:" + ex.ToString());
-                Trace.TraceError("MY: ��������� ����������:" + ex.Message);
-                Trace.TraceError("MY: �����������:" + ex.StackTrace);
+                Trace.TraceError("MY: исключение в OnNumericTextInput!");
+                Trace.TraceError("MY: текст исключения:" + ex.ToString());
+                Trace.TraceError("MY: сообщение исключения:" + ex.Message);
+                Trace.TraceError("MY: трассировка:" + ex.StackTrace);
             }
         }
 
         /// <summary>
-        /// ���������� ����� � ������� ������� � �������� ������, ��������� ����� ��� AutoCompleteBox
+        /// Сравнивает имена в строках таблицы с вводимым именем, служебный метод для AutoCompleteBox
         /// </summary>
-        /// <param name="search">��� ��������� ������</param>
-        /// <param name="value">������, ������� ����� ��� �� ����� ������� � ������ ������������.</param>
+        /// <param name="search">Уже введенная строка</param>
+        /// <param name="value">Объект, который может или не может попасть в выдачу автокомплита.</param>
         /// <returns></returns>
         bool AutocompleteStringFilter(string search, object value)
         {
