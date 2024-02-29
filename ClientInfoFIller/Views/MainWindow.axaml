@@ -36,14 +36,8 @@
               Name="NameAutocompleteControl"
               MinimumPopulateDelay="0.1"
               MinimumPrefixLength="0"
-              ValueMemberBinding="{Binding CurrentRow.CustomerName}"
               Text="{Binding CurrentRow.CustomerName, Mode=TwoWay}"
               SelectedItem="{Binding CurrentRow.CustomerName, Mode=OneWay}">
-              <AutoCompleteBox.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Text="{Binding CustomerName}"></TextBlock>
-                </DataTemplate>
-              </AutoCompleteBox.ItemTemplate>
             </AutoCompleteBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
@@ -57,14 +51,8 @@
               Name="PhoneAutocompleteControl"
               MinimumPopulateDelay="0.1"
               MinimumPrefixLength="0"
-              ValueMemberBinding="{Binding Phone}"
               Text="{Binding CurrentRow.Phone, Mode=TwoWay}"
               SelectedItem="{Binding CurrentRow.Phone, Mode=OneWay}">
-              <AutoCompleteBox.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Text="{Binding Phone}"></TextBlock>
-                </DataTemplate>
-              </AutoCompleteBox.ItemTemplate>
             </AutoCompleteBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
