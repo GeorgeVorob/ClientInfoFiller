@@ -230,23 +230,12 @@ namespace ClientInfoFiller.ViewModels
         {
             var excel = new ExcelService(new FileInfo(CurrentFilePath));
             var lastRows = excel.SearchRow(SearchModes.ByCustomerName, "", int.MaxValue);
-            lastRows = lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First()).ToList();
-            lastRows.ForEach(row => {
-                row.RowPos = -1;
-                row.Id = -1;
-                row.CreationDate = DateTimeOffset.Now;
-                row.ActualOrderDate = DateTimeOffset.Now;
-                row.ReturnDate = DateTimeOffset.Now;
-                row.Price = 0;
-                row.PledgeCash = 0;
-                row.PledgeDigital = 0;
-                row.PrepaymentCash = 0;
-                row.PrepaymentDigital = 0;
-                row.Comment = string.Empty;
-                row.CostumeName = string.Empty;
-            });
+
             CustomerNameAutoCompleteData.Clear();
-            CustomerNameAutoCompleteData.AddRange(lastRows.Select(row => row.CustomerName).Distinct().ToList());
+            CustomerNameAutoCompleteData.AddRange(
+                lastRows.GroupBy(r => r.CustomerName.ToLower()).Select(x => x.First())
+                .Select(row => row.CustomerName).Distinct().ToList()
+                );
 
             PhoneAutoCompleteData.Clear();
             PhoneAutoCompleteData.AddRange(lastRows.Select(row => row.Phone).Distinct().ToList());
