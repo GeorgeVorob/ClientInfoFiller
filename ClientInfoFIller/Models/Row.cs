@@ -16,11 +16,11 @@ namespace ClientInfoFiller.Models
         public string Phone { get; set; } = "";
 
         //TODO: мб переименовать во что-то другое. Это дата заявки из UI, а есть ещё дата печати.
-        public DateTimeOffset CreationDate { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset CreationDate { get; set; } = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 15, 1, 1, 1 , new TimeSpan());
         public string CreationDateString => this.CreationDate.ToString(DateFormatString);
-        public DateTimeOffset ActualOrderDate { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset ActualOrderDate { get; set; } = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 15, 1, 1, 1, new TimeSpan());
         public string ActualOrderDateString => this.ActualOrderDate.ToString(DateFormatString);
-        public DateTimeOffset ReturnDate { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset ReturnDate { get; set; } = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 15, 1, 1, 1, new TimeSpan());
         public string ReturnDateString => this.ReturnDate.ToString(DateFormatString);
         public int Price { get; set; } = 0;
         public int PrepaymentCash { get; set; } = 0;
