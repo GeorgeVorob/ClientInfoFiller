@@ -46,7 +46,7 @@
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Название костюма:" VerticalAlignment="Center"/>
-            <TextBox MinWidth="200" Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
+            <TextBox MinWidth="200" TextWrapping="Wrap" Width="370" Text="{Binding  CurrentRow.CostumeName, Mode=TwoWay}"></TextBox>
           </StackPanel>
           <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Телефон:" VerticalAlignment="Center"/>
