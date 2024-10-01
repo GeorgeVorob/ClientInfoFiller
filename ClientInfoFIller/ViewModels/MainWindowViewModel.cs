@@ -108,7 +108,21 @@ namespace ClientInfoFiller.ViewModels
                 return CurrentRow.PrepaymentDigital.ToString();
             }
         }
+        public string FormPledge
+        {
+            set
+            {
+                int safeVal = !String.IsNullOrEmpty(value) ? Int32.Parse(value) : 0;
+                CurrentRow.Pledge = safeVal;
+                UpdateFields();
+            }
 
+            get
+            {
+                if (CurrentRow.Pledge == 0) return "";
+                return CurrentRow.Pledge.ToString();
+            }
+        }
         public string FormPledgeCash
         {
             set
