@@ -27,9 +27,12 @@ namespace ClientInfoFiller.Models
         public int PrepaymentDigital { get; set; } = 0;
         public int Owe => Price - PrepaymentCash - PrepaymentDigital;
 
+        
+        // Залоги, не имеют связи с долгом или предоплатой.
         /// <summary>
-        /// Залог, не имеет связи с долгом или предоплатой.
+        /// "Теоретический" залог, не уплаченный в отличии от остальных двух
         /// </summary>
+        public int Pledge { get; set; } = 0;
         public int PledgeCash { get; set; } = 0;
         public int PledgeDigital { get; set; } = 0;
 

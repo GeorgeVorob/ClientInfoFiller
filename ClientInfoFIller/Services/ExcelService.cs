@@ -138,20 +138,21 @@ namespace ClientInfoFiller.Services
             return rowPos;
         }
 
-        /// A 1
-        /// B 2
-        /// C 3
-        /// D 4
-        /// E 5
-        /// F 6
-        /// G 7
-        /// H 8
-        /// I 9
-        /// J 10
-        /// K 11
-        /// L 12
-        /// M 13
-        /// N 14
+        // A 1
+        // B 2
+        // C 3
+        // D 4
+        // E 5
+        // F 6
+        // G 7
+        // H 8
+        // I 9
+        // J 10
+        // K 11
+        // L 12
+        // M 13
+        // N 14
+        // O 15 - Просто Pledge
         private Row ReadRow(ExcelWorksheet worksheet, int rowPos)
         {
             DateTimeOffset tmpDate = DateTimeOffset.Now;
@@ -207,6 +208,9 @@ namespace ClientInfoFiller.Services
 
             retval.Comment = worksheet.Cells[rowPos, 14].Text;
 
+            tmpFlag = int.TryParse(worksheet.Cells[rowPos, 15].Text, out tmpInt);
+            retval.Pledge = tmpFlag ? tmpInt : 0;
+
             return retval;
         }
 
@@ -237,6 +241,7 @@ namespace ClientInfoFiller.Services
             worksheet.Cells[rowPos, 12].Value = data.PledgeCash;
             worksheet.Cells[rowPos, 13].Value = data.PledgeDigital;
             worksheet.Cells[rowPos, 14].Value = data.Comment;
+            worksheet.Cells[rowPos, 15].Value = data.Pledge;
         }
 
         /// <summary>

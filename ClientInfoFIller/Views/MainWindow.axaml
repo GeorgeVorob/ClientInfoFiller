@@ -93,6 +93,11 @@
           </StackPanel>
 
           <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Width="150" Text="Залог:" VerticalAlignment="Center"/>
+            <TextBox MinWidth="150" x:Name="PledgeInput" Text="{Binding FormPledge, Mode=TwoWay}"></TextBox>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Width="150" Text="Залог (нал):" VerticalAlignment="Center"/>
             <TextBox MinWidth="150" x:Name="PledgeInputCash" Text="{Binding FormPledgeCash, Mode=TwoWay}"></TextBox>
           </StackPanel>
