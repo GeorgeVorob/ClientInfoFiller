@@ -144,10 +144,25 @@ namespace ClientInfoFiller.Services
                             bookMark.SetText(data.Owe.ToString(), bookmarkTextFormat);
                             break;
 
+                            // Текст после "сумма залога"
                         case "Pledge":
+                            string generalPledgeText = data.Pledge != 0 ? $"{data.Pledge}" : "";
+
                             string cashPledgeText = data.PledgeCash != 0 ? $"{data.PledgeCash}(н)" : "";
                             string digitalPledgeText = data.PledgeDigital != 0 ? $"{data.PledgeDigital}(бн)" : "";
-                            string pledgeResultText = $"{cashPledgeText} {digitalPledgeText}".Trim();
+
+                            string paidPledgeFinalString = "";
+
+                            if(string.IsNullOrEmpty(cashPledgeText) && string.IsNullOrEmpty(digitalPledgeText))
+                            {
+                                paidPledgeFinalString = "0";
+                            }
+                            else
+                            {
+                                paidPledgeFinalString = $"{cashPledgeText} {digitalPledgeText}";
+                            }
+
+                            string pledgeResultText = $"{generalPledgeText}, из него оплачено {paidPledgeFinalString}".Trim();
 
                             bookMark.SetText(pledgeResultText, bookmarkTextFormat);
                             break;
