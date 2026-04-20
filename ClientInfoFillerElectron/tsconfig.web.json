@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "outDir": "dist/renderer",
+    "rootDir": "src/renderer/src",
+    "paths": {
+      "@shared/*": ["../../shared/*"]
+    }
+  },
+  "include": ["src/renderer/src/**/*"]
+}

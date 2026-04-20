@@ -1,1 +1,58 @@
+# IDE
 .vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# .NET build outputs
+**/[Bb]in/
+**/[Oo]bj/
+**/[Dd]ebug/
+**/[Rr]elease/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Electron / Node
+**/node_modules/
+**/dist/
+**/out/
+**/release/
+**/.vite/
+**/.cache/
+**/.turbo/
+
+# Coverage / reports
+**/coverage/
+**/.nyc_output/
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Electron builder artifacts
+*.blockmap
+*.exe
+*.msi
+*.AppImage
+*.dmg
+
+# Keep source assets tracked, ignore generated runtime caches in subprojects
+ClientInfoFIllerElectron/out/
+ClientInfoFIllerElectron/release/
