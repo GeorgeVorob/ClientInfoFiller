@@ -19,6 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 import dayjs, { type Dayjs } from 'dayjs'
 import type { AppConfig, Row } from '@shared/types'
 import { calcOwe, newRow } from '@shared/types'
+import EditIcon from '@mui/icons-material/Edit';
 
 interface Props {
   config: AppConfig
@@ -184,9 +185,13 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         </CardContent>
       </Card>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{"Произошла ошибка:\n" + error}</Alert>}
 
-      {!isNewRow && <Alert severity="success">Режим редактирования - запись #{row.id}</Alert>}
+      {!isNewRow && (
+        <Alert severity="success" icon={<EditIcon />}>
+          Режим редактирования - запись #{row.id}
+        </Alert>
+      )}
 
       <datalist id="dl-names">
         {autocomplete.names.map(n => (

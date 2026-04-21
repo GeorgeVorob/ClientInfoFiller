@@ -41,6 +41,7 @@ function assertFileWritable(filePath: string): void {
  */
 
 import ExcelJS from 'exceljs'
+import { logError } from './logError'
 import type { Row } from '../../shared/types'
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -193,45 +194,66 @@ export class ExcelService {
   constructor(private filePath: string) {}
 
   private async open(): Promise<{ wb: ExcelJS.Workbook; ws: ExcelJS.Worksheet }> {
-    const wb = new ExcelJS.Workbook()
-    await wb.xlsx.readFile(this.filePath)
-    const ws = wb.worksheets[0]
-    if (!ws) throw new Error('В файле не найдено ни одного листа.')
-    return { wb, ws }
+    try {
+      const wb = new ExcelJS.Workbook()
+      await wb.xlsx.readFile(this.filePath)
+      const ws = wb.worksheets[0]
+      if (!ws) throw new Error('В файле не найдено ни одного листа.')
+      return { wb, ws }
+    } catch (e) {
+      logError('ExcelService.open', e, { filePath: this.filePath })
+      throw e
+    }
   }
 
   /** Save or update an order row. Mutates data.rowPos and data.id when new. */
   async saveRow(data: Row): Promise<Row> {
-    assertFileWritable(this.filePath)
-    const { wb, ws } = await this.open()
-    if (data.rowPos === -1) {
-      const { rowPos, lastId } = findLastEmptyRow(ws)
-      data = { ...data, rowPos, id: lastId }
+    try {
+      assertFileWritable(this.filePath)
+      const { wb, ws } = await this.open()
+      let usedData = data
+      if (data.rowPos === -1) {
+        const { rowPos, lastId } = findLastEmptyRow(ws)
+        usedData = { ...data, rowPos, id: lastId }
+      }
+      writeRow(ws, usedData)
+      await wb.xlsx.writeFile(this.filePath)
+      return usedData
+    } catch (e) {
+      logError('ExcelService.saveRow', e, { filePath: this.filePath, data })
+      throw e
     }
-    writeRow(ws, data)
-    await wb.xlsx.writeFile(this.filePath)
-    return data
   }
 
   /** Always appends a new row to the sell sheet. */
   async saveSellRow(data: Row): Promise<Row> {
-    assertFileWritable(this.filePath)
-    const { wb, ws } = await this.open()
-    const { rowPos, lastId } = findLastEmptyRow(ws)
-    data = { ...data, rowPos, id: lastId }
-    writeSellRow(ws, data)
-    await wb.xlsx.writeFile(this.filePath)
-    return data
+    try {
+      assertFileWritable(this.filePath)
+      const { wb, ws } = await this.open()
+      const { rowPos, lastId } = findLastEmptyRow(ws)
+      const usedData = { ...data, rowPos, id: lastId }
+      writeSellRow(ws, usedData)
+      await wb.xlsx.writeFile(this.filePath)
+      return usedData
+    } catch (e) {
+      logError('ExcelService.saveSellRow', e, { filePath: this.filePath, data })
+      throw e
+    }
   }
 
   /** Returns all non-empty rows for autocomplete population. */
   async getAllRows(): Promise<Row[]> {
-    const { ws } = await this.open()
-    const { rowPos: lastEmpty } = findLastEmptyRow(ws)
-    const rows: Row[] = []
-    for (let i = 2; i < lastEmpty; i++) {
-      rows.push(readRow(ws, i))
+    try {
+      const { ws } = await this.open()
+      const { rowPos: lastEmpty } = findLastEmptyRow(ws)
+      const rows: Row[] = []
+      for (let i = 2; i < lastEmpty; i++) {
+        rows.push(readRow(ws, i))
+      }
+      return rows
+    } catch (e) {
+      logError('ExcelService.getAllRows', e, { filePath: this.filePath })
+      throw e
     }
-    return rows
   }
 }

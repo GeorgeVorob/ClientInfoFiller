@@ -35,6 +35,7 @@ import { app, shell } from 'electron'
 import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
 import type { Row } from '../../shared/types'
+import { logError } from './logError'
 
 function fmtDate(iso: string): string {
   const d = new Date(iso)
@@ -74,56 +75,61 @@ function cleanTempDir(dir: string): void {
 }
 
 export async function fillAndPrint(data: Row): Promise<void> {
-  const tplPath = templatePath()
-  if (!fs.existsSync(tplPath)) {
-    throw new Error(
-      `Шаблон Word не найден по пути:\n${tplPath}\n\nПоложите wordTemplate.docx в папку assets/ проекта.`
-    )
+  try {    
+    const tplPath = templatePath()
+    if (!fs.existsSync(tplPath)) {
+      throw new Error(
+        `Шаблон Word не найден по пути:\n${tplPath}\n\nПоложите wordTemplate.docx в папку assets/ проекта.`
+      )
+    }
+
+    const content = fs.readFileSync(tplPath, 'binary')
+    const zip = new PizZip(content)
+    const doc = new Docxtemplater(zip, {
+      paragraphLoop: true,
+      linebreaks: true,
+      // Ошибки — в исключение, а не в тихий пропуск
+      errorLogging: false,
+    })
+
+    const owe = data.price - data.prepaymentCash - data.prepaymentDigital - (data.prepaymentSBP ?? 0)
+
+    doc.render({
+      ID: String(data.id),
+      CustomerName: data.customerName,
+      CostumeName: data.costumeName,
+      Phone: data.phone,
+      CreationDate: fmtDate(data.creationDate),
+      ActualOrderDate: fmtDate(data.actualOrderDate),
+      ReturnDate: fmtDate(data.returnDate),
+      Price: String(data.price),
+      Prepayment: moneyParts(data.prepaymentCash, data.prepaymentDigital, data.prepaymentSBP),
+      Owe: String(owe),
+      Pledge: moneyParts(data.pledgeCash, data.pledgeDigital, data.pledgeSBP),
+      Comment: data.comment,
+      PrintDateTime: (() => {
+        const n = new Date()
+        const dd = String(n.getDate()).padStart(2, '0')
+        const mm = String(n.getMonth() + 1).padStart(2, '0')
+        const hh = String(n.getHours()).padStart(2, '0')
+        const min = String(n.getMinutes()).padStart(2, '0')
+        return `${dd}.${mm}.${n.getFullYear()} ${hh}:${min}`
+      })(),
+    })
+
+    const buf = doc.getZip().generate({ type: 'nodebuffer' })
+
+    const dir = tempDir()
+    cleanTempDir(dir)
+
+    const outPath = path.join(dir, `order-${data.id}-${Date.now()}.docx`)
+    fs.writeFileSync(outPath, buf)
+
+    // Opens the file with whatever the OS has set as default for .docx (Word, LibreOffice, etc.)
+    const err = await shell.openPath(outPath)
+    if (err) throw new Error(`Не удалось открыть файл: ${err}`)
+  } catch (e) {
+    logError('WordService.fillAndPrint', e, { data })
+    throw e
   }
-
-  const content = fs.readFileSync(tplPath, 'binary')
-  const zip = new PizZip(content)
-  const doc = new Docxtemplater(zip, {
-    paragraphLoop: true,
-    linebreaks: true,
-    // Ошибки — в исключение, а не в тихий пропуск
-    errorLogging: false,
-  })
-
-  const owe = data.price - data.prepaymentCash - data.prepaymentDigital - (data.prepaymentSBP ?? 0)
-
-  doc.render({
-    ID: String(data.id),
-    CustomerName: data.customerName,
-    CostumeName: data.costumeName,
-    Phone: data.phone,
-    CreationDate: fmtDate(data.creationDate),
-    ActualOrderDate: fmtDate(data.actualOrderDate),
-    ReturnDate: fmtDate(data.returnDate),
-    Price: String(data.price),
-    Prepayment: moneyParts(data.prepaymentCash, data.prepaymentDigital, data.prepaymentSBP),
-    Owe: String(owe),
-    Pledge: moneyParts(data.pledgeCash, data.pledgeDigital, data.pledgeSBP),
-    Comment: data.comment,
-    PrintDateTime: (() => {
-      const n = new Date()
-      const dd = String(n.getDate()).padStart(2, '0')
-      const mm = String(n.getMonth() + 1).padStart(2, '0')
-      const hh = String(n.getHours()).padStart(2, '0')
-      const min = String(n.getMinutes()).padStart(2, '0')
-      return `${dd}.${mm}.${n.getFullYear()} ${hh}:${min}`
-    })(),
-  })
-
-  const buf = doc.getZip().generate({ type: 'nodebuffer' })
-
-  const dir = tempDir()
-  cleanTempDir(dir)
-
-  const outPath = path.join(dir, `order-${data.id}-${Date.now()}.docx`)
-  fs.writeFileSync(outPath, buf)
-
-  // Opens the file with whatever the OS has set as default for .docx (Word, LibreOffice, etc.)
-  const err = await shell.openPath(outPath)
-  if (err) throw new Error(`Не удалось открыть файл: ${err}`)
 }
