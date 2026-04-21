@@ -6,8 +6,8 @@ function createWindow(): BrowserWindow {
   Menu.setApplicationMenu(null) // Remove default menu (with "File", "Edit" etc.) — we don't need it
   const win = new BrowserWindow({
     width: 900,
-    height: 700,
-    minWidth: 750,
+    height: 1000,
+    minWidth: 550,
     minHeight: 600,
     title: 'CostumeCRM',
     webPreferences: {

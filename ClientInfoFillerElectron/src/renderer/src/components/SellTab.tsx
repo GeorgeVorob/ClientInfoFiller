@@ -193,7 +193,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 value={row.comment}
                 onChange={e => setField('comment', e.target.value)}
                 rows={2}
-                placeholder="Дополнительные заметки..."
+                placeholder="Комментарий"
                 disabled={busy}
                 multiline
                 fullWidth

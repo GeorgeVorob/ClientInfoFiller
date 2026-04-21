@@ -93,16 +93,19 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
     try {
       const saved = await window.api.saveRow(filePath, row)
+      console.log('Is new row?', isNewRow, 'Saved row:', saved)
       if (isNewRow || andPrint) {
         await window.api.fillAndPrint(saved)
       }
 
-      if (isNewRow) {
-        setRow(newRow())
-        await loadAutocomplete(filePath)
-      } else {
-        setRow(saved)
-      }
+      setRow(saved)
+
+      // if (isNewRow) {
+      //   setRow(newRow())
+      //   await loadAutocomplete(filePath)
+      // } else {
+      //   setRow(saved)
+      // }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -118,7 +121,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   return (
     <Stack spacing={0}>
       <Card variant="outlined">
-        <CardContent>
+        <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
           <Stack spacing={0}>
             <Typography variant="h6">Файл таблицы заказов</Typography>
             <Stack
@@ -127,10 +130,15 @@ export default function OrderTab({ config, onConfigChange }: Props) {
               sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}
             >
               <Chip
-                color={hasFile ? 'success' : 'default'}
+                color={'primary'}
                 variant={hasFile ? 'filled' : 'outlined'}
                 label={filePath || 'Файл не выбран'}
-                sx={{ justifyContent: 'flex-start', maxWidth: '100%' }}
+                sx={{
+                  justifyContent: 'flex-start',
+                  maxWidth: '100%',
+                  borderRadius: 1,
+                  height: 36,
+                }}
               />
               <Button variant="outlined" onClick={pickFile} disabled={busy}>
                 Обзор...
@@ -156,9 +164,8 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       </datalist>
 
       <Card variant="outlined">
-        <CardContent>
-          <Stack spacing={0}>
-            <Stack spacing={0}>
+        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
+            <Stack spacing={0.5}>
               <TextField
                 label="ФИО клиента"
                 value={row.customerName}
@@ -189,42 +196,39 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 fullWidth
               />
             </Stack>
+        </CardContent>
+      </Card>
+
+      <Card variant="outlined">
+        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
+          <Stack spacing={0.5}>
+            <DatePicker
+              label="Дата заявки"
+              value={isoToDayjs(row.creationDate)}
+              onChange={d => setField('creationDate', dayjsToIso(d))}
+              disabled={busy}
+              slotProps={{ textField: { size: 'small', fullWidth: true } }}
+            />
+            <DatePicker
+              label="Дата выдачи"
+              value={isoToDayjs(row.actualOrderDate)}
+              onChange={d => setField('actualOrderDate', dayjsToIso(d))}
+              disabled={busy}
+              slotProps={{ textField: { size: 'small', fullWidth: true } }}
+            />
+            <DatePicker
+              label="Дата возврата"
+              value={isoToDayjs(row.returnDate)}
+              onChange={d => setField('returnDate', dayjsToIso(d))}
+              disabled={busy}
+              slotProps={{ textField: { size: 'small', fullWidth: true } }}
+            />
           </Stack>
         </CardContent>
       </Card>
 
       <Card variant="outlined">
-        <CardContent>
-          <Stack spacing={0}>
-            <Stack spacing={0}>
-              <DatePicker
-                label="Дата заявки"
-                value={isoToDayjs(row.creationDate)}
-                onChange={d => setField('creationDate', dayjsToIso(d))}
-                disabled={busy}
-                slotProps={{ textField: { size: 'small', fullWidth: true } }}
-              />
-              <DatePicker
-                label="Дата выдачи"
-                value={isoToDayjs(row.actualOrderDate)}
-                onChange={d => setField('actualOrderDate', dayjsToIso(d))}
-                disabled={busy}
-                slotProps={{ textField: { size: 'small', fullWidth: true } }}
-              />
-              <DatePicker
-                label="Дата возврата"
-                value={isoToDayjs(row.returnDate)}
-                onChange={d => setField('returnDate', dayjsToIso(d))}
-                disabled={busy}
-                slotProps={{ textField: { size: 'small', fullWidth: true } }}
-              />
-            </Stack>
-          </Stack>
-        </CardContent>
-      </Card>
-
-      <Card variant="outlined">
-        <CardContent>
+        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
           <Stack spacing={0.5}>
             <TextField
               label="Стоимость"
@@ -317,13 +321,13 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       </Card>
 
       <Card variant="outlined">
-        <CardContent>
+        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
           <Stack spacing={0}>
             <TextField
               value={row.comment}
               onChange={e => setField('comment', e.target.value)}
               rows={3}
-              placeholder="Дополнительные заметки..."
+              placeholder="Комментарий"
               disabled={busy}
               multiline
               fullWidth
@@ -335,20 +339,21 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       <Card variant="outlined">
         <CardContent>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-            <Button
+            {!isNewRow && <Button
               variant="contained"
+              color="success"
               onClick={() => handleSave(false)}
               disabled={busy || !hasFile}
             >
-              {busy ? 'Сохранение...' : isNewRow ? 'Сохранить' : 'Обновить'}
-            </Button>
+              {busy ? 'Сохранение...' : 'Обновить'}
+            </Button>}
             <Button
               variant="contained"
-              color="success"
+              color={isNewRow ? 'primary' : 'success'}
               onClick={() => handleSave(true)}
               disabled={busy || !hasFile}
             >
-              {busy ? 'Обработка...' : 'Сохранить и распечатать'}
+              {busy ? 'Обработка...' : isNewRow ? 'Сохранить и распечатать' : 'Обновить и распечатать'}
             </Button>
             <Button variant="outlined" onClick={handleReset} disabled={busy}>
               Сброс

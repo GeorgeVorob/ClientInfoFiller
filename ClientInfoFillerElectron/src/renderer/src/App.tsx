@@ -48,7 +48,6 @@ export default function App() {
           onChange={(_e, value: Tab) => setActiveTab(value)}
           variant="fullWidth"
           sx={{ minHeight: 32, height: 32 }}
-          TabIndicatorProps={{ style: { height: 2 } }}
         >
           <Tab
             icon={<ReceiptLongIcon fontSize="small" />}
