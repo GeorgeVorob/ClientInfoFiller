@@ -157,7 +157,7 @@ namespace ClientInfoFiller.Services
                             break;               
 
                         case "PrintDateTime":
-                            bookMark.SetText(DateTime.Now.ToString("dd/MM/yyyy H:mm"), bookmarkTextFormat);
+                            bookMark.SetText(DateTime.Now.ToString("dd.MM.yyyy H:mm"), bookmarkTextFormat);
                             break;
                     }
                 }

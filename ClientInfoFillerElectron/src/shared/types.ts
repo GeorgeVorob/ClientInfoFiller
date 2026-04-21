@@ -24,17 +24,16 @@ export function calcOwe(row: Row): number {
 
 export function newRow(): Row {
   const now = new Date()
-  // Default dates to the 15th of current month, matching original app behaviour
-  const day15 = new Date(now.getFullYear(), now.getMonth(), 15).toISOString()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
   return {
     rowPos: -1,
     id: -1,
     customerName: '',
     costumeName: '',
     phone: '',
-    creationDate: day15,
-    actualOrderDate: day15,
-    returnDate: day15,
+    creationDate: today,
+    actualOrderDate: today,
+    returnDate: today,
     price: 0,
     prepaymentCash: 0,
     prepaymentDigital: 0,

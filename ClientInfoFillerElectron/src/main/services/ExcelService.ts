@@ -30,8 +30,6 @@
 import ExcelJS from 'exceljs'
 import type { Row } from '../../shared/types'
 
-const DATE_FMT = 'dd.mm.yyyy'
-
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function formatDateDMY(iso: string): string {
@@ -56,7 +54,7 @@ function parseDateDMY(text: string): string {
 
 function defaultISO(): string {
   const n = new Date()
-  return new Date(n.getFullYear(), n.getMonth(), 15).toISOString()
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate()).toISOString()
 }
 
 /** Extracts a plain string from an ExcelJS cell regardless of its value type */
@@ -138,8 +136,7 @@ function writeRow(ws: ExcelJS.Worksheet, data: Row): void {
 
   const setDate = (col: number, iso: string) => {
     const cell = exRow.getCell(col)
-    cell.value = new Date(iso)
-    cell.numFmt = DATE_FMT
+    cell.value = formatDateDMY(iso)
   }
   setDate(5, data.creationDate)
   setDate(6, data.actualOrderDate)

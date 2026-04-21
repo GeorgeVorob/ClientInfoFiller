@@ -104,10 +104,14 @@ export async function fillAndPrint(data: Row): Promise<void> {
     Owe: String(owe),
     Pledge: moneyParts(data.pledgeCash, data.pledgeDigital),
     Comment: data.comment,
-    PrintDateTime: new Date().toLocaleString('ru-RU', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    }),
+    PrintDateTime: (() => {
+      const n = new Date()
+      const dd = String(n.getDate()).padStart(2, '0')
+      const mm = String(n.getMonth() + 1).padStart(2, '0')
+      const hh = String(n.getHours()).padStart(2, '0')
+      const min = String(n.getMinutes()).padStart(2, '0')
+      return `${dd}.${mm}.${n.getFullYear()} ${hh}:${min}`
+    })(),
   })
 
   const buf = doc.getZip().generate({ type: 'nodebuffer' })

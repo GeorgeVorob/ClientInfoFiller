@@ -107,6 +107,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 onChange={e => setField('customerName', e.target.value)}
                 placeholder="Иванов Иван Иванович"
                 disabled={busy}
+                size="small"
                 fullWidth
               />
               <TextField
@@ -115,6 +116,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 onChange={e => setField('phone', e.target.value)}
                 placeholder="+7 (000) 000-00-00"
                 disabled={busy}
+                size="small"
                 fullWidth
               />
               <TextField
@@ -123,6 +125,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 onChange={e => setField('costumeName', e.target.value)}
                 placeholder="Название"
                 disabled={busy}
+                size="small"
                 fullWidth
               />
               <TextField
@@ -131,6 +134,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('prepaymentCash')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
@@ -140,6 +144,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('prepaymentDigital')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />

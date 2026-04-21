@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardContent,
@@ -10,6 +9,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { DatePicker } from '@mui/x-date-pickers'
+import dayjs, { type Dayjs } from 'dayjs'
 import type { AppConfig, Row } from '@shared/types'
 import { calcOwe, newRow } from '@shared/types'
 
@@ -18,13 +19,13 @@ interface Props {
   onConfigChange: (p: Partial<AppConfig>) => Promise<AppConfig>
 }
 
-function isoToInput(iso: string): string {
-  return iso.slice(0, 10)
+function isoToDayjs(iso: string): Dayjs {
+  const d = dayjs(iso)
+  return d.isValid() ? d : dayjs()
 }
 
-function inputToIso(val: string): string {
-  const d = new Date(val + 'T00:00:00')
-  return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString()
+function dayjsToIso(d: Dayjs | null): string {
+  return d && d.isValid() ? d.startOf('day').toISOString() : dayjs().startOf('day').toISOString()
 }
 
 export default function OrderTab({ config, onConfigChange }: Props) {
@@ -157,13 +158,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         <CardContent>
           <Stack spacing={2}>
             <Typography variant="h6">Данные заказа</Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gap: 1.5,
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-              }}
-            >
+            <Stack spacing={1.25}>
               <TextField
                 label="ФИО клиента"
                 value={row.customerName}
@@ -171,6 +166,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 placeholder="Иванов Иван Иванович"
                 disabled={busy}
                 slotProps={{ htmlInput: { list: 'dl-names' } }}
+                size="small"
                 fullWidth
               />
               <TextField
@@ -180,6 +176,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 placeholder="+7 (000) 000-00-00"
                 disabled={busy}
                 slotProps={{ htmlInput: { list: 'dl-phones' } }}
+                size="small"
                 fullWidth
               />
               <TextField
@@ -188,10 +185,10 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 onChange={e => setField('costumeName', e.target.value)}
                 placeholder="Название костюма"
                 disabled={busy}
+                size="small"
                 fullWidth
-                sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}
               />
-            </Box>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
@@ -200,41 +197,29 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         <CardContent>
           <Stack spacing={2}>
             <Typography variant="h6">Даты</Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gap: 1.5,
-                gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, minmax(0, 1fr))' },
-              }}
-            >
-              <TextField
+            <Stack spacing={1.25}>
+              <DatePicker
                 label="Дата заявки"
-                type="date"
-                value={isoToInput(row.creationDate)}
-                onChange={e => setField('creationDate', inputToIso(e.target.value))}
+                value={isoToDayjs(row.creationDate)}
+                onChange={d => setField('creationDate', dayjsToIso(d))}
                 disabled={busy}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
+                slotProps={{ textField: { size: 'small', fullWidth: true } }}
               />
-              <TextField
+              <DatePicker
                 label="Дата выдачи"
-                type="date"
-                value={isoToInput(row.actualOrderDate)}
-                onChange={e => setField('actualOrderDate', inputToIso(e.target.value))}
+                value={isoToDayjs(row.actualOrderDate)}
+                onChange={d => setField('actualOrderDate', dayjsToIso(d))}
                 disabled={busy}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
+                slotProps={{ textField: { size: 'small', fullWidth: true } }}
               />
-              <TextField
+              <DatePicker
                 label="Дата возврата"
-                type="date"
-                value={isoToInput(row.returnDate)}
-                onChange={e => setField('returnDate', inputToIso(e.target.value))}
+                value={isoToDayjs(row.returnDate)}
+                onChange={d => setField('returnDate', dayjsToIso(d))}
                 disabled={busy}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
+                slotProps={{ textField: { size: 'small', fullWidth: true } }}
               />
-            </Box>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
@@ -243,19 +228,14 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         <CardContent>
           <Stack spacing={2}>
             <Typography variant="h6">Оплата</Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gap: 1.5,
-                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' },
-              }}
-            >
+            <Stack spacing={1.25}>
               <TextField
                 label="Стоимость (RUB)"
                 value={numDisplay(row.price)}
                 onChange={setNumField('price')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
@@ -265,6 +245,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('prepaymentCash')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
@@ -274,12 +255,14 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('prepaymentDigital')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
               <TextField
-                label="Остаток"
+                label="Долг"
                 value={`${owe} RUB`}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { readOnly: true } }}
                 color={owe < 0 ? 'error' : 'primary'}
@@ -290,6 +273,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('pledgeCash')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
@@ -299,10 +283,11 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 onChange={setNumField('pledgeDigital')}
                 placeholder="0"
                 disabled={busy}
+                size="small"
                 fullWidth
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
-            </Box>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
