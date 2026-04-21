@@ -5,11 +5,11 @@ import { registerIpcHandlers } from './ipc'
 function createWindow(): BrowserWindow {
   Menu.setApplicationMenu(null) // Remove default menu (with "File", "Edit" etc.) — we don't need it
   const win = new BrowserWindow({
-    width: 900,
-    height: 1000,
+    width: 800,
+    height: 950,
     minWidth: 550,
     minHeight: 600,
-    title: 'CostumeCRM',
+    title: 'Client info filler blue',
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,

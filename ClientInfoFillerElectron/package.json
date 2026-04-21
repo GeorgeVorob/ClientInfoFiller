@@ -1,7 +1,7 @@
 {
-  "name": "costume-crm",
+  "name": "client-info-filler-blue",
   "version": "1.0.0",
-  "description": "Costume rental CRM",
+  "description": "Costume rental CRM - blue version",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
@@ -35,8 +35,8 @@
     "vite": "^5.0.0"
   },
   "build": {
-    "appId": "com.costume.crm",
-    "productName": "CostumeCRM",
+    "appId": "com.client.info.filler.blue",
+    "productName": "ClientInfoFillerBlue",
     "directories": {
       "output": "release"
     },
@@ -47,7 +47,10 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": [
+        { "target": "nsis",     "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
     },
     "nsis": {
       "oneClick": false,
