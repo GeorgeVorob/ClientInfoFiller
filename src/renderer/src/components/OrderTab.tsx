@@ -33,9 +33,10 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   const [row, setRow] = useState<Row>(newRow())
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [autocomplete, setAutocomplete] = useState<{ names: string[]; phones: string[] }>({
+  const [autocomplete, setAutocomplete] = useState<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }>({
     names: [],
     phones: [],
+    nameToPhone: {},
   })
 
   const filePath = config.mainExcelFilePath
@@ -52,6 +53,15 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       // Autocomplete is optional; failure should not block editing.
     }
   }, [])
+  // При выборе имени через автокомплит — если телефон пустой, подставляем его
+  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value
+    setField('customerName', value)
+    const phone = autocomplete.nameToPhone[value]
+    if (phone && !row.phone) {
+      setField('phone', phone)
+    }
+  }
 
   useEffect(() => {
     loadAutocomplete(filePath)
@@ -169,7 +179,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
               <TextField
                 label="ФИО клиента"
                 value={row.customerName}
-                onChange={e => setField('customerName', e.target.value)}
+                onChange={handleNameChange}
                 placeholder="Иванов Иван Иванович"
                 disabled={busy}
                 slotProps={{ htmlInput: { list: 'dl-names' } }}

@@ -30,7 +30,7 @@ const api = {
   },
 
   /** Load unique customer names and phones for autocomplete. */
-  getAutocomplete(filePath: string): Promise<{ names: string[]; phones: string[] }> {
+  getAutocomplete(filePath: string): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> {
     return ipcRenderer.invoke(IPC.EXCEL_GET_AUTOCOMPLETE, filePath)
   },
 

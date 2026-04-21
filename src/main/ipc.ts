@@ -48,28 +48,29 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     return await svc.saveSellRow(row)
   })
 
-  ipcMain.handle(
-    IPC.EXCEL_GET_AUTOCOMPLETE,
-    async (_e, filePath: string): Promise<{ names: string[]; phones: string[] }> => {
-      const svc = new ExcelService(filePath)
-      const rows = await svc.getAllRows()
+ipcMain.handle(
+  IPC.EXCEL_GET_AUTOCOMPLETE,
+  async (_e, filePath: string): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> => {
+    const svc = new ExcelService(filePath)
+    const rows = await svc.getAllRows()
 
-      // Deduplicate, case-insensitive for names
-      const namesSeen = new Set<string>()
-      const names: string[] = []
-      for (const r of rows) {
-        const key = r.customerName.toLowerCase()
-        if (key && !namesSeen.has(key)) {
-          namesSeen.add(key)
-          names.push(r.customerName)
-        }
+    const namesSeen = new Set<string>()
+    const names: string[] = []
+    const nameToPhone: Record<string, string> = {}
+
+    for (const r of rows) {
+      const key = r.customerName?.toLowerCase()
+      if (key && !namesSeen.has(key)) {
+        namesSeen.add(key)
+        names.push(r.customerName)
+        if (r.phone) nameToPhone[r.customerName] = r.phone
       }
-
-      const phones = [...new Set(rows.map(r => r.phone).filter(Boolean))]
-
-      return { names, phones }
     }
-  )
+
+    const phones = [...new Set(rows.map(r => r.phone).filter(Boolean))]
+    return { names, phones, nameToPhone }
+  }
+)
 
   // ── Word ────────────────────────────────────────────────────────────────────
 
