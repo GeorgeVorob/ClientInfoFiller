@@ -1,3 +1,14 @@
+import fs from 'fs'
+
+// Проверка возможности записи в файл
+function assertFileWritable(filePath: string): void {
+  try {
+    const fd = fs.openSync(filePath, 'r+')
+    fs.closeSync(fd)
+  } catch {
+    throw new Error('FILE_LOCKED')
+  }
+}
 /**
  * ExcelService.ts
  *
@@ -191,6 +202,7 @@ export class ExcelService {
 
   /** Save or update an order row. Mutates data.rowPos and data.id when new. */
   async saveRow(data: Row): Promise<Row> {
+    assertFileWritable(this.filePath)
     const { wb, ws } = await this.open()
     if (data.rowPos === -1) {
       const { rowPos, lastId } = findLastEmptyRow(ws)
@@ -203,6 +215,7 @@ export class ExcelService {
 
   /** Always appends a new row to the sell sheet. */
   async saveSellRow(data: Row): Promise<Row> {
+    assertFileWritable(this.filePath)
     const { wb, ws } = await this.open()
     const { rowPos, lastId } = findLastEmptyRow(ws)
     data = { ...data, rowPos, id: lastId }

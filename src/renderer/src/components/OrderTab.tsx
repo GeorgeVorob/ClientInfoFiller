@@ -8,7 +8,12 @@ import {
   Stack,
   TextField,
   Typography,
-  Box
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs, { type Dayjs } from 'dayjs'
@@ -38,6 +43,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     phones: [],
     nameToPhone: {},
   })
+  const [fileLockedOpen, setFileLockedOpen] = useState(false)
 
   const filePath = config.mainExcelFilePath
   const hasFile = Boolean(filePath)
@@ -117,7 +123,12 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       //   setRow(saved)
       // }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : String(e))
+      const msg = e instanceof Error ? e.message : String(e)
+      if (msg.includes('FILE_LOCKED')) {
+        setFileLockedOpen(true)
+      } else {
+        setError(msg)
+      }
     } finally {
       setBusy(false)
     }
@@ -130,6 +141,21 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
   return (
     <Stack spacing={0}>
+            <Dialog open={fileLockedOpen} onClose={() => setFileLockedOpen(false)}>
+              <DialogTitle>Файл занят</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Не удалось сохранить запись — файл Excel открыт в другой программе.
+                  <br /><br />
+                  Закройте файл и попробуйте снова.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setFileLockedOpen(false)} variant="contained" autoFocus>
+                  Понятно
+                </Button>
+              </DialogActions>
+            </Dialog>
       <Card variant="outlined">
         <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
           <Stack spacing={0}>
