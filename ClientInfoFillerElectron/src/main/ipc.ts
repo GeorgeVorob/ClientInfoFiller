@@ -2,13 +2,22 @@ import { ipcMain, dialog, BrowserWindow } from 'electron'
 import { IPC } from '../shared/types'
 import type { AppConfig, Row } from '../shared/types'
 import { loadConfig, saveConfig } from './services/ConfigService'
+import fs from 'fs'
 import { ExcelService } from './services/ExcelService'
 import { fillAndPrint } from './services/WordService'
 
 export function registerIpcHandlers(win: BrowserWindow): void {
   // ── Config ──────────────────────────────────────────────────────────────────
 
-  ipcMain.handle(IPC.CONFIG_GET, (): AppConfig => loadConfig())
+  ipcMain.handle(IPC.CONFIG_GET, (): AppConfig => {
+    const cfg = loadConfig()
+    // сбрасываем несуществующие пути чтобы renderer не показывал мёртвые пути
+    if (cfg.mainExcelFilePath && !fs.existsSync(cfg.mainExcelFilePath))
+      cfg.mainExcelFilePath = ''
+    if (cfg.sellExcelFilePath && !fs.existsSync(cfg.sellExcelFilePath))
+      cfg.sellExcelFilePath = ''
+    return cfg
+  })
 
   ipcMain.handle(IPC.CONFIG_SET, (_e, partial: Partial<AppConfig>): AppConfig => {
     const current = loadConfig()
