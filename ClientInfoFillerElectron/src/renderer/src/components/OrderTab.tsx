@@ -8,6 +8,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Box
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs, { type Dayjs } from 'dayjs'
@@ -61,7 +62,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   }
 
   function setNumField(
-    key: 'price' | 'prepaymentCash' | 'prepaymentDigital' | 'pledgeCash' | 'pledgeDigital'
+    key: 'price' | 'prepaymentCash' | 'prepaymentDigital' | 'prepaymentSBP' | 'pledgeCash' | 'pledgeDigital' | 'pledgeSBP'
   ) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value.replace(/\D/g, '').slice(0, 9)
@@ -115,10 +116,10 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={0}>
       <Card variant="outlined">
         <CardContent>
-          <Stack spacing={1.5}>
+          <Stack spacing={0}>
             <Typography variant="h6">Файл таблицы заказов</Typography>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
@@ -156,9 +157,8 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
       <Card variant="outlined">
         <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">Данные заказа</Typography>
-            <Stack spacing={1.25}>
+          <Stack spacing={0}>
+            <Stack spacing={0}>
               <TextField
                 label="ФИО клиента"
                 value={row.customerName}
@@ -195,9 +195,8 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
       <Card variant="outlined">
         <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">Даты</Typography>
-            <Stack spacing={1.25}>
+          <Stack spacing={0}>
+            <Stack spacing={0}>
               <DatePicker
                 label="Дата заявки"
                 value={isoToDayjs(row.creationDate)}
@@ -226,76 +225,100 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
       <Card variant="outlined">
         <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">Оплата</Typography>
-            <Stack spacing={1.25}>
-              <TextField
-                label="Стоимость (RUB)"
-                value={numDisplay(row.price)}
-                onChange={setNumField('price')}
-                placeholder="0"
-                disabled={busy}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              />
-              <TextField
-                label="Предоплата нал (RUB)"
-                value={numDisplay(row.prepaymentCash)}
-                onChange={setNumField('prepaymentCash')}
-                placeholder="0"
-                disabled={busy}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              />
-              <TextField
-                label="Предоплата безнал (RUB)"
-                value={numDisplay(row.prepaymentDigital)}
-                onChange={setNumField('prepaymentDigital')}
-                placeholder="0"
-                disabled={busy}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              />
-              <TextField
-                label="Долг"
-                value={`${owe} RUB`}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { readOnly: true } }}
-                color={owe < 0 ? 'error' : 'primary'}
-              />
-              <TextField
-                label="Залог нал (RUB)"
-                value={numDisplay(row.pledgeCash)}
-                onChange={setNumField('pledgeCash')}
-                placeholder="0"
-                disabled={busy}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              />
-              <TextField
-                label="Залог безнал (RUB)"
-                value={numDisplay(row.pledgeDigital)}
-                onChange={setNumField('pledgeDigital')}
-                placeholder="0"
-                disabled={busy}
-                size="small"
-                fullWidth
-                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              />
-            </Stack>
+          <Stack spacing={0.5}>
+            <TextField
+              label="Стоимость"
+              value={numDisplay(row.price)}
+              onChange={setNumField('price')}
+              placeholder="0"
+              disabled={busy}
+              size="small"
+              fullWidth
+              slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              sx={{ mb: 1 }}
+            />
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+              <Stack spacing={0.5}>
+                <TextField
+                  label="Предоплата нал"
+                  value={numDisplay(row.prepaymentCash)}
+                  onChange={setNumField('prepaymentCash')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+                <TextField
+                  label="Предоплата безнал"
+                  value={numDisplay(row.prepaymentDigital)}
+                  onChange={setNumField('prepaymentDigital')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+                <TextField
+                  label="Предоплата СБП"
+                  value={numDisplay(row.prepaymentSBP)}
+                  onChange={setNumField('prepaymentSBP')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+              </Stack>
+              <Stack spacing={0.5}>
+                <TextField
+                  label="Залог нал"
+                  value={numDisplay(row.pledgeCash)}
+                  onChange={setNumField('pledgeCash')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+                <TextField
+                  label="Залог безнал"
+                  value={numDisplay(row.pledgeDigital)}
+                  onChange={setNumField('pledgeDigital')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+                <TextField
+                  label="Залог СБП"
+                  value={numDisplay(row.pledgeSBP)}
+                  onChange={setNumField('pledgeSBP')}
+                  placeholder="0"
+                  disabled={busy}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                />
+              </Stack>
+            </Box>
+            <TextField
+              label="Долг"
+              value={`${owe}`}
+              size="small"
+              fullWidth
+              slotProps={{ htmlInput: { readOnly: true } }}
+              color={owe < 0 ? 'error' : 'primary'}
+              sx={{ mt: 1 }}
+            />
           </Stack>
         </CardContent>
       </Card>
 
       <Card variant="outlined">
         <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">Комментарий</Typography>
+          <Stack spacing={0}>
             <TextField
               value={row.comment}
               onChange={e => setField('comment', e.target.value)}

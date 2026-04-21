@@ -47,23 +47,27 @@ export default function App() {
           value={activeTab}
           onChange={(_e, value: Tab) => setActiveTab(value)}
           variant="fullWidth"
+          sx={{ minHeight: 32, height: 32 }}
+          TabIndicatorProps={{ style: { height: 2 } }}
         >
           <Tab
             icon={<ReceiptLongIcon fontSize="small" />}
             iconPosition="start"
-            label="Оформление заказа"
+            label={<span style={{ fontSize: 13, fontWeight: 500 }}>Оформление заказа</span>}
             value="order"
+            sx={{ minHeight: 32, height: 32, py: 0, px: 1.5 }}
           />
           <Tab
             icon={<PointOfSaleIcon fontSize="small" />}
             iconPosition="start"
-            label="Продажа"
+            label={<span style={{ fontSize: 13, fontWeight: 500 }}>Продажа</span>}
             value="sell"
+            sx={{ minHeight: 32, height: 32, py: 0, px: 1.5 }}
           />
         </Tabs>
       </Box>
 
-      <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 1.5, md: 2 } }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 1.5, md: 1 } }}>
         {activeTab === 'order' && (
           <OrderTab config={config} onConfigChange={updateConfig} />
         )}

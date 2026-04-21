@@ -1,8 +1,9 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
 import path from 'path'
 import { registerIpcHandlers } from './ipc'
 
 function createWindow(): BrowserWindow {
+  Menu.setApplicationMenu(null) // Remove default menu (with "File", "Edit" etc.) — we don't need it
   const win = new BrowserWindow({
     width: 900,
     height: 700,

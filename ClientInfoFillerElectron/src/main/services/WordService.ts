@@ -43,10 +43,11 @@ function fmtDate(iso: string): string {
   return `${dd}.${mm}.${d.getFullYear()}`
 }
 
-function moneyParts(cash: number, digital: number): string {
+function moneyParts(cash: number, digital: number, sbp?: number): string {
   const parts: string[] = []
   if (cash) parts.push(`${cash}(н)`)
   if (digital) parts.push(`${digital}(бн)`)
+  if (sbp) parts.push(`${sbp}(сбп)`)
   return parts.join(' ')
 }
 
@@ -89,7 +90,7 @@ export async function fillAndPrint(data: Row): Promise<void> {
     errorLogging: false,
   })
 
-  const owe = data.price - data.prepaymentCash - data.prepaymentDigital
+  const owe = data.price - data.prepaymentCash - data.prepaymentDigital - (data.prepaymentSBP ?? 0)
 
   doc.render({
     ID: String(data.id),
@@ -100,9 +101,9 @@ export async function fillAndPrint(data: Row): Promise<void> {
     ActualOrderDate: fmtDate(data.actualOrderDate),
     ReturnDate: fmtDate(data.returnDate),
     Price: String(data.price),
-    Prepayment: moneyParts(data.prepaymentCash, data.prepaymentDigital),
+    Prepayment: moneyParts(data.prepaymentCash, data.prepaymentDigital, data.prepaymentSBP),
     Owe: String(owe),
-    Pledge: moneyParts(data.pledgeCash, data.pledgeDigital),
+    Pledge: moneyParts(data.pledgeCash, data.pledgeDigital, data.pledgeSBP),
     Comment: data.comment,
     PrintDateTime: (() => {
       const n = new Date()

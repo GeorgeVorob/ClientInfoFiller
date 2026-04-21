@@ -135,7 +135,8 @@ namespace ClientInfoFiller.Services
                         case "Prepayment":
                             string cashText = data.PrepaymentCash != 0 ? $"{data.PrepaymentCash}(н)" : "";
                             string digitalText = data.PrepaymentDigital != 0 ? $"{data.PrepaymentDigital}(бн)" : "";
-                            string resultText = $"{cashText} {digitalText}".Trim();
+                            string sbpText = data.PrepaymentSBP != 0 ? $"{data.PrepaymentSBP}(сбп)" : "";
+                            string resultText = $"{cashText} {digitalText} {sbpText}".Trim();
 
                             bookMark.SetText(resultText, bookmarkTextFormat);
                             break;
@@ -147,7 +148,8 @@ namespace ClientInfoFiller.Services
                         case "Pledge":
                             string cashPledgeText = data.PledgeCash != 0 ? $"{data.PledgeCash}(н)" : "";
                             string digitalPledgeText = data.PledgeDigital != 0 ? $"{data.PledgeDigital}(бн)" : "";
-                            string pledgeResultText = $"{cashPledgeText} {digitalPledgeText}".Trim();
+                            string sbpPledgeText = data.PledgeSBP != 0 ? $"{data.PledgeSBP}(сбп)" : "";
+                            string pledgeResultText = $"{cashPledgeText} {digitalPledgeText} {sbpPledgeText}".Trim();
 
                             bookMark.SetText(pledgeResultText, bookmarkTextFormat);
                             break;

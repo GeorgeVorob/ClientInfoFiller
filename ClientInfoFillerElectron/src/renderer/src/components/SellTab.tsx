@@ -31,7 +31,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
     setLastSaved(null)
   }
 
-  function setNumField(key: 'prepaymentCash' | 'prepaymentDigital') {
+  function setNumField(key: 'prepaymentCash' | 'prepaymentDigital' | 'prepaymentSBP' | 'pledgeCash' | 'pledgeDigital' | 'pledgeSBP') {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value.replace(/\D/g, '').slice(0, 9)
       setField(key, val === '' ? 0 : parseInt(val))
@@ -129,7 +129,7 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 fullWidth
               />
               <TextField
-                label="Оплата нал (RUB)"
+                label="Оплата нал"
                 value={numDisplay(row.prepaymentCash)}
                 onChange={setNumField('prepaymentCash')}
                 placeholder="0"
@@ -139,9 +139,49 @@ export default function SellTab({ config, onConfigChange }: Props) {
                 slotProps={{ htmlInput: { inputMode: 'numeric' } }}
               />
               <TextField
-                label="Оплата безнал (RUB)"
+                label="Оплата безнал"
                 value={numDisplay(row.prepaymentDigital)}
                 onChange={setNumField('prepaymentDigital')}
+                placeholder="0"
+                disabled={busy}
+                size="small"
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Оплата СБП"
+                value={numDisplay(row.prepaymentSBP)}
+                onChange={setNumField('prepaymentSBP')}
+                placeholder="0"
+                disabled={busy}
+                size="small"
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Залог нал"
+                value={numDisplay(row.pledgeCash)}
+                onChange={setNumField('pledgeCash')}
+                placeholder="0"
+                disabled={busy}
+                size="small"
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Залог безнал"
+                value={numDisplay(row.pledgeDigital)}
+                onChange={setNumField('pledgeDigital')}
+                placeholder="0"
+                disabled={busy}
+                size="small"
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Залог СБП"
+                value={numDisplay(row.pledgeSBP)}
+                onChange={setNumField('pledgeSBP')}
                 placeholder="0"
                 disabled={busy}
                 size="small"

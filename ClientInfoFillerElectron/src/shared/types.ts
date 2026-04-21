@@ -13,13 +13,15 @@ export interface Row {
   price: number
   prepaymentCash: number
   prepaymentDigital: number
+  prepaymentSBP: number
   pledgeCash: number
   pledgeDigital: number
+  pledgeSBP: number
   comment: string
 }
 
 export function calcOwe(row: Row): number {
-  return row.price - row.prepaymentCash - row.prepaymentDigital
+  return row.price - row.prepaymentCash - row.prepaymentDigital - row.prepaymentSBP
 }
 
 export function newRow(): Row {
@@ -37,8 +39,10 @@ export function newRow(): Row {
     price: 0,
     prepaymentCash: 0,
     prepaymentDigital: 0,
+    prepaymentSBP: 0,
     pledgeCash: 0,
     pledgeDigital: 0,
+    pledgeSBP: 0,
     comment: '',
   }
 }

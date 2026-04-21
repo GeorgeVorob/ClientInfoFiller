@@ -25,13 +25,15 @@ namespace ClientInfoFiller.Models
         public int Price { get; set; } = 0;
         public int PrepaymentCash { get; set; } = 0;
         public int PrepaymentDigital { get; set; } = 0;
-        public int Owe => Price - PrepaymentCash - PrepaymentDigital;
+        public int PrepaymentSBP { get; set; } = 0;
+        public int Owe => Price - PrepaymentCash - PrepaymentDigital - PrepaymentSBP;
 
         /// <summary>
         /// Залог, не имеет связи с долгом или предоплатой.
         /// </summary>
         public int PledgeCash { get; set; } = 0;
         public int PledgeDigital { get; set; } = 0;
+        public int PledgeSBP { get; set; } = 0;
 
         public string Comment { get; set; } = "";
 

@@ -11,11 +11,13 @@
  *  G(7)  — ReturnDate
  *  H(8)  — Price
  *  I(9)  — PrepaymentDigital
- *  J(10) — PrepaymentCash
- *  K(11) — Owe (computed, write-only)
- *  L(12) — PledgeCash
- *  M(13) — PledgeDigital
- *  N(14) — Comment
+ *  J(10) — PrepaymentSBP
+ *  K(11) — PrepaymentCash
+ *  L(12) — Owe (computed, write-only)
+ *  M(13) — PledgeCash
+ *  N(14) — PledgeDigital
+ *  O(15) — PledgeSBP
+ *  P(16) — Comment
  *
  * Sell sheet (separate file):
  *  A(1) — ID
@@ -116,17 +118,19 @@ function readRow(ws: ExcelJS.Worksheet, rowPos: number): Row {
     returnDate: parseDateDMY(cellText(c(7))),
     price: numCell(c(8)),
     prepaymentDigital: numCell(c(9)),
-    prepaymentCash: numCell(c(10)),
-    // col 11 = Owe (computed, skip on read)
-    pledgeCash: numCell(c(12)),
-    pledgeDigital: numCell(c(13)),
-    comment: cellText(c(14)),
+    prepaymentSBP: numCell(c(10)),
+    prepaymentCash: numCell(c(11)),
+    // col 12 = Owe (computed, skip on read)
+    pledgeCash: numCell(c(13)),
+    pledgeDigital: numCell(c(14)),
+    pledgeSBP: numCell(c(15)),
+    comment: cellText(c(16)),
   }
 }
 
 function writeRow(ws: ExcelJS.Worksheet, data: Row): void {
   if (data.rowPos < 2) throw new Error('Некорректная позиция строки при сохранении.')
-  const owe = data.price - data.prepaymentCash - data.prepaymentDigital
+  const owe = data.price - data.prepaymentCash - data.prepaymentDigital - data.prepaymentSBP
   const exRow = ws.getRow(data.rowPos)
 
   exRow.getCell(1).value = data.id
@@ -144,11 +148,13 @@ function writeRow(ws: ExcelJS.Worksheet, data: Row): void {
 
   exRow.getCell(8).value = data.price
   exRow.getCell(9).value = data.prepaymentDigital
-  exRow.getCell(10).value = data.prepaymentCash
-  exRow.getCell(11).value = owe
-  exRow.getCell(12).value = data.pledgeCash
-  exRow.getCell(13).value = data.pledgeDigital
-  exRow.getCell(14).value = data.comment
+  exRow.getCell(10).value = data.prepaymentSBP
+  exRow.getCell(11).value = data.prepaymentCash
+  exRow.getCell(12).value = owe
+  exRow.getCell(13).value = data.pledgeCash
+  exRow.getCell(14).value = data.pledgeDigital
+  exRow.getCell(15).value = data.pledgeSBP
+  exRow.getCell(16).value = data.comment
 
   exRow.commit()
 }
@@ -162,7 +168,11 @@ function writeSellRow(ws: ExcelJS.Worksheet, data: Row): void {
   exRow.getCell(4).value = data.phone
   exRow.getCell(5).value = data.prepaymentCash
   exRow.getCell(6).value = data.prepaymentDigital
-  exRow.getCell(7).value = data.comment
+  exRow.getCell(7).value = data.prepaymentSBP
+  exRow.getCell(8).value = data.pledgeCash
+  exRow.getCell(9).value = data.pledgeDigital
+  exRow.getCell(10).value = data.pledgeSBP
+  exRow.getCell(11).value = data.comment
   exRow.commit()
 }
 
