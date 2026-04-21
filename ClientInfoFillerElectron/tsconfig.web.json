@@ -12,10 +12,10 @@
     "skipLibCheck": true,
     "noEmit": true,
     "outDir": "dist/renderer",
-    "rootDir": "src/renderer/src",
+    "rootDir": "src",
     "paths": {
-      "@shared/*": ["../../shared/*"]
+      "@shared/*": ["./src/shared/*"]
     }
   },
-  "include": ["src/renderer/src/**/*"]
+  "include": ["src/renderer/src/**/*", "src/shared/**/*"]
 }

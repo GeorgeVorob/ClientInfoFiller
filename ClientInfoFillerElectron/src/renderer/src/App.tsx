@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import { Box, CircularProgress, Tab, Tabs, Typography } from '@mui/material'
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale'
 import OrderTab from './components/OrderTab'
 import SellTab from './components/SellTab'
 import type { AppConfig } from '@shared/types'
@@ -19,34 +22,56 @@ export default function App() {
     return next
   }
 
-  if (!config) return <div style={{ padding: 20 }}>Загрузка…</div>
+  if (!config) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 1.5,
+          flexDirection: 'column',
+        }}
+      >
+        <CircularProgress size={28} />
+        <Typography variant="body2" color="text.secondary">Загрузка…</Typography>
+      </Box>
+    )
+  }
 
   return (
-    <div className="app">
-      <div className="tab-bar">
-        <button
-          className={`tab-btn ${activeTab === 'order' ? 'active' : ''}`}
-          onClick={() => setActiveTab('order')}
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+        <Tabs
+          value={activeTab}
+          onChange={(_e, value: Tab) => setActiveTab(value)}
+          variant="fullWidth"
         >
-          📋 Оформление заказа
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'sell' ? 'active' : ''}`}
-          onClick={() => setActiveTab('sell')}
-        >
-          🛍 Продажа
-        </button>
-      </div>
+          <Tab
+            icon={<ReceiptLongIcon fontSize="small" />}
+            iconPosition="start"
+            label="Оформление заказа"
+            value="order"
+          />
+          <Tab
+            icon={<PointOfSaleIcon fontSize="small" />}
+            iconPosition="start"
+            label="Продажа"
+            value="sell"
+          />
+        </Tabs>
+      </Box>
 
-      <div className="tab-content">
+      <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 1.5, md: 2 } }}>
         {activeTab === 'order' && (
           <OrderTab config={config} onConfigChange={updateConfig} />
         )}
         {activeTab === 'sell' && (
           <SellTab config={config} onConfigChange={updateConfig} />
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 

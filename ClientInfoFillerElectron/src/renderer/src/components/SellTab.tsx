@@ -1,4 +1,14 @@
 import React, { useState } from 'react'
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import type { AppConfig, Row } from '@shared/types'
 import { newRow } from '@shared/types'
 
@@ -38,12 +48,22 @@ export default function SellTab({ config, onConfigChange }: Props) {
   }
 
   async function handleSell() {
-    if (!filePath) { setError('Сначала выберите файл таблицы продаж.'); return }
-    if (!row.customerName.trim()) { setError('Укажите ФИО клиента.'); return }
-    setBusy(true); setError(null); setLastSaved(null)
+    if (!filePath) {
+      setError('Сначала выберите файл таблицы продаж.')
+      return
+    }
+    if (!row.customerName.trim()) {
+      setError('Укажите ФИО клиента.')
+      return
+    }
+
+    setBusy(true)
+    setError(null)
+    setLastSaved(null)
+
     try {
       const saved = await window.api.saveSellRow(filePath, row)
-      setLastSaved(`✅ Сохранено — запись #${saved.id}`)
+      setLastSaved(`Сохранено - запись #${saved.id}`)
       setRow(newRow())
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : String(e))
@@ -53,114 +73,116 @@ export default function SellTab({ config, onConfigChange }: Props) {
   }
 
   return (
-    <>
-      {/* File selector */}
-      <div className="card">
-        <h2>📁 Файл таблицы продаж</h2>
-        <div className="file-row">
-          <span className={`file-path ${hasFile ? '' : 'empty'}`}>
-            <span className={`status-dot ${hasFile ? 'ok' : ''}`} />
-            {filePath || 'Файл не выбран'}
-          </span>
-          <button className="btn-secondary btn-sm" onClick={pickFile} disabled={busy}>
-            Обзор…
-          </button>
-        </div>
-      </div>
+    <Stack spacing={2}>
+      <Card variant="outlined">
+        <CardContent>
+          <Stack spacing={1.5}>
+            <Typography variant="h6">Файл таблицы продаж</Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+              <Chip
+                color={hasFile ? 'success' : 'default'}
+                variant={hasFile ? 'filled' : 'outlined'}
+                label={filePath || 'Файл не выбран'}
+                sx={{ justifyContent: 'flex-start', maxWidth: '100%' }}
+              />
+              <Button variant="outlined" onClick={pickFile} disabled={busy}>
+                Обзор...
+              </Button>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
 
-      {error && <div className="error-banner">⚠ {error}</div>}
-      {lastSaved && (
-        <div style={{ color: '#27ae60', fontWeight: 600, marginBottom: 12, fontSize: 13 }}>
-          {lastSaved}
-        </div>
-      )}
+      {error && <Alert severity="error">{error}</Alert>}
+      {lastSaved && <Alert severity="success">{lastSaved}</Alert>}
 
-      <div className="card">
-        <h2>Данные о продаже</h2>
-        <div className="form-grid">
-          <div className="field">
-            <label>ФИО клиента</label>
-            <input
-              type="text"
-              value={row.customerName}
-              onChange={e => setField('customerName', e.target.value)}
-              placeholder="Иванов Иван Иванович"
-              disabled={busy}
-            />
-          </div>
-          <div className="field">
-            <label>Номер телефона</label>
-            <input
-              type="text"
-              value={row.phone}
-              onChange={e => setField('phone', e.target.value)}
-              placeholder="+7 (000) 000-00-00"
-              disabled={busy}
-            />
-          </div>
-          <div className="field span-2">
-            <label>Наименование товара</label>
-            <input
-              type="text"
-              value={row.costumeName}
-              onChange={e => setField('costumeName', e.target.value)}
-              placeholder="Название"
-              disabled={busy}
-            />
-          </div>
-          <div className="field">
-            <label>Оплата нал (₽)</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={numDisplay(row.prepaymentCash)}
-              onChange={setNumField('prepaymentCash')}
-              placeholder="0"
-              disabled={busy}
-            />
-          </div>
-          <div className="field">
-            <label>Оплата безнал (₽)</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={numDisplay(row.prepaymentDigital)}
-              onChange={setNumField('prepaymentDigital')}
-              placeholder="0"
-              disabled={busy}
-            />
-          </div>
-          <div className="field span-2">
-            <label>Комментарий</label>
-            <textarea
-              value={row.comment}
-              onChange={e => setField('comment', e.target.value)}
-              rows={2}
-              placeholder="Дополнительные заметки…"
-              disabled={busy}
-            />
-          </div>
-        </div>
-      </div>
+      <Card variant="outlined">
+        <CardContent>
+          <Stack spacing={2}>
+            <Typography variant="h6">Данные о продаже</Typography>
+            <Stack spacing={1.5}>
+              <TextField
+                label="ФИО клиента"
+                value={row.customerName}
+                onChange={e => setField('customerName', e.target.value)}
+                placeholder="Иванов Иван Иванович"
+                disabled={busy}
+                fullWidth
+              />
+              <TextField
+                label="Номер телефона"
+                value={row.phone}
+                onChange={e => setField('phone', e.target.value)}
+                placeholder="+7 (000) 000-00-00"
+                disabled={busy}
+                fullWidth
+              />
+              <TextField
+                label="Наименование товара"
+                value={row.costumeName}
+                onChange={e => setField('costumeName', e.target.value)}
+                placeholder="Название"
+                disabled={busy}
+                fullWidth
+              />
+              <TextField
+                label="Оплата нал (RUB)"
+                value={numDisplay(row.prepaymentCash)}
+                onChange={setNumField('prepaymentCash')}
+                placeholder="0"
+                disabled={busy}
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Оплата безнал (RUB)"
+                value={numDisplay(row.prepaymentDigital)}
+                onChange={setNumField('prepaymentDigital')}
+                placeholder="0"
+                disabled={busy}
+                fullWidth
+                slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+              />
+              <TextField
+                label="Комментарий"
+                value={row.comment}
+                onChange={e => setField('comment', e.target.value)}
+                rows={2}
+                placeholder="Дополнительные заметки..."
+                disabled={busy}
+                multiline
+                fullWidth
+              />
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
 
-      <div className="card">
-        <div className="btn-row">
-          <button
-            className="btn-success"
-            onClick={handleSell}
-            disabled={busy || !hasFile}
-          >
-            {busy ? '⏳ Сохранение…' : '💾 Записать продажу'}
-          </button>
-          <button
-            className="btn-secondary"
-            onClick={() => { setRow(newRow()); setError(null); setLastSaved(null) }}
-            disabled={busy}
-          >
-            🔄 Сброс
-          </button>
-        </div>
-      </div>
-    </>
+      <Card variant="outlined">
+        <CardContent>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleSell}
+              disabled={busy || !hasFile}
+            >
+              {busy ? 'Сохранение...' : 'Записать продажу'}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setRow(newRow())
+                setError(null)
+                setLastSaved(null)
+              }}
+              disabled={busy}
+            >
+              Сброс
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+    </Stack>
   )
 }
