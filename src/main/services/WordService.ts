@@ -1,32 +1,26 @@
 /**
- * WordService.ts
+ * WordService
  *
- * ⚠️  IMPORTANT — Word template format change
- * The original C# app used Word bookmarks (named anchors).
- * docxtemplater works with inline placeholders instead.
+ * The template uses plain docxtemplater placeholders, not legacy bookmarks.
  *
- * You must update wordTemplate.docx so that wherever a bookmark used to be,
- * there is a plain-text placeholder in curly braces, e.g.:
+ * Required placeholders inside the Word file:
+ *   {ID}
+ *   {CustomerName}
+ *   {CostumeName}
+ *   {Phone}
+ *   {CreationDate}
+ *   {ActualOrderDate}
+ *   {ReturnDate}
+ *   {Price}
+ *   {Prepayment}
+ *   {Owe}
+ *   {Pledge}
+ *   {Comment}
+ *   {PrintDateTime}
  *
- *   Old (bookmark named "CustomerName"): [cursor placed here]
- *   New (plain text in the docx):        {CustomerName}
- *
- * Full list of placeholders to put in the template:
- *   {ID}              — record number
- *   {CustomerName}    — full name
- *   {CostumeName}     — costume
- *   {Phone}           — phone
- *   {CreationDate}    — date of order (dd.MM.yyyy)
- *   {ActualOrderDate} — pickup date
- *   {ReturnDate}      — return date
- *   {Price}           — total price
- *   {Prepayment}      — "1500(н) 500(бн)"
- *   {Owe}             — remaining amount
- *   {Pledge}          — deposit
- *   {Comment}         — comment
- *   {PrintDateTime}   — filled automatically at print time
- *
- * Place wordTemplate.docx in the /assets folder of the project root.
+ * Portable / packaged layout:
+ *   - "Шаблон Word.docx" lives next to the main .exe file
+ *   - "Шаблон Word backup.docx" is shipped there as a backup copy
  */
 
 import path from 'path'
@@ -36,6 +30,9 @@ import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
 import type { Row } from '../../shared/types'
 import { logError } from './logError'
+
+const TEMPLATE_FILE_NAME = 'Шаблон Word.docx'
+const TEMPLATE_BACKUP_FILE_NAME = 'Шаблон Word backup.docx'
 
 function fmtDate(iso: string): string {
   const d = new Date(iso)
@@ -52,12 +49,16 @@ function moneyParts(cash: number, digital: number, sbp?: number): string {
   return parts.join(' ')
 }
 
+function executableDir(): string {
+  return app.isPackaged ? path.dirname(process.execPath) : app.getAppPath()
+}
+
 function templatePath(): string {
-  // In packaged build the assets folder is copied next to app.asar via extraResources
-  if (app.isPackaged) {
-    return path.join(process.resourcesPath, 'assets', 'wordTemplate.docx')
-  }
-  return path.join(app.getAppPath(), 'assets', 'wordTemplate.docx')
+  return path.join(executableDir(), TEMPLATE_FILE_NAME)
+}
+
+function backupTemplatePath(): string {
+  return path.join(executableDir(), TEMPLATE_BACKUP_FILE_NAME)
 }
 
 function tempDir(): string {
@@ -69,17 +70,23 @@ function tempDir(): string {
 function cleanTempDir(dir: string): void {
   try {
     for (const file of fs.readdirSync(dir)) {
-      try { fs.unlinkSync(path.join(dir, file)) } catch { /* file in use — skip */ }
+      try {
+        fs.unlinkSync(path.join(dir, file))
+      } catch {
+        // file may be in use
+      }
     }
-  } catch { /* dir may not exist yet */ }
+  } catch {
+    // dir may not exist yet
+  }
 }
 
 export async function fillAndPrint(data: Row): Promise<void> {
-  try {    
+  try {
     const tplPath = templatePath()
     if (!fs.existsSync(tplPath)) {
       throw new Error(
-        `Шаблон Word не найден по пути:\n${tplPath}\n\nПоложите wordTemplate.docx в папку assets/ проекта.`
+        `Шаблон Word не найден по пути:\n${tplPath}\n\nПоложите файл "${TEMPLATE_FILE_NAME}" рядом с .exe.\nРезервная копия должна лежать там же:\n${backupTemplatePath()}`
       )
     }
 
@@ -88,7 +95,6 @@ export async function fillAndPrint(data: Row): Promise<void> {
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
-      // Ошибки — в исключение, а не в тихий пропуск
       errorLogging: false,
     })
 
@@ -125,7 +131,6 @@ export async function fillAndPrint(data: Row): Promise<void> {
     const outPath = path.join(dir, `order-${data.id}-${Date.now()}.docx`)
     fs.writeFileSync(outPath, buf)
 
-    // Opens the file with whatever the OS has set as default for .docx (Word, LibreOffice, etc.)
     const err = await shell.openPath(outPath)
     if (err) throw new Error(`Не удалось открыть файл: ${err}`)
   } catch (e) {

@@ -40,10 +40,14 @@
     "directories": {
       "output": "release"
     },
-    "extraResources": [
+    "extraFiles": [
       {
-        "from": "assets/",
-        "to": "assets/"
+        "from": "Шаблон Word.docx",
+        "to": "Шаблон Word.docx"
+      },
+      {
+        "from": "Шаблон Word backup.docx",
+        "to": "Шаблон Word backup.docx"
       }
     ],
     "win": {
