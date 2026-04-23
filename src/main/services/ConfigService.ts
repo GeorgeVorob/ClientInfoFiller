@@ -9,6 +9,7 @@ const CONFIG_PATH = path.join(app.getPath('userData'), 'config.json')
 const DEFAULT_CONFIG: AppConfig = {
   mainExcelFilePath: '',
   sellExcelFilePath: '',
+  sbpEnabled: true,
 }
 
 export function loadConfig(): AppConfig {

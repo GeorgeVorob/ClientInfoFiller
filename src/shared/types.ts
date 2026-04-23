@@ -50,6 +50,7 @@ export function newRow(): Row {
 export interface AppConfig {
   mainExcelFilePath: string
   sellExcelFilePath: string
+  sbpEnabled: boolean
 }
 
 export interface AutocompleteData {
