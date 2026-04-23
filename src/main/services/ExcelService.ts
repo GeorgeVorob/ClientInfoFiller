@@ -1,27 +1,25 @@
 import fs from 'fs'
+import ExcelJS from 'exceljs'
+import { logError } from './logError'
+import type { Row } from '../../shared/types'
 
-// Проверка возможности записи в файл
-function assertFileWritable(filePath: string): void {
-  try {
-    const fd = fs.openSync(filePath, 'r+')
-    fs.closeSync(fd)
-  } catch {
-    throw new Error('FILE_LOCKED')
-  }
-}
 /**
- * ExcelService.ts
+ * ExcelService
  *
- * Column mapping (same as original C# app):
- *  A(1)  — ID
- *  B(2)  — CustomerName
- *  C(3)  — CostumeName
- *  D(4)  — Phone
- *  E(5)  — CreationDate
- *  F(6)  — ActualOrderDate
- *  G(7)  — ReturnDate
- *  H(8)  — Price
- *  I(9)  — PrepaymentDigital
+ * Order sheet column mapping:
+ *
+ * Shared columns:
+ *  A(1) — ID
+ *  B(2) — CustomerName
+ *  C(3) — CostumeName
+ *  D(4) — Phone
+ *  E(5) — CreationDate
+ *  F(6) — ActualOrderDate
+ *  G(7) — ReturnDate
+ *  H(8) — Price
+ *  I(9) — PrepaymentDigital
+ *
+ * SBP enabled:
  *  J(10) — PrepaymentSBP
  *  K(11) — PrepaymentCash
  *  L(12) — Owe (computed, write-only)
@@ -30,21 +28,55 @@ function assertFileWritable(filePath: string): void {
  *  O(15) — PledgeSBP
  *  P(16) — Comment
  *
+ * SBP disabled:
+ *  J(10) — PrepaymentCash
+ *  K(11) — Owe (computed, write-only)
+ *  L(12) — PledgeCash
+ *  M(13) — PledgeDigital
+ *  N(14) — Comment
+ *
  * Sell sheet (separate file):
- *  A(1) — ID
- *  B(2) — CustomerName
- *  C(3) — CostumeName
- *  D(4) — Phone
- *  E(5) — PrepaymentCash (cash payment)
- *  F(6) — PrepaymentDigital (digital payment)
- *  G(7) — Comment
+ *  A(1)  — ID
+ *  B(2)  — CustomerName
+ *  C(3)  — CostumeName
+ *  D(4)  — Phone
+ *  E(5)  — PrepaymentCash
+ *  F(6)  — PrepaymentDigital
+ *  G(7)  — PrepaymentSBP
+ *  H(8)  — PledgeCash
+ *  I(9)  — PledgeDigital
+ *  J(10) — PledgeSBP
+ *  K(11) — Comment
  */
 
-import ExcelJS from 'exceljs'
-import { logError } from './logError'
-import type { Row } from '../../shared/types'
+function assertFileWritable(filePath: string): void {
+  try {
+    const fd = fs.openSync(filePath, 'r+')
+    fs.closeSync(fd)
+  } catch {
+    throw new Error('FILE_LOCKED')
+  }
+}
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+interface ExcelServiceOptions {
+  sbpEnabled: boolean
+}
+
+interface LastEmptyResult {
+  rowPos: number
+  lastId: number
+}
+
+interface OrderColumnMap {
+  prepaymentDigital: number
+  prepaymentSBP?: number
+  prepaymentCash: number
+  owe: number
+  pledgeCash: number
+  pledgeDigital: number
+  pledgeSBP?: number
+  comment: number
+}
 
 function formatDateDMY(iso: string): string {
   const d = new Date(iso)
@@ -55,13 +87,13 @@ function formatDateDMY(iso: string): string {
 
 function parseDateDMY(text: string): string {
   if (!text) return defaultISO()
-  // dd.MM.yyyy
+
   const m = text.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/)
   if (m) {
-    const d = new Date(parseInt(m[3]), parseInt(m[2]) - 1, parseInt(m[1]))
+    const d = new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10))
     if (!isNaN(d.getTime())) return d.toISOString()
   }
-  // Excel may hand us a JS Date object serialised as text — try generic parse
+
   const d = new Date(text)
   return isNaN(d.getTime()) ? defaultISO() : d.toISOString()
 }
@@ -71,57 +103,77 @@ function defaultISO(): string {
   return new Date(n.getFullYear(), n.getMonth(), n.getDate()).toISOString()
 }
 
-/** Extracts a plain string from an ExcelJS cell regardless of its value type */
 function cellText(cell: ExcelJS.Cell): string {
   const v = cell.value
   if (v === null || v === undefined) return ''
   if (v instanceof Date) return formatDateDMY(v.toISOString())
+
   if (typeof v === 'object') {
     if ('richText' in v) return (v as ExcelJS.CellRichTextValue).richText.map(r => r.text).join('')
     if ('result' in v) return String((v as ExcelJS.CellFormulaValue).result ?? '')
     if ('text' in v) return String((v as { text: string }).text)
     if ('error' in v) return ''
   }
+
   return String(v)
 }
 
 function numCell(cell: ExcelJS.Cell): number {
-  const n = parseInt(cellText(cell))
+  const n = parseInt(cellText(cell), 10)
   return isNaN(n) ? 0 : n
 }
 
-// ── row positions ─────────────────────────────────────────────────────────────
+function getOrderColumnMap(sbpEnabled: boolean): OrderColumnMap {
+  if (sbpEnabled) {
+    return {
+      prepaymentDigital: 9,
+      prepaymentSBP: 10,
+      prepaymentCash: 11,
+      owe: 12,
+      pledgeCash: 13,
+      pledgeDigital: 14,
+      pledgeSBP: 15,
+      comment: 16,
+    }
+  }
 
-interface LastEmptyResult {
-  rowPos: number   // 1-based index of the first empty row (ready to write)
-  lastId: number   // next available ID (last occupied ID + 1)
+  return {
+    prepaymentDigital: 9,
+    prepaymentCash: 10,
+    owe: 11,
+    pledgeCash: 12,
+    pledgeDigital: 13,
+    comment: 14,
+  }
 }
 
 function findLastEmptyRow(ws: ExcelJS.Worksheet): LastEmptyResult {
   let rowPos = 2
   let lastId = 0
+
   while (true) {
     const cell = ws.getRow(rowPos).getCell(1)
     const text = cellText(cell)
     if (text !== '') {
-      const id = parseInt(text)
+      const id = parseInt(text, 10)
       if (!isNaN(id)) lastId = id
       rowPos++
     } else {
       break
     }
   }
+
   return { rowPos, lastId: lastId + 1 }
 }
 
-// ── read / write ──────────────────────────────────────────────────────────────
-
-function readRow(ws: ExcelJS.Worksheet, rowPos: number): Row {
+function readRow(ws: ExcelJS.Worksheet, rowPos: number, sbpEnabled: boolean): Row {
   const exRow = ws.getRow(rowPos)
   const c = (col: number) => exRow.getCell(col)
+  const map = getOrderColumnMap(sbpEnabled)
+
   return {
     rowPos,
-    id: parseInt(cellText(c(1))) || -1,
+    id: parseInt(cellText(c(1)), 10) || -1,
     customerName: cellText(c(2)),
     costumeName: cellText(c(3)),
     phone: cellText(c(4)),
@@ -129,19 +181,20 @@ function readRow(ws: ExcelJS.Worksheet, rowPos: number): Row {
     actualOrderDate: parseDateDMY(cellText(c(6))),
     returnDate: parseDateDMY(cellText(c(7))),
     price: numCell(c(8)),
-    prepaymentDigital: numCell(c(9)),
-    prepaymentSBP: numCell(c(10)),
-    prepaymentCash: numCell(c(11)),
-    // col 12 = Owe (computed, skip on read)
-    pledgeCash: numCell(c(13)),
-    pledgeDigital: numCell(c(14)),
-    pledgeSBP: numCell(c(15)),
-    comment: cellText(c(16)),
+    prepaymentDigital: numCell(c(map.prepaymentDigital)),
+    prepaymentSBP: map.prepaymentSBP ? numCell(c(map.prepaymentSBP)) : 0,
+    prepaymentCash: numCell(c(map.prepaymentCash)),
+    pledgeCash: numCell(c(map.pledgeCash)),
+    pledgeDigital: numCell(c(map.pledgeDigital)),
+    pledgeSBP: map.pledgeSBP ? numCell(c(map.pledgeSBP)) : 0,
+    comment: cellText(c(map.comment)),
   }
 }
 
-function writeRow(ws: ExcelJS.Worksheet, data: Row): void {
+function writeRow(ws: ExcelJS.Worksheet, data: Row, sbpEnabled: boolean): void {
   if (data.rowPos < 2) throw new Error('Некорректная позиция строки при сохранении.')
+
+  const map = getOrderColumnMap(sbpEnabled)
   const owe = data.price - data.prepaymentCash - data.prepaymentDigital - data.prepaymentSBP
   const exRow = ws.getRow(data.rowPos)
 
@@ -151,28 +204,29 @@ function writeRow(ws: ExcelJS.Worksheet, data: Row): void {
   exRow.getCell(4).value = data.phone
 
   const setDate = (col: number, iso: string) => {
-    const cell = exRow.getCell(col)
-    cell.value = formatDateDMY(iso)
+    exRow.getCell(col).value = formatDateDMY(iso)
   }
+
   setDate(5, data.creationDate)
   setDate(6, data.actualOrderDate)
   setDate(7, data.returnDate)
 
   exRow.getCell(8).value = data.price
-  exRow.getCell(9).value = data.prepaymentDigital
-  exRow.getCell(10).value = data.prepaymentSBP
-  exRow.getCell(11).value = data.prepaymentCash
-  exRow.getCell(12).value = owe
-  exRow.getCell(13).value = data.pledgeCash
-  exRow.getCell(14).value = data.pledgeDigital
-  exRow.getCell(15).value = data.pledgeSBP
-  exRow.getCell(16).value = data.comment
+  exRow.getCell(map.prepaymentDigital).value = data.prepaymentDigital
+  if (map.prepaymentSBP) exRow.getCell(map.prepaymentSBP).value = data.prepaymentSBP
+  exRow.getCell(map.prepaymentCash).value = data.prepaymentCash
+  exRow.getCell(map.owe).value = owe
+  exRow.getCell(map.pledgeCash).value = data.pledgeCash
+  exRow.getCell(map.pledgeDigital).value = data.pledgeDigital
+  if (map.pledgeSBP) exRow.getCell(map.pledgeSBP).value = data.pledgeSBP
+  exRow.getCell(map.comment).value = data.comment
 
   exRow.commit()
 }
 
 function writeSellRow(ws: ExcelJS.Worksheet, data: Row): void {
   if (data.rowPos < 2) throw new Error('Некорректная позиция строки при сохранении.')
+
   const exRow = ws.getRow(data.rowPos)
   exRow.getCell(1).value = data.id
   exRow.getCell(2).value = data.customerName
@@ -188,10 +242,8 @@ function writeSellRow(ws: ExcelJS.Worksheet, data: Row): void {
   exRow.commit()
 }
 
-// ── public API ────────────────────────────────────────────────────────────────
-
 export class ExcelService {
-  constructor(private filePath: string) {}
+  constructor(private filePath: string, private options: ExcelServiceOptions = { sbpEnabled: true }) {}
 
   private async open(): Promise<{ wb: ExcelJS.Workbook; ws: ExcelJS.Worksheet }> {
     try {
@@ -206,26 +258,26 @@ export class ExcelService {
     }
   }
 
-  /** Save or update an order row. Mutates data.rowPos and data.id when new. */
   async saveRow(data: Row): Promise<Row> {
     try {
       assertFileWritable(this.filePath)
       const { wb, ws } = await this.open()
       let usedData = data
+
       if (data.rowPos === -1) {
         const { rowPos, lastId } = findLastEmptyRow(ws)
         usedData = { ...data, rowPos, id: lastId }
       }
-      writeRow(ws, usedData)
+
+      writeRow(ws, usedData, this.options.sbpEnabled)
       await wb.xlsx.writeFile(this.filePath)
       return usedData
     } catch (e) {
-      logError('ExcelService.saveRow', e, { filePath: this.filePath, data })
+      logError('ExcelService.saveRow', e, { filePath: this.filePath, data, options: this.options })
       throw e
     }
   }
 
-  /** Always appends a new row to the sell sheet. */
   async saveSellRow(data: Row): Promise<Row> {
     try {
       assertFileWritable(this.filePath)
@@ -241,18 +293,19 @@ export class ExcelService {
     }
   }
 
-  /** Returns all non-empty rows for autocomplete population. */
   async getAllRows(): Promise<Row[]> {
     try {
       const { ws } = await this.open()
       const { rowPos: lastEmpty } = findLastEmptyRow(ws)
       const rows: Row[] = []
+
       for (let i = 2; i < lastEmpty; i++) {
-        rows.push(readRow(ws, i))
+        rows.push(readRow(ws, i, this.options.sbpEnabled))
       }
+
       return rows
     } catch (e) {
-      logError('ExcelService.getAllRows', e, { filePath: this.filePath })
+      logError('ExcelService.getAllRows', e, { filePath: this.filePath, options: this.options })
       throw e
     }
   }

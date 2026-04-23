@@ -75,12 +75,12 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   const loadAutocomplete = useCallback(async (path: string) => {
     if (!path) return
     try {
-      const data = await window.api.getAutocomplete(path)
+      const data = await window.api.getAutocomplete(path, sbpEnabled)
       setAutocomplete(data)
     } catch {
       // Autocomplete is optional; failure should not block editing.
     }
-  }, [])
+  }, [sbpEnabled])
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value
@@ -136,7 +136,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     setError(null)
 
     try {
-      const saved = await window.api.saveRow(filePath, row)
+      const saved = await window.api.saveRow(filePath, effectiveRow, sbpEnabled)
       if (isNewRow || andPrint) {
         await window.api.fillAndPrint(saved)
       }

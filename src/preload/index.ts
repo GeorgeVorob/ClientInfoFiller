@@ -21,8 +21,8 @@ const api = {
   },
 
   /** Save or update an order row. Returns the row with id/rowPos assigned. */
-  saveRow(filePath: string, row: Row): Promise<Row> {
-    return ipcRenderer.invoke(IPC.EXCEL_SAVE_ROW, filePath, row)
+  saveRow(filePath: string, row: Row, sbpEnabled: boolean): Promise<Row> {
+    return ipcRenderer.invoke(IPC.EXCEL_SAVE_ROW, filePath, row, sbpEnabled)
   },
 
   saveSellRow(filePath: string, row: Row): Promise<Row> {
@@ -30,8 +30,8 @@ const api = {
   },
 
   /** Load unique customer names and phones for autocomplete. */
-  getAutocomplete(filePath: string): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> {
-    return ipcRenderer.invoke(IPC.EXCEL_GET_AUTOCOMPLETE, filePath)
+  getAutocomplete(filePath: string, sbpEnabled: boolean): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> {
+    return ipcRenderer.invoke(IPC.EXCEL_GET_AUTOCOMPLETE, filePath, sbpEnabled)
   },
 
   /** Fill the Word template and open it for review/printing. */

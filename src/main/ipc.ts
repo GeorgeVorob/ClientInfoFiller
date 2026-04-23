@@ -54,12 +54,12 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   // ── Excel ───────────────────────────────────────────────────────────────────
 
-  ipcMain.handle(IPC.EXCEL_SAVE_ROW, async (_e, filePath: string, row: Row): Promise<Row> => {
+  ipcMain.handle(IPC.EXCEL_SAVE_ROW, async (_e, filePath: string, row: Row, sbpEnabled: boolean): Promise<Row> => {
     try {
-      const svc = new ExcelService(filePath)
+      const svc = new ExcelService(filePath, { sbpEnabled })
       return await svc.saveRow(row)
     } catch (e) {
-      logError('IPC.EXCEL_SAVE_ROW', e, { filePath, row })
+      logError('IPC.EXCEL_SAVE_ROW', e, { filePath, row, sbpEnabled })
       throw e
     }
   })
@@ -76,9 +76,9 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle(
     IPC.EXCEL_GET_AUTOCOMPLETE,
-    async (_e, filePath: string): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> => {
+    async (_e, filePath: string, sbpEnabled: boolean): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> => {
       try {
-        const svc = new ExcelService(filePath)
+        const svc = new ExcelService(filePath, { sbpEnabled })
         const rows = await svc.getAllRows()
 
         const namesSeen = new Set<string>()
@@ -97,7 +97,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
         const phones = [...new Set(rows.map(r => r.phone).filter(Boolean))]
         return { names, phones, nameToPhone }
       } catch (e) {
-        logError('IPC.EXCEL_GET_AUTOCOMPLETE', e, { filePath })
+        logError('IPC.EXCEL_GET_AUTOCOMPLETE', e, { filePath, sbpEnabled })
         throw e
       }
     }
