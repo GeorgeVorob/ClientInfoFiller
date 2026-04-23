@@ -70,7 +70,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   const sbpEnabled = config.sbpEnabled
   const effectiveRow = sbpEnabled ? row : { ...row, prepaymentSBP: 0, pledgeSBP: 0 }
   const owe = calcOwe(effectiveRow)
-  const showSbpWarning = settingsOpen && !sbpInitialValue && sbpEnabled
+  const showSbpWarning = settingsOpen && sbpInitialValue !== sbpEnabled
 
   const loadAutocomplete = useCallback(async (path: string) => {
     if (!path) return
@@ -202,14 +202,14 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
             {showSbpWarning && (
               <Alert severity="warning">
-                При включении СБП в существующей таблице число столбцов увеличится и старые переместятся, учтите это в таблице.
+                При переключении СБП в таблице со старыми записями число столбцов изменится и новые записи будут сдвинуты, учтите это в таблице - добавьте столбцы для СБП вручную вдоль всего столбца или уберите их, со сдвигом соседних.
               </Alert>
             )}
 
             <Divider />
 
             <Stack spacing={1}>
-              <Typography variant="subtitle1">Текущая схема столбцов в таблице</Typography>
+              <Typography variant="subtitle1">Текущая схема столбцов в таблице (СБП {sbpEnabled ? '' : 'НЕ'} включен)</Typography>
               <TableContainer component={Paper} variant="outlined">
                 <Table size="small">
                   <TableHead>
