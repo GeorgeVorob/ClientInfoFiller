@@ -119,6 +119,28 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     return val === 0 ? '' : String(val)
   }
 
+  function upsertAutocomplete(saved: Row) {
+    setAutocomplete(prev => {
+      const names = [...prev.names]
+      const phones = [...prev.phones]
+      const nameToPhone = { ...prev.nameToPhone }
+
+      if (saved.customerName && !names.some(name => name.toLowerCase() === saved.customerName.toLowerCase())) {
+        names.push(saved.customerName)
+      }
+
+      if (saved.phone && !phones.includes(saved.phone)) {
+        phones.push(saved.phone)
+      }
+
+      if (saved.customerName && saved.phone) {
+        nameToPhone[saved.customerName] = saved.phone
+      }
+
+      return { names, phones, nameToPhone }
+    })
+  }
+
   async function pickFile() {
     const path = await window.api.openExcelFile()
     if (path) {
@@ -138,6 +160,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
     try {
       const saved = await window.api.saveRow(filePath, effectiveRow, sbpEnabled)
+      upsertAutocomplete(saved)
       if (isNewRow || andPrint) {
         await window.api.fillAndPrint(saved)
       }
