@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Chip,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -200,16 +201,16 @@ export default function OrderTab({ config, onConfigChange }: Props) {
               </Typography>
             </Box>
 
-            {showSbpWarning && (
+            <Collapse in={showSbpWarning} timeout="auto" unmountOnExit>
               <Alert severity="warning">
                 При переключении СБП в таблице со старыми записями число столбцов изменится и новые записи будут сдвинуты, учтите это в таблице - добавьте столбцы для СБП вручную вдоль всего столбца или уберите их, со сдвигом соседних.
               </Alert>
-            )}
+            </Collapse>
 
             <Divider />
 
             <Stack spacing={1}>
-              <Typography variant="subtitle1">Текущая схема столбцов в таблице (СБП {sbpEnabled ? '' : 'НЕ'} включен)</Typography>
+              <Typography variant="subtitle1">Текущая схема столбцов в таблице (СБП {sbpEnabled ? '' : 'НЕ '}включен)</Typography>
               <TableContainer component={Paper} variant="outlined">
                 <Table size="small">
                   <TableHead>
@@ -223,47 +224,47 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     <TableRow>
                       <TableCell>A</TableCell>
                       <TableCell>ID</TableCell>
-                      <TableCell>{"{ID}"}</TableCell>
+                      <TableCell>{'{ID}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>B</TableCell>
                       <TableCell>ФИО</TableCell>
-                      <TableCell>{"{CustomerName}"}</TableCell>
+                      <TableCell>{'{CustomerName}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>C</TableCell>
                       <TableCell>Костюм</TableCell>
-                      <TableCell>{"{CostumeName}"}</TableCell>
+                      <TableCell>{'{CostumeName}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>D</TableCell>
                       <TableCell>Телефон</TableCell>
-                      <TableCell>{"{Phone}"}</TableCell>
+                      <TableCell>{'{Phone}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>E</TableCell>
                       <TableCell>Дата заявки</TableCell>
-                      <TableCell>{"{CreationDate}"}</TableCell>
+                      <TableCell>{'{CreationDate}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>F</TableCell>
                       <TableCell>Дата выдачи</TableCell>
-                      <TableCell>{"{ActualOrderDate}"}</TableCell>
+                      <TableCell>{'{ActualOrderDate}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>G</TableCell>
                       <TableCell>Дата возврата</TableCell>
-                      <TableCell>{"{ReturnDate}"}</TableCell>
+                      <TableCell>{'{ReturnDate}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>H</TableCell>
                       <TableCell>Стоимость</TableCell>
-                      <TableCell>{"{Price}"}</TableCell>
+                      <TableCell>{'{Price}'}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>I</TableCell>
                       <TableCell>Предоплата безнал</TableCell>
-                      <TableCell rowSpan={sbpEnabled ? 3 : 2}>{"{Prepayment}"}</TableCell>
+                      <TableCell rowSpan={sbpEnabled ? 3 : 2}>{'{Prepayment}'}</TableCell>
                     </TableRow>
                     {sbpEnabled ? (
                       <>
@@ -278,12 +279,12 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow>
                           <TableCell>L</TableCell>
                           <TableCell>Долг</TableCell>
-                          <TableCell>{"{Owe}"}</TableCell>
+                          <TableCell>{'{Owe}'}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>M</TableCell>
                           <TableCell>Залог нал</TableCell>
-                          <TableCell rowSpan={3}>{"{Pledge}"}</TableCell>
+                          <TableCell rowSpan={3}>{'{Pledge}'}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>N</TableCell>
@@ -296,7 +297,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow>
                           <TableCell>P</TableCell>
                           <TableCell>Комментарий</TableCell>
-                          <TableCell>{"{Comment}"}</TableCell>
+                          <TableCell>{'{Comment}'}</TableCell>
                         </TableRow>
                       </>
                     ) : (
@@ -308,12 +309,12 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow>
                           <TableCell>K</TableCell>
                           <TableCell>Долг</TableCell>
-                          <TableCell>{"{Owe}"}</TableCell>
+                          <TableCell>{'{Owe}'}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>L</TableCell>
                           <TableCell>Залог нал</TableCell>
-                          <TableCell rowSpan={2}>{"{Pledge}"}</TableCell>
+                          <TableCell rowSpan={2}>{'{Pledge}'}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>M</TableCell>
@@ -322,7 +323,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow>
                           <TableCell>N</TableCell>
                           <TableCell>Комментарий</TableCell>
-                          <TableCell>{"{Comment}"}</TableCell>
+                          <TableCell>{'{Comment}'}</TableCell>
                         </TableRow>
                       </>
                     )}
@@ -372,13 +373,15 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         </CardContent>
       </Card>
 
-      {error && <Alert severity="error">{`Произошла ошибка:\n${error}`}</Alert>}
+      <Collapse in={Boolean(error)} timeout="auto" unmountOnExit>
+        <Alert severity="error">{`Произошла ошибка:\n${error ?? ''}`}</Alert>
+      </Collapse>
 
-      {!isNewRow && (
+      <Collapse in={!isNewRow} timeout="auto" unmountOnExit>
         <Alert severity="success" icon={<EditIcon />}>
           Режим редактирования - запись #{row.id}
         </Alert>
-      )}
+      </Collapse>
 
       <datalist id="dl-names">
         {autocomplete.names.map(n => (
