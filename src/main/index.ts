@@ -9,7 +9,7 @@ function createWindow(): BrowserWindow {
     height: 950,
     minWidth: 550,
     minHeight: 600,
-    title: 'Client info filler blue',
+    title: 'Оформление заказов',
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
