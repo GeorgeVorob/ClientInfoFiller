@@ -87,7 +87,7 @@ declare global {
       setConfig(p: Partial<AppConfig>): Promise<AppConfig>
       saveRow(path: string, row: import('@shared/types').Row): Promise<import('@shared/types').Row>
       saveSellRow(path: string, row: import('@shared/types').Row): Promise<import('@shared/types').Row>
-      getAutocomplete(path: string): Promise<{ names: string[]; phones: string[] }>
+      getAutocomplete(path: string): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }>
       fillAndPrint(row: import('@shared/types').Row): Promise<void>
     }
   }
