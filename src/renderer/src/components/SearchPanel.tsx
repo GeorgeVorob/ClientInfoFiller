@@ -141,7 +141,9 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
                 Найдено: {results.length}
                 {results.length === 20 ? ' (показаны первые 20)' : ''}
               </Typography>
-              <List dense disablePadding>
+              <List dense disablePadding
+              sx={{ maxHeight: '580px', overflowY: 'auto' }}
+              >
                 {results.map(row => (
                   <ListItemButton
                     key={row.rowPos}
