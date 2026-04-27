@@ -1,23 +1,18 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron'
-import { IPC } from '../shared/types'
-import type { AppConfig, Row } from '../shared/types'
-import { loadConfig, saveConfig } from './services/ConfigService'
-import { logError } from './services/logError'
 import fs from 'fs'
+import { BrowserWindow, dialog, ipcMain } from 'electron'
+import { IPC } from '../shared/types'
+import type { AppConfig, Row, SearchRequest } from '../shared/types'
+import { loadConfig, saveConfig } from './services/ConfigService'
 import { ExcelService } from './services/ExcelService'
+import { logError } from './services/logError'
 import { fillAndPrint } from './services/WordService'
 
 export function registerIpcHandlers(win: BrowserWindow): void {
-  // ── Config ──────────────────────────────────────────────────────────────────
-
   ipcMain.handle(IPC.CONFIG_GET, (): AppConfig => {
     try {
       const cfg = loadConfig()
-      // сбрасываем несуществующие пути чтобы renderer не показывал мёртвые пути
-      if (cfg.mainExcelFilePath && !fs.existsSync(cfg.mainExcelFilePath))
-        cfg.mainExcelFilePath = ''
-      if (cfg.sellExcelFilePath && !fs.existsSync(cfg.sellExcelFilePath))
-        cfg.sellExcelFilePath = ''
+      if (cfg.mainExcelFilePath && !fs.existsSync(cfg.mainExcelFilePath)) cfg.mainExcelFilePath = ''
+      if (cfg.sellExcelFilePath && !fs.existsSync(cfg.sellExcelFilePath)) cfg.sellExcelFilePath = ''
       return cfg
     } catch (e) {
       logError('IPC.CONFIG_GET', e)
@@ -37,8 +32,6 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     }
   })
 
-  // ── File dialog ─────────────────────────────────────────────────────────────
-
   ipcMain.handle(IPC.DIALOG_OPEN_EXCEL, async (): Promise<string | null> => {
     try {
       const result = await dialog.showOpenDialog(win, {
@@ -51,8 +44,6 @@ export function registerIpcHandlers(win: BrowserWindow): void {
       throw e
     }
   })
-
-  // ── Excel ───────────────────────────────────────────────────────────────────
 
   ipcMain.handle(IPC.EXCEL_SAVE_ROW, async (_e, filePath: string, row: Row, sbpEnabled: boolean): Promise<Row> => {
     try {
@@ -103,7 +94,18 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     }
   )
 
-  // ── Word ────────────────────────────────────────────────────────────────────
+  ipcMain.handle(
+    IPC.EXCEL_SEARCH_ROWS,
+    async (_e, filePath: string, request: SearchRequest, sbpEnabled: boolean): Promise<Row[]> => {
+      try {
+        const svc = new ExcelService(filePath, { sbpEnabled })
+        return await svc.searchRows(request)
+      } catch (e) {
+        logError('IPC.EXCEL_SEARCH_ROWS', e, { filePath, request, sbpEnabled })
+        throw e
+      }
+    }
+  )
 
   ipcMain.handle(IPC.WORD_FILL_AND_PRINT, async (_e, row: Row): Promise<void> => {
     try {

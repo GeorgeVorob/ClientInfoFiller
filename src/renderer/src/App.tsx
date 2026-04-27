@@ -88,6 +88,11 @@ declare global {
       saveRow(path: string, row: import('@shared/types').Row, sbpEnabled: boolean): Promise<import('@shared/types').Row>
       saveSellRow(path: string, row: import('@shared/types').Row): Promise<import('@shared/types').Row>
       getAutocomplete(path: string, sbpEnabled: boolean): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }>
+      searchRows(
+        path: string,
+        request: import('@shared/types').SearchRequest,
+        sbpEnabled: boolean
+      ): Promise<import('@shared/types').Row[]>
       fillAndPrint(row: import('@shared/types').Row): Promise<void>
     }
   }

@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { IPC } from '../shared/types'
-import type { AppConfig, Row } from '../shared/types'
+import type { AppConfig, Row, SearchRequest } from '../shared/types'
 
 /**
  * All renderer↔main communication goes through this typed bridge.
@@ -32,6 +32,10 @@ const api = {
   /** Load unique customer names and phones for autocomplete. */
   getAutocomplete(filePath: string, sbpEnabled: boolean): Promise<{ names: string[]; phones: string[]; nameToPhone: Record<string, string> }> {
     return ipcRenderer.invoke(IPC.EXCEL_GET_AUTOCOMPLETE, filePath, sbpEnabled)
+  },
+
+  searchRows(filePath: string, request: SearchRequest, sbpEnabled: boolean): Promise<Row[]> {
+    return ipcRenderer.invoke(IPC.EXCEL_SEARCH_ROWS, filePath, request, sbpEnabled)
   },
 
   /** Fill the Word template and open it for review/printing. */

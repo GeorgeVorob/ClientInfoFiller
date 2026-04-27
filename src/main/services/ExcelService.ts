@@ -1,7 +1,7 @@
 import fs from 'fs'
 import ExcelJS from 'exceljs'
 import { logError } from './logError'
-import type { Row } from '../../shared/types'
+import type { Row, SearchRequest } from '../../shared/types'
 
 /**
  * ExcelService
@@ -306,6 +306,42 @@ export class ExcelService {
       return rows
     } catch (e) {
       logError('ExcelService.getAllRows', e, { filePath: this.filePath, options: this.options })
+      throw e
+    }
+  }
+
+  async searchRows(request: SearchRequest): Promise<Row[]> {
+    try {
+      const { ws } = await this.open()
+      const { rowPos: lastEmpty } = findLastEmptyRow(ws)
+      const results: Row[] = []
+      const query = request.query.toLowerCase().trim()
+
+      for (let i = lastEmpty - 1; i >= 2 && results.length < request.limit; i--) {
+        const row = readRow(ws, i, this.options.sbpEnabled)
+        let match = false
+
+        switch (request.mode) {
+          case 'byName':
+            match = row.customerName.toLowerCase().includes(query)
+            break
+          case 'byPhone':
+            match = row.phone.includes(query)
+            break
+          case 'byCostume':
+            match = row.costumeName.toLowerCase().includes(query)
+            break
+          case 'byId':
+            match = row.id.toString() === query
+            break
+        }
+
+        if (match) results.push(row)
+      }
+
+      return results
+    } catch (e) {
+      logError('ExcelService.searchRows', e, { filePath: this.filePath, request, options: this.options })
       throw e
     }
   }

@@ -58,6 +58,14 @@ export interface AutocompleteData {
   phones: string[]
 }
 
+export type SearchMode = 'byName' | 'byPhone' | 'byCostume' | 'byId'
+
+export interface SearchRequest {
+  mode: SearchMode
+  query: string
+  limit: number
+}
+
 // IPC channel names (single source of truth shared between main and preload)
 export const IPC = {
   DIALOG_OPEN_EXCEL: 'dialog:openExcel',
@@ -66,5 +74,6 @@ export const IPC = {
   EXCEL_SAVE_ROW: 'excel:saveRow',
   EXCEL_SAVE_SELL_ROW: 'excel:saveSellRow',
   EXCEL_GET_AUTOCOMPLETE: 'excel:getAutocomplete',
+  EXCEL_SEARCH_ROWS: 'excel:searchRows',
   WORD_FILL_AND_PRINT: 'word:fillAndPrint',
 } as const

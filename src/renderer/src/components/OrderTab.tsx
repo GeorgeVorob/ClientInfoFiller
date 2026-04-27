@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Alert,
   Box,
@@ -33,6 +33,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from '@mui/icons-material/Settings'
 import type { AppConfig, Row } from '@shared/types'
 import { calcOwe, newRow } from '@shared/types'
+import SearchPanel from './SearchPanel'
 
 interface Props {
   config: AppConfig
@@ -64,6 +65,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   const [fileLockedOpen, setFileLockedOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [sbpInitialValue, setSbpInitialValue] = useState(config.sbpEnabled)
+  const formTopRef = useRef<HTMLDivElement | null>(null)
 
   const filePath = config.mainExcelFilePath
   const hasFile = Boolean(filePath)
@@ -75,6 +77,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
   const loadAutocomplete = useCallback(async (path: string) => {
     if (!path) return
+
     try {
       const data = await window.api.getAutocomplete(path, sbpEnabled)
       setAutocomplete(data)
@@ -82,15 +85,6 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       // Autocomplete is optional; failure should not block editing.
     }
   }, [sbpEnabled])
-
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    setField('customerName', value)
-    const phone = autocomplete.nameToPhone[value]
-    if (phone && !row.phone) {
-      setField('phone', phone)
-    }
-  }
 
   useEffect(() => {
     loadAutocomplete(filePath)
@@ -104,6 +98,15 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
   function setField<K extends keyof Row>(key: K, value: Row[K]) {
     setRow(prev => ({ ...prev, [key]: value }))
+  }
+
+  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value
+    setField('customerName', value)
+    const phone = autocomplete.nameToPhone[value]
+    if (phone && !row.phone) {
+      setField('phone', phone)
+    }
   }
 
   function setNumField(
@@ -182,6 +185,12 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     setError(null)
   }
 
+  function handleRowSelect(selected: Row) {
+    setRow(selected)
+    setError(null)
+    formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   async function handleSbpToggle(event: React.ChangeEvent<HTMLInputElement>) {
     await onConfigChange({ sbpEnabled: event.target.checked })
   }
@@ -192,7 +201,9 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   }
 
   return (
-    <Stack spacing={0}>
+    <Stack spacing={1}>
+      <Box ref={formTopRef} />
+
       <Dialog open={fileLockedOpen} onClose={() => setFileLockedOpen(false)}>
         <DialogTitle>Файл занят</DialogTitle>
         <DialogContent>
@@ -233,7 +244,9 @@ export default function OrderTab({ config, onConfigChange }: Props) {
             <Divider />
 
             <Stack spacing={1}>
-              <Typography variant="subtitle1">Текущая схема столбцов в таблице (СБП {sbpEnabled ? '' : 'НЕ '}включен)</Typography>
+              <Typography variant="subtitle1">
+                Текущая схема столбцов в таблице (СБП {sbpEnabled ? '' : 'НЕ '}включен)
+              </Typography>
               <TableContainer component={Paper} variant="outlined">
                 <Table size="small">
                   <TableHead>
@@ -244,46 +257,14 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>A</TableCell>
-                      <TableCell>ID</TableCell>
-                      <TableCell>{'{ID}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>B</TableCell>
-                      <TableCell>ФИО</TableCell>
-                      <TableCell>{'{CustomerName}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>C</TableCell>
-                      <TableCell>Костюм</TableCell>
-                      <TableCell>{'{CostumeName}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>D</TableCell>
-                      <TableCell>Телефон</TableCell>
-                      <TableCell>{'{Phone}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>E</TableCell>
-                      <TableCell>Дата заявки</TableCell>
-                      <TableCell>{'{CreationDate}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>F</TableCell>
-                      <TableCell>Дата выдачи</TableCell>
-                      <TableCell>{'{ActualOrderDate}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>G</TableCell>
-                      <TableCell>Дата возврата</TableCell>
-                      <TableCell>{'{ReturnDate}'}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>H</TableCell>
-                      <TableCell>Стоимость</TableCell>
-                      <TableCell>{'{Price}'}</TableCell>
-                    </TableRow>
+                    <TableRow><TableCell>A</TableCell><TableCell>ID</TableCell><TableCell>{'{ID}'}</TableCell></TableRow>
+                    <TableRow><TableCell>B</TableCell><TableCell>ФИО</TableCell><TableCell>{'{CustomerName}'}</TableCell></TableRow>
+                    <TableRow><TableCell>C</TableCell><TableCell>Костюм</TableCell><TableCell>{'{CostumeName}'}</TableCell></TableRow>
+                    <TableRow><TableCell>D</TableCell><TableCell>Телефон</TableCell><TableCell>{'{Phone}'}</TableCell></TableRow>
+                    <TableRow><TableCell>E</TableCell><TableCell>Дата заявки</TableCell><TableCell>{'{CreationDate}'}</TableCell></TableRow>
+                    <TableRow><TableCell>F</TableCell><TableCell>Дата выдачи</TableCell><TableCell>{'{ActualOrderDate}'}</TableCell></TableRow>
+                    <TableRow><TableCell>G</TableCell><TableCell>Дата возврата</TableCell><TableCell>{'{ReturnDate}'}</TableCell></TableRow>
+                    <TableRow><TableCell>H</TableCell><TableCell>Стоимость</TableCell><TableCell>{'{Price}'}</TableCell></TableRow>
                     <TableRow>
                       <TableCell>I</TableCell>
                       <TableCell>Предоплата безнал</TableCell>
@@ -291,63 +272,21 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     </TableRow>
                     {sbpEnabled ? (
                       <>
-                        <TableRow>
-                          <TableCell>J</TableCell>
-                          <TableCell>Предоплата СБП</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>K</TableCell>
-                          <TableCell>Предоплата нал</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>L</TableCell>
-                          <TableCell>Долг</TableCell>
-                          <TableCell>{'{Owe}'}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>M</TableCell>
-                          <TableCell>Залог нал</TableCell>
-                          <TableCell rowSpan={3}>{'{Pledge}'}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>N</TableCell>
-                          <TableCell>Залог безнал</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>O</TableCell>
-                          <TableCell>Залог СБП</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>P</TableCell>
-                          <TableCell>Комментарий</TableCell>
-                          <TableCell>{'{Comment}'}</TableCell>
-                        </TableRow>
+                        <TableRow><TableCell>J</TableCell><TableCell>Предоплата СБП</TableCell></TableRow>
+                        <TableRow><TableCell>K</TableCell><TableCell>Предоплата нал</TableCell></TableRow>
+                        <TableRow><TableCell>L</TableCell><TableCell>Долг</TableCell><TableCell>{'{Owe}'}</TableCell></TableRow>
+                        <TableRow><TableCell>M</TableCell><TableCell>Залог нал</TableCell><TableCell rowSpan={3}>{'{Pledge}'}</TableCell></TableRow>
+                        <TableRow><TableCell>N</TableCell><TableCell>Залог безнал</TableCell></TableRow>
+                        <TableRow><TableCell>O</TableCell><TableCell>Залог СБП</TableCell></TableRow>
+                        <TableRow><TableCell>P</TableCell><TableCell>Комментарий</TableCell><TableCell>{'{Comment}'}</TableCell></TableRow>
                       </>
                     ) : (
                       <>
-                        <TableRow>
-                          <TableCell>J</TableCell>
-                          <TableCell>Предоплата нал</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>K</TableCell>
-                          <TableCell>Долг</TableCell>
-                          <TableCell>{'{Owe}'}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>L</TableCell>
-                          <TableCell>Залог нал</TableCell>
-                          <TableCell rowSpan={2}>{'{Pledge}'}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>M</TableCell>
-                          <TableCell>Залог безнал</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>N</TableCell>
-                          <TableCell>Комментарий</TableCell>
-                          <TableCell>{'{Comment}'}</TableCell>
-                        </TableRow>
+                        <TableRow><TableCell>J</TableCell><TableCell>Предоплата нал</TableCell></TableRow>
+                        <TableRow><TableCell>K</TableCell><TableCell>Долг</TableCell><TableCell>{'{Owe}'}</TableCell></TableRow>
+                        <TableRow><TableCell>L</TableCell><TableCell>Залог нал</TableCell><TableCell rowSpan={2}>{'{Pledge}'}</TableCell></TableRow>
+                        <TableRow><TableCell>M</TableCell><TableCell>Залог безнал</TableCell></TableRow>
+                        <TableRow><TableCell>N</TableCell><TableCell>Комментарий</TableCell><TableCell>{'{Comment}'}</TableCell></TableRow>
                       </>
                     )}
                   </TableBody>
@@ -381,12 +320,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                 color="primary"
                 variant={hasFile ? 'filled' : 'outlined'}
                 label={filePath || 'Файл не выбран'}
-                sx={{
-                  justifyContent: 'flex-start',
-                  maxWidth: '100%',
-                  borderRadius: 1,
-                  height: 36,
-                }}
+                sx={{ justifyContent: 'flex-start', maxWidth: '100%', borderRadius: 1, height: 36 }}
               />
               <Button variant="outlined" onClick={pickFile} disabled={busy}>
                 Обзор...
@@ -396,226 +330,241 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         </CardContent>
       </Card>
 
-      <Collapse in={Boolean(error)} timeout="auto" unmountOnExit>
-        <Alert severity="error">{`Произошла ошибка:\n${error ?? ''}`}</Alert>
-      </Collapse>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'minmax(0, 1fr) minmax(320px, 400px)' },
+          gap: 1,
+          alignItems: 'start',
+        }}
+      >
+        <Stack spacing={1}>
+          <Collapse in={Boolean(error)} timeout="auto" unmountOnExit>
+            <Alert severity="error">{`Произошла ошибка:\n${error ?? ''}`}</Alert>
+          </Collapse>
 
-      <Collapse in={!isNewRow} timeout="auto" unmountOnExit>
-        <Alert severity="success" icon={<EditIcon />}>
-          Режим редактирования - запись #{row.id}
-        </Alert>
-      </Collapse>
+          <Collapse in={!isNewRow} timeout="auto" unmountOnExit>
+            <Alert severity="success" icon={<EditIcon />}>
+              Режим редактирования - запись #{row.id}
+            </Alert>
+          </Collapse>
 
-      <datalist id="dl-names">
-        {autocomplete.names.map(n => (
-          <option key={n} value={n} />
-        ))}
-      </datalist>
-      <datalist id="dl-phones">
-        {autocomplete.phones.map(p => (
-          <option key={p} value={p} />
-        ))}
-      </datalist>
+          <datalist id="dl-names">
+            {autocomplete.names.map(name => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
+          <datalist id="dl-phones">
+            {autocomplete.phones.map(phone => (
+              <option key={phone} value={phone} />
+            ))}
+          </datalist>
 
-      <Card variant="outlined">
-        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
-          <Stack spacing={0.5}>
-            <TextField
-              label="ФИО клиента"
-              value={row.customerName}
-              onChange={handleNameChange}
-              placeholder="Иванов Иван Иванович"
-              disabled={busy}
-              slotProps={{ htmlInput: { list: 'dl-names' } }}
-              size="small"
-              fullWidth
-            />
-            <TextField
-              label="Номер телефона"
-              value={row.phone}
-              onChange={e => setField('phone', e.target.value)}
-              placeholder="+7 (000) 000-00-00"
-              disabled={busy}
-              slotProps={{ htmlInput: { list: 'dl-phones' } }}
-              size="small"
-              fullWidth
-            />
-            <TextField
-              label="Костюм"
-              value={row.costumeName}
-              onChange={e => setField('costumeName', e.target.value)}
-              placeholder="Название костюма"
-              disabled={busy}
-              size="small"
-              fullWidth
-            />
-          </Stack>
-        </CardContent>
-      </Card>
-
-      <Card variant="outlined">
-        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
-          <Stack spacing={0.5}>
-            <DatePicker
-              label="Дата заявки"
-              value={isoToDayjs(row.creationDate)}
-              onChange={d => setField('creationDate', dayjsToIso(d))}
-              disabled={busy}
-              slotProps={{ textField: { size: 'small', fullWidth: true } }}
-            />
-            <DatePicker
-              label="Дата выдачи"
-              value={isoToDayjs(row.actualOrderDate)}
-              onChange={d => setField('actualOrderDate', dayjsToIso(d))}
-              disabled={busy}
-              slotProps={{ textField: { size: 'small', fullWidth: true } }}
-            />
-            <DatePicker
-              label="Дата возврата"
-              value={isoToDayjs(row.returnDate)}
-              onChange={d => setField('returnDate', dayjsToIso(d))}
-              disabled={busy}
-              slotProps={{ textField: { size: 'small', fullWidth: true } }}
-            />
-          </Stack>
-        </CardContent>
-      </Card>
-
-      <Card variant="outlined">
-        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
-          <Stack spacing={0.5}>
-            <TextField
-              label="Стоимость"
-              value={numDisplay(row.price)}
-              onChange={setNumField('price')}
-              placeholder="0"
-              disabled={busy}
-              size="small"
-              fullWidth
-              slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-              sx={{ mb: 1 }}
-            />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+          <Card variant="outlined">
+            <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
               <Stack spacing={0.5}>
                 <TextField
-                  label="Предоплата нал"
-                  value={numDisplay(row.prepaymentCash)}
-                  onChange={setNumField('prepaymentCash')}
-                  placeholder="0"
+                  label="ФИО клиента"
+                  value={row.customerName}
+                  onChange={handleNameChange}
+                  placeholder="Иванов Иван Иванович"
                   disabled={busy}
+                  slotProps={{ htmlInput: { list: 'dl-names' } }}
                   size="small"
                   fullWidth
-                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
                 />
                 <TextField
-                  label="Предоплата безнал"
-                  value={numDisplay(row.prepaymentDigital)}
-                  onChange={setNumField('prepaymentDigital')}
-                  placeholder="0"
+                  label="Номер телефона"
+                  value={row.phone}
+                  onChange={e => setField('phone', e.target.value)}
+                  placeholder="+7 (000) 000-00-00"
+                  disabled={busy}
+                  slotProps={{ htmlInput: { list: 'dl-phones' } }}
+                  size="small"
+                  fullWidth
+                />
+                <TextField
+                  label="Костюм"
+                  value={row.costumeName}
+                  onChange={e => setField('costumeName', e.target.value)}
+                  placeholder="Название костюма"
                   disabled={busy}
                   size="small"
                   fullWidth
-                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
                 />
-                {sbpEnabled && (
-                  <TextField
-                    label="Предоплата СБП"
-                    value={numDisplay(row.prepaymentSBP)}
-                    onChange={setNumField('prepaymentSBP')}
-                    placeholder="0"
-                    disabled={busy}
-                    size="small"
-                    fullWidth
-                    slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-                  />
-                )}
               </Stack>
+            </CardContent>
+          </Card>
+
+          <Card variant="outlined">
+            <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
+              <Stack spacing={0.5}>
+                <DatePicker
+                  label="Дата заявки"
+                  value={isoToDayjs(row.creationDate)}
+                  onChange={d => setField('creationDate', dayjsToIso(d))}
+                  disabled={busy}
+                  slotProps={{ textField: { size: 'small', fullWidth: true } }}
+                />
+                <DatePicker
+                  label="Дата выдачи"
+                  value={isoToDayjs(row.actualOrderDate)}
+                  onChange={d => setField('actualOrderDate', dayjsToIso(d))}
+                  disabled={busy}
+                  slotProps={{ textField: { size: 'small', fullWidth: true } }}
+                />
+                <DatePicker
+                  label="Дата возврата"
+                  value={isoToDayjs(row.returnDate)}
+                  onChange={d => setField('returnDate', dayjsToIso(d))}
+                  disabled={busy}
+                  slotProps={{ textField: { size: 'small', fullWidth: true } }}
+                />
+              </Stack>
+            </CardContent>
+          </Card>
+
+          <Card variant="outlined">
+            <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
               <Stack spacing={0.5}>
                 <TextField
-                  label="Залог нал"
-                  value={numDisplay(row.pledgeCash)}
-                  onChange={setNumField('pledgeCash')}
+                  label="Стоимость"
+                  value={numDisplay(row.price)}
+                  onChange={setNumField('price')}
                   placeholder="0"
                   disabled={busy}
                   size="small"
                   fullWidth
                   slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                  sx={{ mb: 1 }}
                 />
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                  <Stack spacing={0.5}>
+                    <TextField
+                      label="Предоплата нал"
+                      value={numDisplay(row.prepaymentCash)}
+                      onChange={setNumField('prepaymentCash')}
+                      placeholder="0"
+                      disabled={busy}
+                      size="small"
+                      fullWidth
+                      slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                    />
+                    <TextField
+                      label="Предоплата безнал"
+                      value={numDisplay(row.prepaymentDigital)}
+                      onChange={setNumField('prepaymentDigital')}
+                      placeholder="0"
+                      disabled={busy}
+                      size="small"
+                      fullWidth
+                      slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                    />
+                    {sbpEnabled && (
+                      <TextField
+                        label="Предоплата СБП"
+                        value={numDisplay(row.prepaymentSBP)}
+                        onChange={setNumField('prepaymentSBP')}
+                        placeholder="0"
+                        disabled={busy}
+                        size="small"
+                        fullWidth
+                        slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                      />
+                    )}
+                  </Stack>
+                  <Stack spacing={0.5}>
+                    <TextField
+                      label="Залог нал"
+                      value={numDisplay(row.pledgeCash)}
+                      onChange={setNumField('pledgeCash')}
+                      placeholder="0"
+                      disabled={busy}
+                      size="small"
+                      fullWidth
+                      slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                    />
+                    <TextField
+                      label="Залог безнал"
+                      value={numDisplay(row.pledgeDigital)}
+                      onChange={setNumField('pledgeDigital')}
+                      placeholder="0"
+                      disabled={busy}
+                      size="small"
+                      fullWidth
+                      slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                    />
+                    {sbpEnabled && (
+                      <TextField
+                        label="Залог СБП"
+                        value={numDisplay(row.pledgeSBP)}
+                        onChange={setNumField('pledgeSBP')}
+                        placeholder="0"
+                        disabled={busy}
+                        size="small"
+                        fullWidth
+                        slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                      />
+                    )}
+                  </Stack>
+                </Box>
                 <TextField
-                  label="Залог безнал"
-                  value={numDisplay(row.pledgeDigital)}
-                  onChange={setNumField('pledgeDigital')}
-                  placeholder="0"
-                  disabled={busy}
+                  label="Долг"
+                  value={String(owe)}
                   size="small"
                   fullWidth
-                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                  slotProps={{ htmlInput: { readOnly: true } }}
+                  color={owe < 0 ? 'error' : 'primary'}
+                  sx={{ mt: 1 }}
                 />
-                {sbpEnabled && (
-                  <TextField
-                    label="Залог СБП"
-                    value={numDisplay(row.pledgeSBP)}
-                    onChange={setNumField('pledgeSBP')}
-                    placeholder="0"
-                    disabled={busy}
-                    size="small"
-                    fullWidth
-                    slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-                  />
-                )}
               </Stack>
-            </Box>
-            <TextField
-              label="Долг"
-              value={String(owe)}
-              size="small"
-              fullWidth
-              slotProps={{ htmlInput: { readOnly: true } }}
-              color={owe < 0 ? 'error' : 'primary'}
-              sx={{ mt: 1 }}
-            />
-          </Stack>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
 
-      <Card variant="outlined">
-        <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
-          <Stack spacing={0}>
-            <TextField
-              value={row.comment}
-              onChange={e => setField('comment', e.target.value)}
-              rows={3}
-              placeholder="Комментарий"
-              disabled={busy}
-              multiline
-              fullWidth
-            />
-          </Stack>
-        </CardContent>
-      </Card>
+          <Card variant="outlined">
+            <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
+              <Stack spacing={0}>
+                <TextField
+                  value={row.comment}
+                  onChange={e => setField('comment', e.target.value)}
+                  rows={3}
+                  placeholder="Комментарий"
+                  disabled={busy}
+                  multiline
+                  fullWidth
+                />
+              </Stack>
+            </CardContent>
+          </Card>
 
-      <Card variant="outlined">
-        <CardContent>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-            {!isNewRow && (
-              <Button variant="contained" color="success" onClick={() => handleSave(false)} disabled={busy || !hasFile}>
-                {busy ? 'Сохранение...' : 'Обновить'}
-              </Button>
-            )}
-            <Button
-              variant="contained"
-              color={isNewRow ? 'primary' : 'success'}
-              onClick={() => handleSave(true)}
-              disabled={busy || !hasFile}
-            >
-              {busy ? 'Обработка...' : isNewRow ? 'Сохранить и распечатать' : 'Обновить и распечатать'}
-            </Button>
-            <Button variant="outlined" onClick={handleReset} disabled={busy}>
-              Сброс
-            </Button>
-          </Stack>
-        </CardContent>
-      </Card>
+          <Card variant="outlined">
+            <CardContent>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                {!isNewRow && (
+                  <Button variant="contained" color="success" onClick={() => handleSave(false)} disabled={busy || !hasFile}>
+                    {busy ? 'Сохранение...' : 'Обновить'}
+                  </Button>
+                )}
+                <Button
+                  variant="contained"
+                  color={isNewRow ? 'primary' : 'success'}
+                  onClick={() => handleSave(true)}
+                  disabled={busy || !hasFile}
+                >
+                  {busy ? 'Обработка...' : isNewRow ? 'Сохранить и распечатать' : 'Обновить и распечатать'}
+                </Button>
+                <Button variant="outlined" onClick={handleReset} disabled={busy}>
+                  Сброс
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Stack>
+
+        <Box sx={{ position: { lg: 'sticky' }, top: 0, alignSelf: 'start' }}>
+          <SearchPanel filePath={filePath} sbpEnabled={config.sbpEnabled} onRowSelect={handleRowSelect} />
+        </Box>
+      </Box>
     </Stack>
   )
 }
