@@ -80,16 +80,16 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
 
   function handleSelect(row: Row) {
     onRowSelect(row)
-    setResults([])
-    setStatus('idle')
-    setQuery('')
+    // setResults([])
+    // setStatus('idle')
+    // setQuery('')
   }
 
   return (
     <Card variant="outlined">
       <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
         <Stack spacing={1}>
-          <Typography variant="h6">Поиск записи</Typography>
+          <Typography variant="h6">Поиск и изменение записи</Typography>
 
           <Stack direction={'column'} spacing={1}>
             <FormControl size="small" sx={{ minWidth: 180 }}>
