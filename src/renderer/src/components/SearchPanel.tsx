@@ -142,7 +142,7 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
                 {results.length === 20 ? ' (показаны первые 20)' : ''}
               </Typography>
               <List dense disablePadding
-              sx={{ maxHeight: '580px', overflowY: 'auto' }}
+              sx={{ maxHeight: '530px', overflowY: 'auto' }}
               >
                 {results.map(row => (
                   <ListItemButton
