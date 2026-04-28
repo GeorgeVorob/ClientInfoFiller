@@ -100,10 +100,16 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     setRow(prev => ({ ...prev, [key]: value }))
   }
 
+  function normalizeName(value: string): string {
+    return value.trim().toLowerCase()
+  }
+  
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value
     setField('customerName', value)
-    const phone = autocomplete.nameToPhone[value]
+
+    const phone = autocomplete.nameToPhone[normalizeName(value)]
+
     if (phone && !row.phone) {
       setField('phone', phone)
     }
