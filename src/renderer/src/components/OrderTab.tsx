@@ -164,10 +164,10 @@ export default function OrderTab({ config, onConfigChange }: Props) {
     try {
       const saved = await window.api.saveRow(filePath, effectiveRow, sbpEnabled)
       upsertAutocomplete(saved)
+      setRow(saved)
       if (isNewRow || andPrint) {
         await window.api.fillAndPrint(saved)
       }
-      setRow(saved)
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e)
       if (msg.includes('FILE_LOCKED')) {
