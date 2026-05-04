@@ -514,15 +514,23 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     )}
                   </Stack>
                 </Box>
-                <TextField
-                  label="Долг"
-                  value={String(owe)}
-                  size="small"
-                  fullWidth
-                  slotProps={{ htmlInput: { readOnly: true } }}
-                  color={owe < 0 ? 'error' : 'primary'}
-                  sx={{ mt: 1 }}
-                />
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1, mt: 1 }}>
+                  <TextField
+                    label="Долг"
+                    value={String(owe)}
+                    size="small"
+                    fullWidth
+                    slotProps={{ htmlInput: { readOnly: true } }}
+                    color={owe < 0 ? 'error' : 'primary'}
+                  />
+                  <TextField
+                    label="Сумма залога"
+                    value={String((row.pledgeCash ?? 0) + (row.pledgeDigital ?? 0) + (sbpEnabled ? (row.pledgeSBP ?? 0) : 0))}
+                    size="small"
+                    fullWidth
+                    slotProps={{ htmlInput: { readOnly: true } }}
+                  />
+                </Box>
               </Stack>
             </CardContent>
           </Card>
