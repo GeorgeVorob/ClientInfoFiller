@@ -7,7 +7,7 @@ function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
     width: 800,
     height: 950,
-    minWidth: 550,
+    minWidth: 800,
     minHeight: 600,
     title: 'Оформление заказов',
     webPreferences: {

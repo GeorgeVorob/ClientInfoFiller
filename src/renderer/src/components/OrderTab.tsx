@@ -310,28 +310,35 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
       <Card variant="outlined">
         <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
-          <Stack spacing={0}>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'stretch' }}>
+            <Stack spacing={0} sx={{ flexShrink: 0, justifyContent: 'center' }}>
               <Typography variant="h6">Файл таблицы заказов</Typography>
-              <IconButton size="small" onClick={openSettings} disabled={busy} aria-label="Настройки полей">
-                <SettingsIcon fontSize="small" />
-              </IconButton>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Chip
+                  color="primary"
+                  variant={hasFile ? 'filled' : 'outlined'}
+                  label={filePath || 'Файл не выбран'}
+                  sx={{ justifyContent: 'flex-start', maxWidth: '100%', borderRadius: 1, height: 36 }}
+                />
+                <Button variant="outlined" onClick={pickFile} disabled={busy}>
+                  Обзор...
+                </Button>
+              </Stack>
             </Stack>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={1}
-              sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}
-            >
-              <Chip
-                color="primary"
-                variant={hasFile ? 'filled' : 'outlined'}
-                label={filePath || 'Файл не выбран'}
-                sx={{ justifyContent: 'flex-start', maxWidth: '100%', borderRadius: 1, height: 36 }}
-              />
-              <Button variant="outlined" onClick={pickFile} disabled={busy}>
-                Обзор...
-              </Button>
-            </Stack>
+            <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-end' }}>
+              <Collapse in={!isNewRow} timeout="auto" unmountOnExit sx={{ width: '100%' }}>
+                <Alert
+                  severity="success"
+                  icon={<EditIcon fontSize="small" />}
+                  sx={{ py: 0, alignItems: 'center' }}
+                >
+                  Режим редактирования — запись #{row.id}
+                </Alert>
+              </Collapse>
+            </Box>
+            <IconButton size="small" onClick={openSettings} disabled={busy} aria-label="Настройки полей" sx={{ alignSelf: 'center' }}>
+              <SettingsIcon fontSize="small" />
+            </IconButton>
           </Stack>
         </CardContent>
       </Card>
@@ -339,7 +346,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: 'minmax(0, 1fr) minmax(320px, 400px)' },
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(320px, 400px)',
           gap: 1,
           alignItems: 'start',
         }}
@@ -347,12 +354,6 @@ export default function OrderTab({ config, onConfigChange }: Props) {
         <Stack spacing={1}>
           <Collapse in={Boolean(error)} timeout="auto" unmountOnExit>
             <Alert severity="error">{`Произошла ошибка:\n${error ?? ''}`}</Alert>
-          </Collapse>
-
-          <Collapse in={!isNewRow} timeout="auto" unmountOnExit>
-            <Alert severity="success" icon={<EditIcon />}>
-              Режим редактирования - запись #{row.id}
-            </Alert>
           </Collapse>
 
           <datalist id="dl-names">
@@ -553,7 +554,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
 
           <Card variant="outlined">
             <CardContent>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+              <Stack direction="row" spacing={1.5}>
                 {!isNewRow && (
                   <Button variant="contained" color="success" onClick={() => handleSave(false)} disabled={busy || !hasFile}>
                     {busy ? 'Сохранение...' : 'Обновить'}
