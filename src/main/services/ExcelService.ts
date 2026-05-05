@@ -156,7 +156,9 @@ function findLastEmptyRow(ws: ExcelJS.Worksheet): LastEmptyResult {
     const text = cellText(cell)
     if (text !== '') {
       const id = parseInt(text, 10)
-      lastId = Math.max(lastId, id)
+      if (!isNaN(id) && id > lastId) {
+        lastId = id
+      }
       rowPos++
     } else {
       break
