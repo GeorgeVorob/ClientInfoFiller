@@ -33,7 +33,40 @@ const SEARCH_MODES: { value: SearchMode; label: string }[] = [
   { value: 'byPhone', label: 'По телефону' },
   { value: 'byCostume', label: 'По костюму' },
   { value: 'byId', label: 'По номеру записи' },
+  { value: 'byCreationDate', label: 'По дате оформления' },
+  { value: 'byActualOrderDate', label: 'По дате выдачи' },
+  { value: 'byReturnDate', label: 'По дате возврата' },
 ]
+
+const DATE_MODES = new Set<SearchMode>(['byCreationDate', 'byActualOrderDate', 'byReturnDate'])
+
+function declDay(n: number): string {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod100 >= 11 && mod100 <= 14) return 'дней'
+  if (mod10 === 1) return 'день'
+  if (mod10 >= 2 && mod10 <= 4) return 'дня'
+  return 'дней'
+}
+
+function buildDateOptions(): { value: string; label: string }[] {
+  const opts: { value: string; label: string }[] = []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  for (let i = 0; i < 20; i++) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const dd = String(d.getDate()).padStart(2, '0')
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const yyyy = d.getFullYear()
+    const value = `${dd}.${mm}.${yyyy}`
+    const suffix = i === 0 ? 'сегодня' : `${i} ${declDay(i)} назад`
+    opts.push({ value, label: `${value} (${suffix})` })
+  }
+  return opts
+}
+
+const DATE_OPTIONS = buildDateOptions()
 
 function formatRowPrimary(row: Row): string {
   return `#${row.id} · ${row.customerName || '—'}`
@@ -58,14 +91,14 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
   const [results, setResults] = useState<Row[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  async function handleSearch() {
-    if (!filePath) return
+  const isDateMode = DATE_MODES.has(mode)
 
+  async function search(searchMode: SearchMode, searchQuery: string) {
+    if (!filePath) return
     setStatus('loading')
     setError(null)
-
     try {
-      const rows = await window.api.searchRows(filePath, { mode, query, limit: 20 }, sbpEnabled)
+      const rows = await window.api.searchRows(filePath, { mode: searchMode, query: searchQuery, limit: 20 }, sbpEnabled)
       setResults(rows)
       setStatus(rows.length > 0 ? 'results' : 'empty')
     } catch (e: unknown) {
@@ -74,8 +107,30 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
     }
   }
 
+  function handleSearch() {
+    search(mode, query)
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') handleSearch()
+  }
+
+  function handleModeChange(newMode: SearchMode) {
+    setMode(newMode)
+    if (DATE_MODES.has(newMode)) {
+      const today = DATE_OPTIONS[0].value
+      setQuery(today)
+      search(newMode, today)
+    } else {
+      setQuery('')
+      setStatus('idle')
+      setResults([])
+    }
+  }
+
+  function handleDateSelect(dateStr: string) {
+    setQuery(dateStr)
+    search(mode, dateStr)
   }
 
   function handleSelect(row: Row) {
@@ -97,7 +152,7 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
               <Select
                 value={mode}
                 label="Режим поиска"
-                onChange={e => setMode(e.target.value as SearchMode)}
+                onChange={e => handleModeChange(e.target.value as SearchMode)}
                 disabled={status === 'loading'}
               >
                 {SEARCH_MODES.map(item => (
@@ -108,24 +163,42 @@ export default function SearchPanel({ filePath, sbpEnabled, onRowSelect }: Props
               </Select>
             </FormControl>
 
-            <TextField
-              size="small"
-              placeholder="Поисковый запрос..."
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={status === 'loading' || !filePath}
-              sx={{ flex: 1 }}
-            />
-
-            <Button
-              variant="contained"
-              onClick={handleSearch}
-              disabled={status === 'loading' || !filePath}
-              startIcon={status === 'loading' ? <CircularProgress size={16} color="inherit" /> : <SearchIcon />}
-            >
-              Найти
-            </Button>
+            {isDateMode ? (
+              <FormControl size="small" disabled={status === 'loading' || !filePath}>
+                <InputLabel>Дата</InputLabel>
+                <Select
+                  value={query}
+                  label="Дата"
+                  onChange={e => handleDateSelect(e.target.value)}
+                >
+                  {DATE_OPTIONS.map(opt => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <>
+                <TextField
+                  size="small"
+                  placeholder="Поисковый запрос..."
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={status === 'loading' || !filePath}
+                  sx={{ flex: 1 }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={handleSearch}
+                  disabled={status === 'loading' || !filePath}
+                  startIcon={status === 'loading' ? <CircularProgress size={16} color="inherit" /> : <SearchIcon />}
+                >
+                  Найти
+                </Button>
+              </>
+            )}
           </Stack>
 
           {!filePath && <Alert severity="warning">Сначала выберите файл таблицы</Alert>}

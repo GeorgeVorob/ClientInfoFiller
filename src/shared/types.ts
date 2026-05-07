@@ -60,7 +60,7 @@ export interface AutocompleteData {
   phones: string[]
 }
 
-export type SearchMode = 'byName' | 'byPhone' | 'byCostume' | 'byId'
+export type SearchMode = 'byName' | 'byPhone' | 'byCostume' | 'byId' | 'byCreationDate' | 'byActualOrderDate' | 'byReturnDate'
 
 export interface SearchRequest {
   mode: SearchMode

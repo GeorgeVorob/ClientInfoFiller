@@ -348,6 +348,15 @@ export class ExcelService {
           case 'byId':
             match = row.id.toString() === query
             break
+          case 'byCreationDate':
+            match = formatDateDMY(row.creationDate).includes(query)
+            break
+          case 'byActualOrderDate':
+            match = formatDateDMY(row.actualOrderDate).includes(query)
+            break
+          case 'byReturnDate':
+            match = formatDateDMY(row.returnDate).includes(query)
+            break
         }
 
         if (match) results.push(row)
