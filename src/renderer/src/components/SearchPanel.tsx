@@ -53,7 +53,7 @@ function buildDateOptions(): { value: string; label: string }[] {
   const opts: { value: string; label: string }[] = []
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 30; i++) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
     const dd = String(d.getDate()).padStart(2, '0')
