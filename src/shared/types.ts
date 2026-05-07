@@ -17,6 +17,7 @@ export interface Row {
   pledgeCash: number
   pledgeDigital: number
   pledgeSBP: number
+  pledgeTotal: number
   comment: string
 }
 
@@ -43,6 +44,7 @@ export function newRow(): Row {
     pledgeCash: 0,
     pledgeDigital: 0,
     pledgeSBP: 0,
+    pledgeTotal: 0,
     comment: '',
   }
 }

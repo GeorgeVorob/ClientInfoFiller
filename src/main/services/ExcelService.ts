@@ -27,6 +27,7 @@ import type { Row, SearchRequest } from '../../shared/types'
  *  N(14) — PledgeDigital
  *  O(15) — PledgeSBP
  *  P(16) — Comment
+ *  Q(17) — PledgeTotal
  *
  * SBP disabled:
  *  J(10) — PrepaymentCash
@@ -34,6 +35,7 @@ import type { Row, SearchRequest } from '../../shared/types'
  *  L(12) — PledgeCash
  *  M(13) — PledgeDigital
  *  N(14) — Comment
+ *  O(15) — PledgeTotal
  *
  * Sell sheet (separate file):
  *  A(1)  — ID
@@ -76,6 +78,7 @@ interface OrderColumnMap {
   pledgeDigital: number
   pledgeSBP?: number
   comment: number
+  pledgeTotal: number
 }
 
 function formatDateDMY(iso: string): string {
@@ -104,6 +107,7 @@ function defaultISO(): string {
 }
 
 function cellText(cell: ExcelJS.Cell): string {
+  if (!cell) return ''
   const v = cell.value
   if (v === null || v === undefined) return ''
   if (v instanceof Date) return formatDateDMY(v.toISOString())
@@ -119,8 +123,12 @@ function cellText(cell: ExcelJS.Cell): string {
 }
 
 function numCell(cell: ExcelJS.Cell): number {
-  const n = parseInt(cellText(cell), 10)
-  return isNaN(n) ? 0 : n
+  try {
+    const n = parseInt(cellText(cell), 10)
+    return isNaN(n) ? 0 : n
+  } catch {
+    return 0
+  }
 }
 
 function getOrderColumnMap(sbpEnabled: boolean): OrderColumnMap {
@@ -134,6 +142,7 @@ function getOrderColumnMap(sbpEnabled: boolean): OrderColumnMap {
       pledgeDigital: 14,
       pledgeSBP: 15,
       comment: 16,
+      pledgeTotal: 17,
     }
   }
 
@@ -144,6 +153,7 @@ function getOrderColumnMap(sbpEnabled: boolean): OrderColumnMap {
     pledgeCash: 12,
     pledgeDigital: 13,
     comment: 14,
+    pledgeTotal: 15,
   }
 }
 
@@ -189,6 +199,7 @@ function readRow(ws: ExcelJS.Worksheet, rowPos: number, sbpEnabled: boolean): Ro
     pledgeCash: numCell(c(map.pledgeCash)),
     pledgeDigital: numCell(c(map.pledgeDigital)),
     pledgeSBP: map.pledgeSBP ? numCell(c(map.pledgeSBP)) : 0,
+    pledgeTotal: numCell(c(map.pledgeTotal)),
     comment: cellText(c(map.comment)),
   }
 }
@@ -222,6 +233,7 @@ function writeRow(ws: ExcelJS.Worksheet, data: Row, sbpEnabled: boolean): void {
   exRow.getCell(map.pledgeDigital).value = data.pledgeDigital
   if (map.pledgeSBP) exRow.getCell(map.pledgeSBP).value = data.pledgeSBP
   exRow.getCell(map.comment).value = data.comment
+  exRow.getCell(map.pledgeTotal).value = data.pledgeTotal
 
   exRow.commit()
 }

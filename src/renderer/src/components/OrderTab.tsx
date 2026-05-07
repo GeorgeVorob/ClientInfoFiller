@@ -116,7 +116,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
   }
 
   function setNumField(
-    key: 'price' | 'prepaymentCash' | 'prepaymentDigital' | 'prepaymentSBP' | 'pledgeCash' | 'pledgeDigital' | 'pledgeSBP'
+    key: 'price' | 'prepaymentCash' | 'prepaymentDigital' | 'prepaymentSBP' | 'pledgeCash' | 'pledgeDigital' | 'pledgeSBP' | 'pledgeTotal'
   ) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value.replace(/\D/g, '').slice(0, 9)
@@ -285,6 +285,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow><TableCell>N</TableCell><TableCell>Залог безнал</TableCell></TableRow>
                         <TableRow><TableCell>O</TableCell><TableCell>Залог СБП</TableCell></TableRow>
                         <TableRow><TableCell>P</TableCell><TableCell>Комментарий</TableCell><TableCell>{'{Comment}'}</TableCell></TableRow>
+                        <TableRow><TableCell>Q</TableCell><TableCell>Сумма залога</TableCell><TableCell /></TableRow>
                       </>
                     ) : (
                       <>
@@ -293,6 +294,7 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                         <TableRow><TableCell>L</TableCell><TableCell>Залог нал</TableCell><TableCell rowSpan={2}>{'{Pledge}'}</TableCell></TableRow>
                         <TableRow><TableCell>M</TableCell><TableCell>Залог безнал</TableCell></TableRow>
                         <TableRow><TableCell>N</TableCell><TableCell>Комментарий</TableCell><TableCell>{'{Comment}'}</TableCell></TableRow>
+                        <TableRow><TableCell>O</TableCell><TableCell>Сумма залога</TableCell><TableCell /></TableRow>
                       </>
                     )}
                   </TableBody>
@@ -434,17 +436,28 @@ export default function OrderTab({ config, onConfigChange }: Props) {
           <Card variant="outlined">
             <CardContent sx={{ py: 1, '&:last-child': { p: 1 } }}>
               <Stack spacing={0.5}>
-                <TextField
-                  label="Стоимость"
-                  value={numDisplay(row.price)}
-                  onChange={setNumField('price')}
-                  placeholder="0"
-                  disabled={busy}
-                  size="small"
-                  fullWidth
-                  slotProps={{ htmlInput: { inputMode: 'numeric' } }}
-                  sx={{ mb: 1 }}
-                />
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1, mb: 0.5 }}>
+                  <TextField
+                    label="Стоимость"
+                    value={numDisplay(row.price)}
+                    onChange={setNumField('price')}
+                    placeholder="0"
+                    disabled={busy}
+                    size="small"
+                    fullWidth
+                    slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                  />
+                  <TextField
+                    label="Сумма залога"
+                    value={numDisplay(row.pledgeTotal)}
+                    onChange={setNumField('pledgeTotal')}
+                    placeholder="0"
+                    disabled={busy}
+                    size="small"
+                    fullWidth
+                    slotProps={{ htmlInput: { inputMode: 'numeric' } }}
+                  />
+                </Box>
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
                   <Stack spacing={0.5}>
                     <TextField
@@ -515,23 +528,15 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     )}
                   </Stack>
                 </Box>
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1, mt: 1 }}>
-                  <TextField
-                    label="Долг"
-                    value={String(owe)}
-                    size="small"
-                    fullWidth
-                    slotProps={{ htmlInput: { readOnly: true } }}
-                    color={owe < 0 ? 'error' : 'primary'}
-                  />
-                  <TextField
-                    label="Сумма залога"
-                    value={String((row.pledgeCash ?? 0) + (row.pledgeDigital ?? 0) + (sbpEnabled ? (row.pledgeSBP ?? 0) : 0))}
-                    size="small"
-                    fullWidth
-                    slotProps={{ htmlInput: { readOnly: true } }}
-                  />
-                </Box>
+                <TextField
+                  label="Долг"
+                  value={String(owe)}
+                  size="small"
+                  fullWidth
+                  slotProps={{ htmlInput: { readOnly: true } }}
+                  color={owe < 0 ? 'error' : 'primary'}
+                  sx={{ mt: 1 }}
+                />
               </Stack>
             </CardContent>
           </Card>
