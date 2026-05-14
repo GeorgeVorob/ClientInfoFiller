@@ -217,7 +217,11 @@ function writeRow(ws: ExcelJS.Worksheet, data: Row, sbpEnabled: boolean): void {
   exRow.getCell(4).value = data.phone
 
   const setDate = (col: number, iso: string) => {
-    exRow.getCell(col).value = formatDateDMY(iso)
+    const cell = exRow.getCell(col)
+    const str = formatDateDMY(iso)
+    const [dd, mm, yyyy] = str.split('.').map(Number)
+    cell.value = new Date(Date.UTC(yyyy, mm - 1, dd))
+    cell.numFmt = 'dd.mm.yyyy'
   }
 
   setDate(5, data.creationDate)
