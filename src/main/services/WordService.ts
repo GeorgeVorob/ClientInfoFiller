@@ -41,7 +41,10 @@ function fmtDate(iso: string): string {
   return `${dd}.${mm}.${d.getFullYear()}`
 }
 
-function moneyParts(cash: number, digital: number, sbp?: number): string {
+function moneyParts(cash: number, digital: number, sbp?: number, total?: number): string {
+  if (total != null && total > 0) {
+    return String(total)
+  }
   const parts: string[] = []
   if (cash) parts.push(`${cash}(н)`)
   if (digital) parts.push(`${digital}(бн)`)
@@ -111,7 +114,7 @@ export async function fillAndPrint(data: Row): Promise<void> {
       Price: String(data.price),
       Prepayment: moneyParts(data.prepaymentCash, data.prepaymentDigital, data.prepaymentSBP),
       Owe: String(owe),
-      Pledge: moneyParts(data.pledgeCash, data.pledgeDigital, data.pledgeSBP),
+      Pledge: moneyParts(data.pledgeCash, data.pledgeDigital, data.pledgeSBP, data.pledgeTotal),
       Comment: data.comment,
       PrintDateTime: (() => {
         const n = new Date()

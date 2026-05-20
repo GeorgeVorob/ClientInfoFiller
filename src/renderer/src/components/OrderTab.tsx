@@ -16,6 +16,7 @@ import {
   FormControlLabel,
   IconButton,
   Paper,
+  Tooltip,
   Stack,
   Switch,
   Table,
@@ -30,6 +31,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs, { type Dayjs } from 'dayjs'
 import EditIcon from '@mui/icons-material/Edit'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
 import type { AppConfig, Row } from '@shared/types'
 import { calcOwe, newRow } from '@shared/types'
@@ -448,7 +450,21 @@ export default function OrderTab({ config, onConfigChange }: Props) {
                     slotProps={{ htmlInput: { inputMode: 'numeric' } }}
                   />
                   <TextField
-                    label="Сумма залога"
+                    label={
+                      <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+                        Сумма залога
+                        <Tooltip
+                          title="Если сумма залога не пуста — в документе на печать будет только она, без залогов нал/безнал/СБП"
+                          arrow
+                        >
+                          <InfoOutlinedIcon
+                            fontSize="inherit"
+                            color={row.pledgeTotal > 0 ? 'primary' : 'disabled'}
+                            sx={{ cursor: 'help', verticalAlign: 'middle' }}
+                          />
+                        </Tooltip>
+                      </Box>
+                    }
                     value={numDisplay(row.pledgeTotal)}
                     onChange={setNumField('pledgeTotal')}
                     placeholder="0"
